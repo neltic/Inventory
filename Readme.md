@@ -25,10 +25,11 @@ The system manages a hierarchical inventory based on:
 1. Configure the connection string in the `appsettings.json` file.
 2. Configure the physical paths for saving the images, also in the `appsettings.json` file.
 3. I use IIS to serve the image files, but you can use any available service; it just needs to point to the `static` path you defined in the previous step.
-4. In the frontend folder, run:   ```bash
-   npm install
-   ng serve
-   ```
+4. In the frontend folder, run:   
+```bash
+npm install
+ng serve
+```
 5. The application will be available at http://localhost:4200
 
 ## 📝 Features
