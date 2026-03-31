@@ -1,0 +1,25 @@
+# --- .NET / Visual Studio ('back') ---
+**/bin/
+**/obj/
+**/.vs/
+**/.user
+**/appsettings.Development.json
+**/*.db
+**/*.db-journal
+
+# --- Angular / Node ('front') ---
+**/node_modules/
+**/dist/
+**/.angular/
+**/.vscode/
+**/npm-debug.log*
+**/yarn-error.log*
+
+# --- Docker & OS ---
+.docker/
+.env
+.DS_Store
+Thumbs.db
+
+# --- Solución específica ---
+*.slnx.user

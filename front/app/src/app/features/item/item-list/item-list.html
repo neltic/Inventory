@@ -1,0 +1,119 @@
+<mat-drawer-container [hasBackdrop]="true">
+  <mat-drawer #storageDrawer position="end" mode="over">
+    <div class="drawer-header">
+      <div>
+        @if (category()) {
+            <mat-icon [style.color]="category()?.color">
+            {{ category()?.icon }}
+            </mat-icon>
+        } @else {
+            <mat-icon color="disabled">help_outline</mat-icon>
+        } 
+        <h3>{{ selectedItem()?.name }}</h3>
+      </div>
+      <button mat-icon-button (click)="storageDrawer.close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>    
+    <mat-divider></mat-divider>
+    <mat-list>
+        @for (storage of storageService.itemStorage(); track (storage.boxId + '-' + storage.brandId) ) {
+            @let brand = storage.brandId | findInList:brandService.brands():'brandId';
+            <mat-list-item class="list-item">
+
+                <span matListItemAvatar class="list-item-image">
+                    <img [src]="storage.boxId | asPhoto:'box':storage.updatedAt:'icons'"
+                        appImgFallback crossorigin>
+                </span> 
+
+                <span matListItemIcon class="list-item-quantity">
+                    <i>Qty</i>
+                    <strong>{{ storage.quantity }}</strong>
+                </span>
+                
+                <span matListItemTitle class="list-item-title">
+                    {{ storage.name }}
+                </span>
+                @if (storage.expires) {
+                <span matListItemLine class="list-item-line">
+                    Expires on {{ storage.expiresOn }}
+                </span>
+                }
+                <strong class="list-item-tag-v" [class.is-dark]="isDarkColor(brand?.background)" [style.color]="brand?.background" [style.borderColor]="brand?.background">{{brand?.name}}</strong>
+            </mat-list-item>        
+        } @empty {
+            <i class="unregistered-label">
+                (Unregistered)
+            </i>
+        }
+    </mat-list>    
+    
+  </mat-drawer>
+
+  <mat-drawer-content>
+
+    <section class="search-bar">
+        <mat-form-field class="search-Item">
+        <mat-label>Filter by Item name</mat-label>
+        <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
+        @if (filterText()) {
+            <button matSuffix matIconButton aria-label="Clear" (click)="filterText.set('')">
+            <mat-icon>close</mat-icon>
+            </button>
+        }
+        </mat-form-field>
+        <mat-form-field class="filter-category">
+            <mat-label>Filter by category</mat-label>
+            <mat-select [value]="filterCategory()" (selectionChange)="onCategoryChange($event.value)">
+
+                <mat-select-trigger>
+                <div class="selected-category-option">
+                @if (filterCategory()) {
+                    @let selectedCategory = categoryService.getCategoryById(filterCategory()!);
+                    <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
+                    <span>{{ selectedCategory?.name }}</span>                
+                } @else {
+                    <mat-icon>all_inclusive</mat-icon>
+                    <span>[All]</span>
+                }
+                </div>
+                </mat-select-trigger>
+
+                <mat-option [value]="null">
+                    <div class="category-option">
+                        <mat-icon>all_inclusive</mat-icon>
+                        <span>[All]</span>
+                    </div>
+                </mat-option>
+                @for (category of categoryService.itemCategories(); track category.categoryId) {
+                <mat-option [value]="category.categoryId">
+                    <div class="category-option">
+                        <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
+                        <span>{{category.name}}</span>
+                    </div>
+                </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </section>
+    <section class="list-result">
+        @if (itemResourceList.isLoading()) {
+        <div class="loading-message"></div>
+        } @else {
+            @for (item of filteredList(); track $index) {      
+                <app-item-repeater [item]="item" (viewStorageEvent)="onViewStorage($event)"/>
+            } @empty {
+                <div class="empty-message">
+                    @if(filterText() || filterCategory()) {
+                        <p>There are no items with that description or category.</p>                    
+                    }  @else {
+                        <p>You can create a new item from the menu:<br>Items > New</p>
+                    }
+                </div>                
+            }
+        }
+    </section>
+
+    
+  </mat-drawer-content>
+</mat-drawer-container>

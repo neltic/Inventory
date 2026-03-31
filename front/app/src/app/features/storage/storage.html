@@ -1,0 +1,255 @@
+<form [formGroup]="mainForm">
+  <mat-stepper formArrayName="steps" #stepper linear (selectionChange)="onStepChange($event)">
+    
+    <mat-step formGroupName="0" [stepControl]="getStep(0)" state="box">
+
+      <ng-template matStepLabel>Select a Box</ng-template>
+      
+        <mat-selection-list 
+            formControlName="boxId" 
+            [multiple]="false"            
+            class="selection-list">
+            @for (box of boxResourceList.value(); track box.boxId) {
+            <mat-list-option 
+                [value]="box.boxId"
+                togglePosition="after">
+                <span matListItemAvatar class="selection-list-image">
+                    <img [src]="box.boxId | asPhoto:'box':box.updatedAt:'icons'"
+                        appImgFallback crossorigin>
+                </span>
+                <div matListItemTitle [style.margin-left.px]="box.indent * 32" >
+                    <mat-icon class="selection-list-connector">
+                    @if (box.indent > 0) { subdirectory_arrow_right } 
+                    @else { folder }
+                    </mat-icon>
+                    <span>{{ box.name }}</span>
+                </div>
+            </mat-list-option>
+            }
+        </mat-selection-list>
+      
+        <div class="stepper-actions">
+            <button mat-button matStepperNext type="button">
+                <span>Next</span>
+                <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+            </button>
+        </div>
+
+    </mat-step>
+
+    <mat-step formGroupName="1" [stepControl]="getStep(1)" state="item">
+      
+        <ng-template matStepLabel>Select an Item</ng-template>
+
+        <div class="item-layout">            
+
+            <div class="item-layout-items">
+
+                <section class="search-bar">
+                    <mat-form-field class="search-Item">
+                    <mat-label>Filter by Item name</mat-label>
+                    <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
+                    @if (filterText()) {
+                        <button matSuffix matIconButton aria-label="Clear" (click)="filterText.set('')">
+                        <mat-icon>close</mat-icon>
+                        </button>
+                    }
+                    </mat-form-field>
+                    <mat-form-field class="filter-category">
+                        <mat-label>Filter by category</mat-label>
+                        <mat-select [value]="filterCategory()" (selectionChange)="onCategoryChange($event.value)">
+
+                            <mat-select-trigger>
+                            <div class="selected-category-option">
+                            @if (filterCategory()) {
+                                @let selectedCategory = categoryService.getCategoryById(filterCategory()!);
+                                <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
+                                <span>{{ selectedCategory?.name }}</span>                
+                            } @else {       
+                                <mat-icon>all_inclusive</mat-icon>                         
+                                <span>[All]</span>
+                            }
+                            </div>
+                            </mat-select-trigger>
+
+                            <mat-option [value]="null">
+                                <div class="category-option">
+                                    <mat-icon>all_inclusive</mat-icon>
+                                    <span>[All]</span>
+                                </div>
+                            </mat-option>
+                            @for (category of categoryService.itemCategories(); track category.categoryId) {
+                            <mat-option [value]="category.categoryId">
+                                <div class="category-option">
+                                    <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
+                                    <span>{{category.name}}</span>
+                                </div>
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </section>
+
+                <mat-selection-list 
+                    formControlName="itemId" 
+                    [multiple]="false"                     
+                    class="selection-list">
+                    @for (item of filteredList(); track item.itemId) {
+                    @let category = categoryService.getCategoryById(item.categoryId);
+                    <mat-list-option 
+                        [value]="item.itemId"
+                        togglePosition="after">
+                        <span matListItemAvatar class="selection-list-image">
+                            <img [src]="item.itemId | asPhoto:'item':item.updatedAt:'icons'"
+                                appImgFallback crossorigin>
+                        </span>                        
+                        <mat-icon matListItemIcon [style.color]="category?.color">{{ category?.icon }}</mat-icon>
+                        <div matListItemTitle>                            
+                            <span>{{ item.name }}</span>
+                        </div>
+                    </mat-list-option>
+                    }
+                </mat-selection-list>
+            </div>
+
+            <div class="item-layout-brands">
+                <app-brand-select 
+                    controlName="brandId" 
+                    label="Brand" 
+                    [scope]="EntityScope.Item"                     
+                    friendlyErrorName="Item brand" />    
+            </div>
+        </div>
+
+        <div class="stepper-actions">
+            <button mat-button matStepperPrevious type="button">
+                <mat-icon>arrow_back</mat-icon>
+                <span>Back</span>
+            </button>
+            <button mat-button matStepperNext type="button">
+                <span>Next</span>
+                <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+            </button>
+        </div>
+    </mat-step>
+
+    <mat-step formGroupName="2" [stepControl]="getStep(2)" state="detail">
+
+        <ng-template matStepLabel>Fill out details</ng-template>
+
+        <div class="detail-layout">
+        
+            <mat-form-field class="detail-layout-quantity">
+                <mat-label>Quantity</mat-label>
+                <input 
+                    matInput 
+                    formControlName="quantity" 
+                    (blur)="updateErrorMessage('quantity', 'Storage quantity')"
+                    type="number">
+                @if (errorMessages['quantity']()) {
+                    <mat-error>{{ errorMessages['quantity']() }}</mat-error>
+                }
+            </mat-form-field>
+
+            <div class="detail-layout-expires">
+                <mat-checkbox formControlName="expires">Expires?</mat-checkbox>
+            </div>
+            
+            <mat-form-field class="detail-layout-expires-on" [hidden]="!getStep(2).get('expires')?.value">
+                <mat-label>Expiration Date</mat-label>
+                <input matInput [min]="minDate" [matDatepicker]="picker" formControlName="expiresOn" readonly>                
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker disabled="false"></mat-datepicker>
+                @if (errorMessages['expiresOn']()) {
+                    <mat-error>{{ errorMessages['expiresOn']() }}</mat-error>
+                }
+            </mat-form-field>
+            
+        </div>
+
+        <div class="stepper-actions">
+            <button mat-button matStepperPrevious type="button">
+                <mat-icon>arrow_back</mat-icon>
+                <span>Back</span>
+            </button>
+            <button mat-button matStepperNext type="button">
+                <span>Next</span>
+                <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+            </button>
+        </div>
+
+    </mat-step>
+
+    <mat-step state="confirm">
+
+    <ng-template matStepLabel>Review & Confirm</ng-template>
+
+    @if (reviewSummary()) {    
+    <div class="review-layout">
+        <h3 class="review-layout-title">Summary</h3>
+        <mat-card appearance="outlined" class="review-layout-card">
+        <mat-list>
+            
+            <mat-list-item>
+                <mat-icon matListItemIcon>inventory_2</mat-icon>
+                <span matListItemTitle>Box</span>
+                <span matListItemLine class="review-layout-value">{{ reviewSummary().boxName }}</span>
+            </mat-list-item>            
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <mat-icon matListItemIcon>art_track</mat-icon>
+                <span matListItemTitle>Item</span>
+                <span matListItemLine class="review-layout-value">{{ reviewSummary().itemName }}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <mat-icon matListItemIcon>verified</mat-icon>
+                <span matListItemTitle>Brand</span>
+                <span matListItemLine class="review-layout-value">{{ reviewSummary().brandName }}</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <mat-icon matListItemIcon>format_list_numbered</mat-icon>
+                <span matListItemTitle>Quantity</span>
+                <span matListItemLine class="review-layout-value">{{ reviewSummary().quantity }}</span>
+            </mat-list-item>
+            @if (reviewSummary().expires) {
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <mat-icon matListItemIcon>event_busy</mat-icon>
+                <span matListItemTitle>Expiration Date</span>
+                <span matListItemLine class="review-layout-value">{{ reviewSummary().expiresOn | date:'mediumDate' }}</span>
+            </mat-list-item>
+            }
+        </mat-list>
+        </mat-card>
+    </div>
+    }
+
+    <div class="stepper-actions">
+        <button mat-button matStepperPrevious type="button">
+            <mat-icon>arrow_back</mat-icon>
+            <span>Back</span>
+        </button>
+        <button mat-button (click)="save()" [disabled]="mainForm.invalid">            
+            <mat-icon>save</mat-icon>
+            <span>Confirm & Save</span>            
+        </button>
+    </div>
+    </mat-step>
+
+    <ng-template matStepperIcon="box">
+        <mat-icon>inventory</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="item">
+        <mat-icon>art_track</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="detail">
+        <mat-icon>production_quantity_limits</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="confirm">
+        <mat-icon>thumb_up_alt</mat-icon>
+    </ng-template>
+
+  </mat-stepper>
+</form>

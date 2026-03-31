@@ -1,0 +1,72 @@
+<div class="main-menu">
+
+    <button matButton [routerLink]="['/welcome']" class="btn-icon-only">
+        <mat-icon>home</mat-icon>
+    </button>      
+
+    <button matButton [matMenuTriggerFor]="boxMenu">
+        <mat-icon>inventory</mat-icon>
+        <span>Boxes</span>
+    </button>
+    <mat-menu #boxMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/box/new', this.params.parentBoxId()]">
+            <mat-icon>add</mat-icon>
+            <span>New</span>
+        </button>
+        <button mat-menu-item [routerLink]="['/box/list', null]">
+            <mat-icon>search</mat-icon>
+            <span>Search</span>
+        </button>
+    </mat-menu>
+
+    <button matButton [matMenuTriggerFor]="itemMenu">
+        <mat-icon>art_track</mat-icon>
+        <span>Items</span>
+    </button>
+    <mat-menu #itemMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/item/new']">
+            <mat-icon>add</mat-icon>
+            <span>New</span>
+        </button>
+        <button mat-menu-item [routerLink]="['/item/list']">
+            <mat-icon>search</mat-icon>
+            <span>Search</span>
+        </button>
+    </mat-menu>   
+    
+    <button matButton [routerLink]="['/storage']">
+        <mat-icon>storage</mat-icon>
+        <span>Storage</span>
+    </button>
+
+    <button matButton [matMenuTriggerFor]="categoryMenu">
+        <mat-icon>category</mat-icon>
+        <span>Categories</span>
+    </button>
+    <mat-menu #categoryMenu="matMenu">        
+        <button mat-menu-item [routerLink]="['/category/list']" [queryParams]="{ action: 'add' }">
+            <mat-icon>add</mat-icon>
+            <span>New</span>
+        </button>        
+        <button mat-menu-item [routerLink]="['/category/list']">
+            <mat-icon>dashboard_customize</mat-icon>
+            <span>Setup</span>
+        </button>
+    </mat-menu>
+
+    <button matButton [matMenuTriggerFor]="brandMenu">
+        <mat-icon>verified</mat-icon>
+        <span>Brands</span>
+    </button>
+    <mat-menu #brandMenu="matMenu">        
+        <button mat-menu-item [routerLink]="['/brand/list']" [queryParams]="{ action: 'add' }">
+            <mat-icon>add</mat-icon>
+            <span>New</span>
+        </button>        
+        <button mat-menu-item [routerLink]="['/brand/list']">
+            <mat-icon>dashboard_customize</mat-icon>
+            <span>Setup</span>
+        </button>
+    </mat-menu>   
+
+</div>

@@ -1,0 +1,40 @@
+import { Component, computed, inject, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIcon } from "@angular/material/icon";
+import { Router } from '@angular/router';
+import { IItem } from '@models';
+import { CategoryService, ItemService } from '@services';
+import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
+
+@Component({
+  selector: 'app-item-repeater',
+  imports: [ MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe ],
+  templateUrl: './item-repeater.html',
+  styleUrl: './item-repeater.scss',
+})
+export class ItemRepeater {
+  private router: Router = inject(Router);
+  private categoryService: CategoryService = inject(CategoryService);
+  private itemService: ItemService = inject(ItemService);
+  public item = input.required<IItem>();
+  public viewStorageEvent = output<any>();
+
+  category = computed(() => 
+    this.categoryService.getCategoryById(this.item().categoryId)
+  );
+  
+  goToEdit() {
+    this.router.navigate(['/item/edit', this.item().itemId]);
+  }
+
+  goToDetails() {
+    this.router.navigate(['/item/detail', this.item().itemId]);
+  }
+
+  viewStorage() {
+    this.viewStorageEvent.emit(this.item());
+  }
+  
+}

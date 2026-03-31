@@ -1,0 +1,29 @@
+services:
+  stock-back:
+    build:
+      context: ./back
+      dockerfile: Stock.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=StockDb;User Id=sa;Password=Azur3#local!1055#;TrustServerCertificate=True;
+      - FileStorage__TempPath=/app/storage/temp/
+      - FileStorage__BoxPath=/app/storage/img/box/
+      - FileStorage__ItemPath=/app/storage/img/item/
+    volumes:
+      - "/host_mnt/c/root/project/Storage/front/static/temp:/app/storage/temp"
+      - "/host_mnt/c/root/project/Storage/front/static/img/box:/app/storage/img/box"
+      - "/host_mnt/c/root/project/Storage/front/static/img/item:/app/storage/img/item"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  stock-front:
+    build:
+      context: ./front/app
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - stock-back
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

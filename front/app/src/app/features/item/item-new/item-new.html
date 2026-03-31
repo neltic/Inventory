@@ -1,0 +1,143 @@
+@if(itemResource.value(); as item) {
+<form [formGroup]="mainForm" class="custom-form">
+
+<mat-card class="custom-card" appearance="outlined">
+    <mat-card-header>    
+        <mat-form-field>
+            <mat-label>Item name</mat-label>
+            <input
+                matInput
+                placeholder="Item name"
+                formControlName="name"
+                (blur)="updateErrorMessage('name', 'Item name')"
+                required
+                maxlength="64"
+            />
+            <mat-hint align="end">{{ mainForm.get('name')?.value?.length || 0 }}/64</mat-hint>
+            @if (errorMessages['name']()) {
+                <mat-error>{{ errorMessages['name']() }}</mat-error>
+            }
+        </mat-form-field>
+    </mat-card-header>
+
+    <div class="image-container" 
+         (click)="fileInput.click()" 
+         tabindex="-1">
+        @if (isUploadingImage()) {
+            <div class="image-container-loader"></div>
+        }
+        <img mat-card-image 
+            [src]="itemService.getTempPhotoBy(imageGuid())"
+            [class.image-container-loaded]="!isUploadingImage()"
+            (load)="onImageLoad()"
+            (error)="onImageLoad()"
+            alt="Exterior photo of {{ item.name }}"
+            class="image-container-photo"
+            appImgFallback
+            crossorigin>
+
+        @if (!isUploadingImage()) {
+            <div class="image-container-overlay" [class.image-container-disabled]="isBusy()">
+                <mat-icon>photo_camera</mat-icon>
+                <span>
+                    @if(!mainForm.invalid) { Upload Photo }
+                    @else { Please fill out the form,<br>then you can upload the photo }                    
+                </span>
+            </div>
+        }
+        <input 
+            type="file" 
+            #fileInput 
+            style="display: none;" 
+            accept="image/*" 
+            [disabled]="isBusy()"
+            (change)="onFileSelected($event)">
+    </div>
+    
+    <mat-card-content>
+        <mat-form-field class="filter-category">
+            <mat-label>Category</mat-label>
+            @let selected = mainForm.get('categoryId')?.value | findInList:categoryService.categories():'categoryId';
+            <mat-select 
+                matInput 
+                formControlName="categoryId"
+                (blur)="updateErrorMessage('categoryId', 'Item category')">
+                <mat-select-trigger>
+                    <div class="selected-category-option">
+                    @if (selected) { 
+                        <span>{{ selected.name }}</span>                
+                    } @else { 
+                        <span>---</span>
+                    }
+                    </div>
+                </mat-select-trigger>
+                @for (category of categoryService.itemCategories(); track category.categoryId) {
+                <mat-option [value]="category.categoryId">
+                    <div class="category-option">
+                        <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
+                        <span>{{category.name}}</span>
+                    </div>
+                </mat-option>
+                }
+            </mat-select>
+            <span matTextPrefix>
+                @if (selected) {   
+                    <mat-icon [style.color]="selected.color">{{ selected.icon }}</mat-icon>
+                } @else {   
+                    <mat-icon>warning</mat-icon>
+                }
+            </span>
+            @if (errorMessages['categoryId']()) {
+                <mat-error>{{ errorMessages['categoryId']() }}</mat-error>
+            }
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label>Notes</mat-label>
+            <textarea 
+                matInput
+                placeholder="Notes"
+                formControlName="notes"
+                (blur)="updateErrorMessage('notes', 'Item notes')"
+                required
+                maxlength="512">
+            </textarea>
+            <span matTextPrefix><mat-icon>description</mat-icon></span>
+            <mat-hint align="end">{{ mainForm.get('notes')?.value?.length || 0 }}/512</mat-hint>
+            @if (errorMessages['notes']()) {
+                <mat-error>{{ errorMessages['notes']() }}</mat-error>
+            }
+        </mat-form-field>
+
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+        <button type="button" matButton (click)="onSubmit()" [disabled]="isBusy() || !imageGuid()">
+            @if (isSaving() || isUploadingImage()) {
+                <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
+            } @else {
+                <mat-icon>save</mat-icon>
+            }
+            <span>
+                @if (isSaving()) { Saving... }
+                @else if (isUploadingImage()) { Uploading image... }
+                @else { Save }
+            </span>
+        </button>
+        <button type="button" matButton (click)="onCancel()" class="btn-cancel">
+            <mat-icon>
+                @if (mainForm.dirty) { cancel }            
+                @else { navigate_before }        
+            </mat-icon>
+            <span>
+                @if (mainForm.dirty) { Cancel }
+                @else { Back }
+            </span>
+        </button> 
+    </mat-card-actions>
+
+</mat-card>
+</form>
+} @else if (itemResource.isLoading()) {
+  <div class="loading-message"></div>
+}

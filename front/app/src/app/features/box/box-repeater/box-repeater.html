@@ -1,0 +1,36 @@
+<mat-card class="list-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>
+      @if (category()) {
+        <mat-icon [style.color]="category()?.color">
+          {{ category()?.icon }}
+        </mat-icon>
+      } @else {
+        <mat-icon color="disabled">help_outline</mat-icon>
+      }      
+      <span class="list-card-title">{{ box().name }}</span>
+    </mat-card-title>
+  </mat-card-header>
+  
+  <img mat-card-image 
+       [src]="box().boxId | asPhoto:'box':box().updatedAt:'thumbnails'"
+       alt="Exterior photo of {{ box().name }}"
+       [style.borderBottomColor]="brand()?.background"
+       appImgFallback
+       crossorigin>
+    
+  <mat-card-actions>
+    <button matButton (click)="goToEdit()"><mat-icon>edit_square</mat-icon><span>Edit</span></button>
+    <button matButton (click)="goToDetails()"><mat-icon>zoom_in</mat-icon><span>Details</span></button>
+    <button matButton (click)="goToShowContent()">
+      <mat-icon>
+        @if( box().hasChildren ) { all_inbox }
+        @else { check_box_outline_blank }
+      </mat-icon>
+      <span>Open</span></button>
+    @if(box().hasItems) {
+      <button matButton (click)="showItems()"><mat-icon>art_track</mat-icon><span>Items</span></button>
+    }
+  </mat-card-actions>
+
+</mat-card>

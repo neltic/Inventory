@@ -1,0 +1,89 @@
+<section class="search-bar">
+    <mat-form-field class="search-box">
+        <mat-label>Filter by category name</mat-label>
+        <input matInput [ngModel]="filterText()" (ngModelChange)="filterText.set($event)">        
+        @if (filterText()) {
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="filterText.set('')">
+                <mat-icon>close</mat-icon>
+            </button>
+        }
+    </mat-form-field>
+</section>
+
+<table 
+    mat-table 
+    [dataSource]="filteredCategories()"
+    [trackBy]="trackById"
+    cdkDropList
+    [cdkDropListData]="filteredCategories()"
+    [cdkDropListDisabled]="isDragDisabled()"
+    (cdkDropListDropped)="drop($event)"
+    class="data-table">
+
+    <ng-container matColumnDef="reorder" sticky>
+        <th mat-header-cell *matHeaderCellDef class="data-table-order"><mat-icon>import_export</mat-icon></th>
+        <td mat-cell *matCellDef="let c" class="data-table-order" [class.disabled]="isDragDisabled()">
+            @if (!isDragDisabled()) { <mat-icon>reorder</mat-icon> }
+            @else { <mat-icon class="disabled">lock</mat-icon> }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="data-table-id"><mat-icon>fingerprint</mat-icon></th>
+        <td mat-cell *matCellDef="let c" class="data-table-id">{{c.categoryId}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="order">
+        <th mat-header-cell *matHeaderCellDef class="data-table-order">Order</th>
+        <td mat-cell *matCellDef="let c" class="data-table-order">
+            {{c.order}}
+        </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="icon">
+        <th mat-header-cell *matHeaderCellDef class="data-table-icons">Icon</th>
+        <td mat-cell *matCellDef="let c" class="data-table-icons">
+            <mat-icon [style.color]="c.color">{{c.icon}}</mat-icon>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let c">
+            {{c.name}}
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="scopes">
+        <th mat-header-cell *matHeaderCellDef>Scope</th>
+        <td mat-cell *matCellDef="let c">
+            <mat-chip-set class="inline-chips">
+            @for (scope of entityScope.toCompactScopeArray(c.includedIn); track scope.value) {            
+                <mat-chip>
+                    <mat-icon matChipAvatar>{{scope.icon}}</mat-icon>
+                    {{scope.label}}
+                </mat-chip>            
+            }
+            </mat-chip-set>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="data-table-actions">            
+            <button mat-icon-button (click)="openAddDialog()"><mat-icon>post_add</mat-icon></button>
+        </th>
+        <td mat-cell *matCellDef="let c" class="data-table-actions">
+            <button mat-icon-button (click)="openEditDialog(c)" class="btn-primary"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button (click)="deleteCategory(c)" class="btn-cancel"><mat-icon>delete</mat-icon></button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['reorder', 'id', 'order', 'icon', 'name', 'scopes', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['reorder', 'id', 'order', 'icon', 'name', 'scopes', 'actions'];" cdkDrag [cdkDragData]="row" [cdkDragDisabled]="isDragDisabled()"></tr>
+    <div *cdkDragPlaceholder></div>
+
+</table>
+
+@if (filteredCategories().length === 0) {
+    <p>No categories found matching your search.</p>
+}

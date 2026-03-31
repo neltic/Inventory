@@ -1,0 +1,7 @@
+@api_HostAddress = https://localhost:7287
+
+### Get All Items
+GET {{api_HostAddress}}/api/items/
+Accept: application/json
+
+###

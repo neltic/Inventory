@@ -1,0 +1,14 @@
+<div class="breadcrumb-container">
+    <mat-icon>polyline</mat-icon>
+    <nav>
+        @let steps = boxService.parseBoxFullPath(fullPath());        
+        @for (step of steps; track step.boxId) {
+        <a mat-button [routerLink]="['/box/detail', step.boxId]">
+            {{ step.name }}
+        </a>
+        <mat-icon>chevron_right</mat-icon>          
+        } @empty {
+        <mat-icon>chevron_right</mat-icon>
+        }
+    </nav>
+</div>

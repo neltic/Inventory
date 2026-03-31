@@ -1,0 +1,81 @@
+.custom-card {
+  mat-card-header {
+    padding: 10pt;
+  }
+}
+
+
+.inbox-as-list {
+  display: flex;
+  align-items: center;
+  gap: 5pt;  
+
+  mat-icon {
+    color: var(--mat-sys-primary);
+  } 
+
+  .inbox-as-list-block {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    .box-link {
+      color: #fff; 
+      text-decoration: none;
+      font-weight: normal;
+      transition: color 0.2s;
+      position: relative;      
+
+      &:hover {
+        text-decoration: underline;
+        color: var(--mat-sys-primary);
+      }
+    }
+
+    .qty-badge {
+      font-weight: 600;
+      font-size: 8pt;
+      border-radius: 4pt;
+      padding: 0 8pt;
+      display: inline-block;
+      margin: 0 6pt;
+      cursor: default;
+      border: solid 1px #666;
+
+      i { 
+        margin: 0;     
+        font-weight: normal;
+      }
+    }
+
+    button {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin: 0;
+        background-color: transparent;
+        border: solid 1px transparent;
+        cursor: pointer;
+      }
+      button:hover {
+        border: solid 1px rgba($color:red, $alpha: 0.6);
+        background-color: rgba($color:red, $alpha: 0.2);
+      }
+      button:before {
+        content: '\00D7';
+        margin: 0;
+        margin-left: -6pt;        
+        padding: 0;
+        color: #a82525;
+        display: block;
+        width: 24px;
+        height: 24px;
+        font-size: 14pt;
+      }
+
+    i {
+      margin-right: 5pt;
+    }    
+  }
+}
