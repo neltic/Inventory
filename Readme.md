@@ -1,7 +1,7 @@
 ﻿![.NET 9](https://img.shields.io/badge/.NET-9.0-512bd4?logo=dotnet)
 ![Angular 21](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
 ![License](https://img.shields.io/badge/License-MIT-green)
-# App Stock
+# Inventory App
 Technical guide for the Inventory Control Application
 
 ## 📋 Content
