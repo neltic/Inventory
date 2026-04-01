@@ -35,7 +35,7 @@ ng serve
 ## 📝 Features
 - **Automatic Auditing:** Via the EF Core interceptor that manages `CreatedAt` and `UpdatedAt`.
 - **Duplicate Validation:** Integrated logic in the save flow based on the triad (Box/Item/Brand).
-- **Reactive UI:** Extensive use of **Angular Signals** for state management and computed data for summarizing.
+- **Reactive UI:** Extensive use of **Angular Signals** for state management and computed data.
 - **Dynamic Customization:** Colors, icons, and visibility (Scopes) controlled directly from the database for Categories and Brands.
 
 ## 🛠️ Migrations

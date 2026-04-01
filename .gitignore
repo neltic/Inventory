@@ -21,5 +21,9 @@
 .DS_Store
 Thumbs.db
 
-# --- Solución específica ---
+# --- Solution ---
 *.slnx.user
+
+# --- Local images ---
+front/static/img/item/
+front/static/img/box/
