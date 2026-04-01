@@ -28,6 +28,47 @@ public interface IBoxService
     Task<IEnumerable<BoxLookupListDto>> GetBoxesLookupAsync();
 
     /// <summary>
+    /// Retrieves a hierarchical list of potential parent destinations for a box.
+    /// </summary>
+    /// <param name="targetBoxId">
+    /// The ID of the box being moved. 
+    /// <para>
+    /// Pass <see langword="null"/> when creating a new box to get all possible 
+    /// destinations with <c>IsSelectable = true</c>.
+    /// </para>
+    /// <para>
+    /// Pass a valid ID when moving an existing box; the current parent and 
+    /// descendants will be marked with <c>IsSelectable = false</c> to prevent 
+    /// circular references or redundant moves.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// An enumerable of <see cref="BoxTransferDto"/> representing the 
+    /// warehouse tree, including a virtual "[Root]" option at the top.
+    /// </returns>
+    Task<IEnumerable<BoxTransferListDto>> GetAvailableParentBoxesByAsync(int? targetBoxId);
+
+    /// <summary>
+    /// Updates the parent container of a specific box, effectively moving it within the warehouse hierarchy.
+    /// </summary>
+    /// <param name="boxId">The unique identifier of the box to be moved.</param>
+    /// <param name="newParentId">
+    /// The identifier of the destination parent box. 
+    /// Use <see langword="null"/> to move the box to the system root level.
+    /// </param>
+    /// <returns>
+    /// A task representing the asynchronous operation. 
+    /// The task result contains <see langword="true"/> if the box was successfully moved; 
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    /// <remarks>
+    /// This method invokes the <c>[dbo].[MoveBox]</c> stored procedure, which handles 
+    /// transaction integrity, updated timestamps, and prevents circular references 
+    /// (e.g., moving a box into one of its own descendants).
+    /// </remarks>
+    Task<bool> MoveBoxAsync(int boxId, int? newParentId);
+
+    /// <summary>
     /// Creates a new box record in the system.
     /// </summary>
     /// <param name="dto">The data transfer object containing the new box details.</param>

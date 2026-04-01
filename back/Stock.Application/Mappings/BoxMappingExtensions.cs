@@ -49,6 +49,17 @@ public static class BoxMappingExtensions
         ));
     }
 
+    public static IEnumerable<BoxTransferListDto> ToDtoList(this IEnumerable<BoxTransferList> models)
+    {
+        return models.Select(b => new BoxTransferListDto(
+            b.BoxId,
+            b.Name,
+            b.UpdatedAt,
+            b.Indent,
+            b.IsSelectable
+        ));
+    }
+
     public static Box ToEntity(this BoxDto dto, int boxId)
     {
         return new Box

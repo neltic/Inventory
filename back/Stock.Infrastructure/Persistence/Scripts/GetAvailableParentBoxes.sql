@@ -31,7 +31,11 @@ BEGIN
             , GETUTCDATE() AS [UpdatedAt]
             , '0' AS [SortPath]
             , 0 AS [Indent]
-            , CAST(CASE WHEN @CurrentParentId IS NOT NULL THEN 1 ELSE 0 END AS BIT) AS [IsSelectable]
+            , CAST(CASE 
+                WHEN @TargetBoxId IS NULL THEN 1 
+                WHEN @CurrentParentId IS NOT NULL THEN 1 
+                ELSE 0 
+            END AS BIT) AS [IsSelectable]
 
         UNION ALL
 

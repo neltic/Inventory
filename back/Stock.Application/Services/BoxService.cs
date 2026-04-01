@@ -34,6 +34,20 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
 
         return results.ToDtoList();
     }
+        
+    /// <inheritdoc />
+    public async Task<IEnumerable<BoxTransferListDto>> GetAvailableParentBoxesByAsync(int? targetBoxId)
+    {
+        var results = await boxRepository.GetAvailableParentBoxesByAsync(targetBoxId);
+
+        return results.ToDtoList();
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> MoveBoxAsync(int boxId, int? newParentId)
+    {
+        return await boxRepository.MoveBoxAsync(boxId, newParentId);
+    }
 
     /// <inheritdoc />
     public async Task<int> CreateAsync(BoxDto dto)

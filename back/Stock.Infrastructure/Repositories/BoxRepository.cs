@@ -58,6 +58,31 @@ public class BoxRepository(StockDbContext context) : IBoxRepository
     }
 
     /// <inheritdoc />
+    public async Task<string?> GetBoxFullPathByParentAsync(int? parentBoxId)
+    {
+        var results = await context.Database
+                .SqlQuery<string>($"EXEC [dbo].[GetBoxFullPathByParent] @ParentBoxId = {parentBoxId}")
+                .ToListAsync();
+
+        return results.FirstOrDefault();
+    }
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<BoxTransferList>> GetAvailableParentBoxesByAsync(int? targetBoxId)
+    {
+        return await context.Database
+            .SqlQuery<BoxTransferList>($"EXEC [dbo].[GetAvailableParentBoxes] @TargetBoxId = {targetBoxId}")
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> MoveBoxAsync(int boxId, int? newParentId)
+    {
+        return await context.Database.ExecuteSqlInterpolatedAsync($" EXEC [dbo].[MoveBox] @BoxId = {boxId}, @NewParentId = {newParentId}") > 0;
+    }
+
+    /// <inheritdoc />
     public async Task<int> AddAsync(Box box)
     {
         context.Boxes.Add(box);
@@ -91,15 +116,5 @@ public class BoxRepository(StockDbContext context) : IBoxRepository
             .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.UpdatedAt, now));
 
         return now;
-    }
-
-    /// <inheritdoc />
-    public async Task<string?> GetBoxFullPathByParentAsync(int? parentBoxId)
-    {
-        var results = await context.Database
-                .SqlQuery<string>($"EXEC [dbo].[GetBoxFullPathByParent] @ParentBoxId = {parentBoxId}")
-                .ToListAsync();
-
-        return results.FirstOrDefault();
     }
 }

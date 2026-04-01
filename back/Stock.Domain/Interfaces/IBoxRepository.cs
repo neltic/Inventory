@@ -49,10 +49,61 @@ public interface IBoxRepository
     Task<IEnumerable<BoxList>> GetBoxesByParentAsync(int? parentBoxId);
 
     /// <summary>
+    /// Resolves the human-readable full path of a box based on its parent hierarchy.
+    /// </summary>
+    /// <remarks>
+    /// Useful for displaying breadcrumbs or absolute location paths (e.g., "Main Warehouse > Section A > Box 1").
+    /// </remarks>
+    /// <param name="parentBoxId">The ID of the parent box to start the path resolution from.</param>
+    /// <returns>The full path string if resolvable; otherwise, null.</returns>
+    Task<string?> GetBoxFullPathByParentAsync(int? parentBoxId);
+
+    /// <summary>
+    /// Provides a hierarchical tree of valid parent destinations for placing or moving a box.
+    /// </summary>
+    /// <param name="targetBoxId">
+    /// The unique identifier of the box to be moved. 
+    /// <para>
+    /// If <see langword="null"/>, the method assumes a "Creation" flow, 
+    /// allowing the selection of any node (including the Root) as a starting destination.
+    /// </para>
+    /// <para>
+    /// If an ID is provided, the method disables (<c>IsSelectable = false</c>) 
+    /// the current parent to prevent redundant moves, and hides the target box 
+    /// and its offspring to prevent circular references.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// An enumerable collection of <see cref="BoxTransferList"/> including the virtual "[Move to Root]" 
+    /// option and the indented warehouse structure.
+    /// </returns>
+    Task<IEnumerable<BoxTransferList>> GetAvailableParentBoxesByAsync(int? targetBoxId);
+
+    /// <summary>
     /// Retrieves a simplified list of all boxes for selection/lookup purposes.
     /// </summary>
     /// <returns>A collection of <see cref="BoxLookupList"/> objects.</returns>
     Task<IEnumerable<BoxLookupList>> GetBoxesLookupAsync();
+
+    /// <summary>
+    /// Updates the parent container of a specific box, effectively moving it within the warehouse hierarchy.
+    /// </summary>
+    /// <param name="boxId">The unique identifier of the box to be moved.</param>
+    /// <param name="newParentId">
+    /// The identifier of the destination parent box. 
+    /// Use <see langword="null"/> to move the box to the system root level.
+    /// </param>
+    /// <returns>
+    /// A task representing the asynchronous operation. 
+    /// The task result contains <see langword="true"/> if the box was successfully moved; 
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    /// <remarks>
+    /// This method invokes the <c>[dbo].[MoveBox]</c> stored procedure, which handles 
+    /// transaction integrity, updated timestamps, and prevents circular references 
+    /// (e.g., moving a box into one of its own descendants).
+    /// </remarks>
+    Task<bool> MoveBoxAsync(int boxId, int? newParentId);
 
     /// <summary>
     /// Persists a new Box entity to the database.
@@ -81,14 +132,5 @@ public interface IBoxRepository
     /// <param name="boxId">The ID of the box to update.</param>
     /// <returns>The new <see cref="DateTime"/> value persisted to the database.</returns>
     Task<DateTime> ChangeUpdatedAtAsync(int boxId);
-
-    /// <summary>
-    /// Resolves the human-readable full path of a box based on its parent hierarchy.
-    /// </summary>
-    /// <remarks>
-    /// Useful for displaying breadcrumbs or absolute location paths (e.g., "Main Warehouse > Section A > Box 1").
-    /// </remarks>
-    /// <param name="parentBoxId">The ID of the parent box to start the path resolution from.</param>
-    /// <returns>The full path string if resolvable; otherwise, null.</returns>
-    Task<string?> GetBoxFullPathByParentAsync(int? parentBoxId);
+    
 }

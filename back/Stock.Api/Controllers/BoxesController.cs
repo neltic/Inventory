@@ -2,6 +2,8 @@
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
+using Stock.Application.Services;
+using Stock.Domain.Entities.Views;
 
 namespace Stock.Api.Controllers;
 
@@ -74,6 +76,20 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
         var result = await boxService.GetEmptyBoxByParentBoxIdAsync(parentBoxId);
 
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Retrieves a hierarchical list of potential parent boxes.
+    /// Use without an ID for new box creation, or with an ID to move an existing box.
+    /// </summary>
+    /// <param name="targetBoxId">The optional ID of the box to be moved.</param>
+    [HttpGet("available-parents/{targetBoxId?}")] 
+    [ProducesResponseType(typeof(IEnumerable<BoxTransferList>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<BoxTransferList>>> GetAvailableParents(int? targetBoxId)
+    {        
+        var availableParents = await boxService.GetAvailableParentBoxesByAsync(targetBoxId);
+
+        return Ok(availableParents);
     }
 
     /// <summary>
@@ -187,6 +203,33 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
         catch (Exception ex)
         {
             return StatusCode(500, $"Internal error processing the image: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Changes the parent container of a specific box.
+    /// </summary>
+    /// <param name="id">The unique identifier of the box to be moved.</param>
+    /// <param name="newParentId">
+    /// The ID of the destination box. 
+    /// If omitted, the box will be moved to the system root level.
+    /// </param>
+    /// <returns>A 204 No Content response if the move is successful.</returns>
+    /// <response code="204">The box was successfully moved to its new location.</response>
+    /// <response code="400">If the move is invalid (e.g., circular reference or illegal parent).</response>
+    [HttpPatch("{id}/move-to/{newParentId?}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> MoveBox(int id, int? newParentId)
+    {
+        try
+        {            
+            await boxService.MoveBoxAsync(id, newParentId);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {            
+            return BadRequest(new { ex.Message });
         }
     }
 }

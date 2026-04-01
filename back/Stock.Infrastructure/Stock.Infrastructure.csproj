@@ -13,6 +13,9 @@
     <None Update="Persistence\Scripts\AddOrEditStorage.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Persistence\Scripts\MoveBox.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Persistence\Scripts\GetAvailableParentBoxes.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
