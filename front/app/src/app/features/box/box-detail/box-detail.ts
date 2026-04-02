@@ -54,14 +54,10 @@ export class BoxDetail extends BaseComponent {
 
   boxResource = rxResource<IBox, any>({
     stream: () => { 
-        return toObservable(this.params.boxId, { injector: this.injector }).pipe(
-        // 2. Evitamos peticiones con IDs inválidos (ej. el 0 inicial)
+        return toObservable(this.params.boxId, { injector: this.injector }).pipe(        
         filter(id => id > 0),
-        // 3. Cada vez que el ID cambie en el breadcrumb, 
-        // switchMap cancela la anterior y lanza la nueva petición
         switchMap(id => this.boxService.getBoxBy(id))
-      );
-      //return this.boxService.getBoxBy(this.params.boxId()); 
+      );      
     }
   });
 
