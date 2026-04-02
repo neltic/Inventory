@@ -48,6 +48,7 @@ dotnet ef migrations add AddInitialBoxesSPs --project Stock.Infrastructure --sta
 dotnet ef migrations add AddInitialItemsSPs --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddInitialStorageSPs --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddInitialCategoriesSPs --project Stock.Infrastructure --startup-project Stock.Api
+dotnet ef migrations add AddFeatBoxTransferSPs --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef database update --project Stock.Infrastructure --startup-project Stock.Api
 ```
 
