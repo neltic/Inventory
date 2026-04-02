@@ -39,7 +39,7 @@ ng serve
 - **Dynamic Customization:** Colors, icons, and visibility (Scopes) controlled directly from the database for Categories and Brands.
 
 ## 🛠️ Migrations
-The following details the commands needed to manage data persistence (if you need to revert to the initial state, remember to back up the contents of these existing migration files before restarting).
+The following details the commands needed to manage data persistence (If you need to revert to the initial state, remember to back up the contents of these existing migration files before restoring them).
 
 ```bash
 dotnet ef migrations add InitialCreate --project Stock.Infrastructure --startup-project Stock.Api
@@ -56,4 +56,5 @@ dotnet ef database update --project Stock.Infrastructure --startup-project Stock
 To revert the database to its initial state:
 ```bash
 dotnet ef database update 0 --project Stock.Infrastructure --startup-project Stock.Api
+dotnet ef database remove --project Stock.Infrastructure --startup-project Stock.Api
 ```
