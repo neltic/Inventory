@@ -17,7 +17,7 @@
   </div>
 
   <mat-card-content>
-    <app-box-breadcrumb [fullPath]="box.fullPath" />
+    <app-box-breadcrumb [fullPath]="currentPath()" />
     <p>
         @let selectedCategory = categoryService.getCategoryById(box.categoryId);
         <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
@@ -71,8 +71,12 @@
         @else { Deleting... }
       </span>
     </button>    
+    <button type="button" matButton (click)="openBoxParentSelectDialog(box)" [disabled]="isDeleting()">
+      <mat-icon>move_to_inbox</mat-icon><span>Move To</span>
+    </button>
     <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
-      <mat-icon>navigate_before</mat-icon><span>Back</span></button>    
+      <mat-icon>navigate_before</mat-icon><span>Back</span>
+    </button>
   </mat-card-actions>
 
 </mat-card>

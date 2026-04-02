@@ -40,6 +40,16 @@ public class BoxRepository(StockDbContext context) : IBoxRepository
     }
 
     /// <inheritdoc />
+    public async Task<string?> GetBoxFullPathAsync(int boxId)
+    {
+        var results = await context.Database
+            .SqlQuery<string>($"EXEC [dbo].[GetBoxFullPath] @BoxId = {boxId}")
+            .ToListAsync();
+
+        return results.FirstOrDefault();
+    }
+
+    /// <inheritdoc />
     public async Task<IEnumerable<BoxList>> GetBoxesByParentAsync(int? parentBoxId)
     {
         return await context.Database

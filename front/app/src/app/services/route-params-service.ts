@@ -15,15 +15,15 @@ interface RouteParams {
 export class RouteParamsService {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-
+ 
   private params$ = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),
-    map(() => this.getParamsFromRoute(this.route)),
-    startWith(this.getParamsFromRoute(this.route))
+    map(() => this.extractAllParams()), 
+    startWith(this.extractAllParams())
   );
 
   private params = toSignal<RouteParams>(this.params$);
-
+  
   readonly parentBoxId = computed(() => 
     this.parseParam(this.params()?.parentBoxId, null)
   );
@@ -44,17 +44,17 @@ export class RouteParamsService {
     return isNaN(parsed) ? defaultValue : (parsed as any);
   }
 
-  private getParamsFromRoute(route: ActivatedRoute): RouteParams {
-    let params: RouteParams = {};
-    let queryParams: any = {};
-    let currentRoute: ActivatedRoute | null = route;
-
-    while (currentRoute) {      
-      params = { ...params, ...currentRoute.snapshot.params };
-      queryParams = { ...queryParams, ...currentRoute.snapshot.queryParams };
-      currentRoute = currentRoute.firstChild;
+  private extractAllParams(): RouteParams {
+    let root = this.router.routerState.snapshot.root;
+    let params: any = {};
+    let queryParams: any = root.queryParams;     
+    let stack = [root];
+    while (stack.length > 0) {
+      const node = stack.pop()!;
+      params = { ...params, ...node.params };
+      if (node.firstChild) stack.push(node.firstChild);
     }
-    return { ...params, ...queryParams };
+    return { ...params, action: queryParams['action'] };
   }
 
   public clearQueryAction() {

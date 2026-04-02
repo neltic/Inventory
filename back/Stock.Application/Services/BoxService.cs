@@ -34,7 +34,10 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
 
         return results.ToDtoList();
     }
-        
+
+    /// <inheritdoc />
+    public async Task<string?> GetBoxFullPathAsync(int boxId) => await boxRepository.GetBoxFullPathAsync(boxId);
+
     /// <inheritdoc />
     public async Task<IEnumerable<BoxTransferListDto>> GetAvailableParentBoxesByAsync(int? targetBoxId)
     {

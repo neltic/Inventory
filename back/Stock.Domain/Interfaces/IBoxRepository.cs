@@ -42,6 +42,22 @@ public interface IBoxRepository
     Task<BoxDetailed?> GetBoxByIdAsync(int boxId);
 
     /// <summary>
+    /// Retrieves the complete breadcrumb path of a box's parent hierarchy in JSON format.
+    /// </summary>
+    /// <param name="boxId">The unique identifier of the box whose path is being retrieved.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. 
+    /// The task result contains a JSON string array of objects (boxId, name) representing the hierarchy from Root to Parent; 
+    /// returns <see langword="null"/> if the box is already at the Root level or if the ID does not exist.
+    /// </returns>
+    /// <remarks>
+    /// This method executes the <c>[dbo].[GetBoxFullPath]</c> stored procedure. 
+    /// The returned JSON is ordered from the highest level (Root) down to the immediate parent 
+    /// to facilitate breadcrumb rendering in the UI.
+    /// </remarks>
+    Task<string?> GetBoxFullPathAsync(int boxId);
+
+    /// <summary>
     /// Retrieves a collection of boxes located directly under a specific parent.
     /// </summary>
     /// <param name="parentBoxId">The parent container ID. If null, searches the root level.</param>

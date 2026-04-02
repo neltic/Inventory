@@ -79,6 +79,28 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
     }
 
     /// <summary>
+    /// Retrieves the full hierarchical path (breadcrumb) of a specific box's parents.
+    /// </summary>
+    /// <param name="id">The unique identifier of the box.</param>
+    /// <returns>A JSON array representing the chain of parent boxes from Root to the current location.</returns>
+    /// <response code="200">Returns the JSON path string.</response>
+    /// <response code="404">If the path cannot be found or the box is at the Root level.</response>
+    [HttpGet("{id}/path")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetBoxFullPath(int id)
+    {
+        var jsonPath = await boxService.GetBoxFullPathAsync(id);
+
+        if (string.IsNullOrEmpty(jsonPath))
+        {
+            return Ok("[]");
+        }
+
+        return Content(jsonPath, "application/json");
+    }
+
+    /// <summary>
     /// Retrieves a hierarchical list of potential parent boxes.
     /// Use without an ID for new box creation, or with an ID to move an existing box.
     /// </summary>

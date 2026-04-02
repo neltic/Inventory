@@ -73,8 +73,7 @@ export class BrandEditDialog extends BaseFormComponent implements OnInit {
       ...this.data,
       ...formValues,
       includedIn: this.entityScope.toScope(formValues.includedIn || [])
-    };
-    console.log(brandToSave);
+    };    
     this.brandService.save(brandToSave).subscribe({
       next: () => this.dialogRef.close(true),
       complete: () => this.isSaving.set(false)

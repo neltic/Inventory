@@ -6,4 +6,6 @@ export const ERROR_FORM_MESSAGES: Record<string, (name: string) => string> = {
     brandNotFound: (name) => `The selected ${name} is invalid`,
     categoryNotFound: (name) => `The selected ${name} is invalid`,
     entityNotFound: (name) => `The selected ${name} is invalid`,
+    invalidDestination: (_) => `Please select a valid destination`,
+    requiredTrue: (_) => `You must accept the change to continue.`,
 };

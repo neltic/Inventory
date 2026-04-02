@@ -17,8 +17,7 @@ export class ImgFallbackDirective {
   constructor(private eRef: ElementRef) {}
 
   @HostListener('error')
-  loadFallback() {
-    console.log('Call img[appImgFallback]');
+  loadFallback() {    
     const element: HTMLImageElement = this.eRef.nativeElement;
     if (element.src.includes(this._fallback)) return;
     element.src = this._fallback;

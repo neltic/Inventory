@@ -53,8 +53,7 @@ export class BrandList extends BaseComponent {
     await this.openEditDialog(brand);
   }
 
-  async openEditDialog(brand: IBrand) {   
-    console.log(brand); 
+  async openEditDialog(brand: IBrand) {       
     const dialogRef = this.dialog.open(BrandEditDialog, { 
       data: brand, 
       panelClass: 'edit-dialog',

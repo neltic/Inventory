@@ -83,6 +83,14 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
   color: white !important;
 }
 
+.mdc-list-item.mdc-list-item--disabled::before {
+  background-color: transparent !important;
+}
+
+.flex-spacer {
+  flex: 1 1 auto;
+}
+
 /* GENERAL CUSTOM */
 .custom-form { padding-bottom: 30pt; }
 .right-align { text-align: right; }
@@ -588,6 +596,7 @@ mat-drawer {
   &-form {
     border-color:var(--mat-sys-primary);
   }
+
 }
 
 /* DATA TABLE */
@@ -649,7 +658,7 @@ mat-drawer {
 }
 
 /* EDIT DIALOG */
-.edit-dialog {
+.edit-dialog, .edit-dialog-xx {
   
   border-radius: 10pt;
   h2 {
@@ -666,7 +675,11 @@ mat-drawer {
       }
     }
   }
+}
 
+.edit-dialog-xx {
+  width: 1024px;
+  max-width: 1024px !important;
 }
 
 /* SEARCH BAR */
@@ -734,6 +747,10 @@ mat-drawer {
   }
   .mat-icon {    
     text-align: center;
+  }
+  .selection-list-connector { 
+    color: #666;
+    margin-right: 8pt;
   }
 }
 

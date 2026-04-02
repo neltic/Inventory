@@ -24,5 +24,7 @@ BEGIN
     FROM 
         [dbo].[Box] b
     WHERE 
-        (b.[ParentBoxId] = @ParentBoxId) OR (b.[ParentBoxId] IS NULL AND @ParentBoxId IS NULL);
+        (b.[ParentBoxId] = @ParentBoxId) OR (b.[ParentBoxId] IS NULL AND @ParentBoxId IS NULL)
+    ORDER BY
+        b.[Name];
 END

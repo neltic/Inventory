@@ -13,7 +13,6 @@ export interface IBox {
   notes: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
-  photo?: string;
   fullPath?: string;
   hasChildren?: boolean;
   hasItems?: boolean;
@@ -26,6 +25,14 @@ export interface IBoxLookup {
   indent: number;
 }
 
+export interface IBoxTransfer {
+  boxId: number | null;
+  name: string;
+  updatedAt: string | Date;
+  indent: number;
+  isSelectable: boolean;
+}
+
 export interface BoxForm {
   parentBoxId: FormControl<number | null>;
   name: FormControl<string>;
@@ -35,6 +42,11 @@ export interface BoxForm {
   height: FormControl<number>;
   width: FormControl<number>;
   depth: FormControl<number>;
+}
+
+export interface BoxTransferForm {
+  newParentId: FormControl<number | number[] | null>;
+  confirmMove: FormControl<boolean>;
 }
 
 export interface IBoxFullPath {

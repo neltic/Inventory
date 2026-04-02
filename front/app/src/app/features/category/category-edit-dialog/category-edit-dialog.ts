@@ -1,8 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { MatError, MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
@@ -32,8 +30,6 @@ import { BaseFormComponent } from '../../../shared/components/base-form/base-for
     MatSelectTrigger,
     MatOption,
     ReactiveFormsModule,    
-    MatAutocompleteModule, 
-    MatChipsModule, 
     MatIconModule,
     FormsModule
   ],

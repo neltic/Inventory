@@ -1,0 +1,47 @@
+<div class="dialog dialog-form dialog-xx" [formGroup]="mainForm">
+<h2 mat-dialog-title>Move {{data.name}} To...</h2>
+<mat-dialog-content>
+
+    <mat-selection-list 
+        formControlName="newParentId" 
+        [multiple]="false"
+        tabindex="-1"         
+        class="selection-list">
+        @for (box of boxResourceList.value(); track box.boxId) {
+        <mat-list-option 
+            [value]="box.boxId"
+            [disabled]="!box.isSelectable"            
+            togglePosition="after">
+            <span matListItemAvatar class="selection-list-image">
+                <img [src]="box.boxId ?? 0 | asPhoto:'box':box.updatedAt:'icons'"
+                    appImgFallback crossorigin>
+            </span>
+            <div matListItemTitle [style.margin-left.px]="box.indent * 32" >
+                <mat-icon class="selection-list-connector">
+                @if (box.indent > 0) { subdirectory_arrow_right } 
+                @else { folder }
+                </mat-icon>
+                <span>{{ box.name }}</span>
+            </div>
+        </mat-list-option>
+        }        
+        @if (errorMessages['newParentId']()) {
+            <mat-error>{{ errorMessages['newParentId']() }}</mat-error>
+        }
+    </mat-selection-list>   
+
+</mat-dialog-content>
+<mat-dialog-actions>    
+    <div>
+      <mat-checkbox formControlName="confirmMove" tabindex="0">
+        I understand that moving <strong>{{data.name}}</strong> will also move all its internal items and sub-boxes.
+      </mat-checkbox>      
+      @if (errorMessages['confirmMove']()) {
+        <mat-error>{{ errorMessages['confirmMove']() }}</mat-error>
+      }
+    </div>
+    <span class="flex-spacer"></span>
+    <button mat-flat-button [disabled]="!canMove" (click)="move()">Move</button>
+    <button mat-button type="button" [mat-dialog-close]="false" cdkFocusInitial class="btn-cancel">Cancelar</button>
+</mat-dialog-actions>
+</div>

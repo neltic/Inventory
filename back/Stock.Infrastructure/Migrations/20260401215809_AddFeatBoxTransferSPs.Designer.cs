@@ -12,7 +12,7 @@ using Stock.Infrastructure.Persistence;
 namespace Stock.Infrastructure.Migrations
 {
     [DbContext(typeof(StockDbContext))]
-    [Migration("20260401190509_AddFeatBoxTransferSPs")]
+    [Migration("20260401215809_AddFeatBoxTransferSPs")]
     partial class AddFeatBoxTransferSPs
     {
         /// <inheritdoc />
