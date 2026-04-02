@@ -21,16 +21,59 @@ The system manages a hierarchical inventory based on:
 - **Items:** Product definitions from the catalog.
 - **Storage:** A record of actual stock levels, linking Box + Item + Brand.
 
-## ⚙️ Setup
-1. Configure the connection string in the `appsettings.json` file.
-2. Configure the physical paths for saving the images, also in the `appsettings.json` file.
-3. I use IIS to serve the image files, but you can use any available service; it just needs to point to the `static` path you defined in the previous step.
-4. In the frontend folder, run:   
-```bash
-npm install
-ng serve
-```
-5. The application will be available at http://localhost:4200
+## 🛠️ Setup
+
+Follow these steps to configure your development environment.
+
+### 1. Prerequisites
+* **Docker Desktop** (Must be running).
+* **SQL Server** (Local or network accessible).
+* **Node.js & Angular CLI** (For the frontend).
+
+---
+
+### 2. Infrastructure & CDN (Docker)
+The system uses an **Nginx** container to serve images with pre-configured CORS.
+
+> [!IMPORTANT]  
+> If you have a local IIS service running on port 80, you must stop it (`iisreset /stop`) before starting the containers to avoid port conflicts.
+
+In the `/setup/` folder, you will find PowerShell scripts to manage the services:
+
+* **To work with the API from your IDE (Visual Studio/VS Code):**
+  Run: `.\setup\start-cdn.ps1`  
+  *This will only start the image server at http://localhost/cdn/.*
+
+* **To start the backend environment (API + CDN):**
+  Run: `.\setup\start-back.ps1`
+
+* **To start the full environment (All containers):**
+  Run: `.\setup\start-all.ps1`
+
+---
+
+### 3. Backend Configuration
+1. Configure your connection string in the `appsettings.json` file.
+2. Define the physical paths for saving images in the same file.
+3. Ensure the physical path matches the volume configured in `docker-compose.yml` so the CDN can display them.
+
+---
+
+### 4. Frontend
+Inside the frontend folder, run the standard commands:
+1. `npm install`
+2. `npm start` (or the script configured in your package.json).
+
+---
+
+### 5. Service Access
+* **Application (Frontend):** http://localhost:4200
+* **Data API:** http://localhost:5000
+* **Image CDN:** http://localhost/cdn/
+
+---
+
+**Note on Persistence:** The containers are configured with volumes. Even if you stop or delete the containers, your physical images and configuration data will remain intact.
 
 ## 📝 Features
 - **Automatic Auditing:** Via the EF Core interceptor that manages `CreatedAt` and `UpdatedAt`.
@@ -39,7 +82,7 @@ ng serve
 - **Dynamic Customization:** Colors, icons, and visibility (Scopes) controlled directly from the database for Categories and Brands.
 
 ## 🛠️ Migrations
-The following details the commands needed to manage data persistence (If you need to revert to the initial state, remember to back up the contents of these existing migration files before restoring them).
+The following details the commands needed to manage data persistence (If you want to return to the initial state and add something different from the beginning).
 
 ```bash
 dotnet ef migrations add InitialCreate --project Stock.Infrastructure --startup-project Stock.Api

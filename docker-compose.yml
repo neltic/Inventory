@@ -27,3 +27,17 @@ services:
       - stock-back
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  cdn-svc:
+    image: nginx:alpine
+    container_name: app_stock_cdn
+    ports:
+      - "80:80" 
+    volumes:      
+      - C:\root\project\Storage\front\static:/usr/share/nginx/html:ro      
+      - ./setup/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
