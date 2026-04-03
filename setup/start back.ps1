@@ -4,7 +4,7 @@ docker compose up stock-back --build -d
 
 Write-Host "Starting CDN server..."
 
-docker-compose up -d cdn-svc
+docker-compose up -d stock-cdn
 
 Write-Host "Stopping the front application..."
 

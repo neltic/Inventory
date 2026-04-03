@@ -1,5 +1,6 @@
 services:
   stock-back:
+    container_name: stock-back
     build:
       context: ./back
       dockerfile: Stock.Api/Dockerfile
@@ -18,6 +19,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
   stock-front:
+    container_name: stock-front
     build:
       context: ./front/app
       dockerfile: Dockerfile
@@ -27,9 +29,9 @@ services:
       - stock-back
     extra_hosts:
       - "host.docker.internal:host-gateway"
-  cdn-svc:
+  stock-cdn:
     image: nginx:alpine
-    container_name: app_stock_cdn
+    container_name: stock-cdn
     ports:
       - "80:80" 
     volumes:      
