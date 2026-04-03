@@ -27,3 +27,6 @@ Thumbs.db
 # --- Local images ---
 front/static/img/item/
 front/static/img/box/
+
+# --- Visual Studio User Settings --- 
+*.csproj.user
