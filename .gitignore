@@ -6,6 +6,8 @@
 **/appsettings.Development.json
 **/*.db
 **/*.db-journal
+*.slnx.user
+*.csproj.user
 
 # --- Angular / Node ('front') ---
 **/node_modules/
@@ -21,12 +23,6 @@
 .DS_Store
 Thumbs.db
 
-# --- Solution ---
-*.slnx.user
-
 # --- Local images ---
 front/static/img/item/
 front/static/img/box/
-
-# --- Visual Studio User Settings --- 
-*.csproj.user
