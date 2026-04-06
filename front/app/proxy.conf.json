@@ -1,0 +1,13 @@
+{
+  "/api": {
+    "target": "https://localhost:7287", 
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/cdn": {
+    "target": "http://localhost",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

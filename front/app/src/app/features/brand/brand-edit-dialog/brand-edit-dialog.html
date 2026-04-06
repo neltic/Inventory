@@ -1,0 +1,84 @@
+<div class="dialog dialog-form">
+<h2 mat-dialog-title>{{ data.brandId > -1 ? 'Edit' : 'New' }} Brand</h2>
+<mat-dialog-content [formGroup]="mainForm">   
+
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input 
+            matInput 
+            formControlName="name" 
+            (blur)="updateErrorMessage('name', 'Brand name')"
+            required
+            maxlength="64">
+        <mat-hint align="end">{{ mainForm.get('name')?.value?.length || 0 }}/64</mat-hint>
+        @if (errorMessages['name']()) {
+            <mat-error>{{ errorMessages['name']() }}</mat-error>
+        }
+    </mat-form-field>    
+    
+    <mat-form-field class="edit-dialog-color">
+        <mat-label>Color</mat-label>
+        <input 
+            matInput 
+            type="color" 
+            formControlName="color"
+            (blur)="updateErrorMessage('color', 'Brand color')"
+            required
+            maxlength="7">
+        <span matTextSubfix>              
+            <mat-icon [style.color]="mainForm.get('color')?.value">verified</mat-icon>
+        </span>        
+        @if (errorMessages['color']()) {
+            <mat-error>{{ errorMessages['color']() }}</mat-error>
+        }
+    </mat-form-field> 
+
+    <mat-form-field>
+        <mat-label>Background</mat-label>
+        <input 
+            matInput 
+            type="color" 
+            formControlName="background"
+            (blur)="updateErrorMessage('color', 'Brand background')"
+            required
+            maxlength="7">               
+        @if (errorMessages['background']()) {
+            <mat-error>{{ errorMessages['background']() }}</mat-error>
+        }
+    </mat-form-field> 
+    
+    <mat-form-field>
+        <mat-label>Scope</mat-label>
+        <mat-select 
+            formControlName="includedIn" 
+            (blur)="updateErrorMessage('includedIn', 'Brand scope')"
+            multiple>
+            <mat-select-trigger>
+                <div class="scope-as-list-block">
+                @for (option of mainForm.get('includedIn')?.value; track option; let isLast = $last) {
+                    @let scope = entityScope.getById(option);
+                    <mat-icon>{{ scope?.icon }}</mat-icon>
+                    <span>{{ scope?.label }}</span>  
+                    @if (!isLast) { <i class="separator">,</i> }              
+                }
+                </div>
+            </mat-select-trigger>
+
+            @for (option of scopeSelectableOptions; track option.value) {
+                <mat-option [value]="option.value">
+                    <mat-icon>{{option.icon}}</mat-icon>
+                    <span>{{option.label}}</span>
+                </mat-option>
+            }
+        </mat-select>
+        @if (errorMessages['includedIn']()) {
+            <mat-error>{{ errorMessages['includedIn']() }}</mat-error>
+        }
+    </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions>    
+    <button mat-flat-button [disabled]="isBusy()" (click)="save()">Save</button>
+    <button mat-button type="button" [mat-dialog-close]="false" class="btn-cancel">Cancelar</button>
+</mat-dialog-actions>
+</div>

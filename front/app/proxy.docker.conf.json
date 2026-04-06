@@ -1,0 +1,12 @@
+{
+  "/api": {
+    "target": "http://localhost:5000", 
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/cdn": {
+    "target": "http://localhost",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

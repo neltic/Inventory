@@ -1,0 +1,10 @@
+<div class="dialog dialog-{{data.type}}">
+<h2 mat-dialog-title>Confirm</h2>
+<mat-dialog-content>
+  <p>{{data.question}}</p>  
+</mat-dialog-content>
+<mat-dialog-actions>  
+  <button matButton type="button" [mat-dialog-close]="true" cdkFocusInitial class="dialog-action">Yes</button>
+  <button matButton type="button" [mat-dialog-close]="false" class="btn-cancel">No</button>
+</mat-dialog-actions>
+</div>

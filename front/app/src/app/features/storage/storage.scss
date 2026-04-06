@@ -1,0 +1,123 @@
+.stepper-actions {
+  margin-top: 20pt;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10pt;
+}
+.search-bar {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0;
+
+    .search-Item {
+        flex: 2;
+        min-width: 220px;
+    }
+
+    .filter-category {
+        flex: 1;
+        min-width: 220px;
+    }
+}
+.selected-category-option {
+    display: flex;
+    align-items: center;
+    gap: 8pt;    
+    .mat-icon {
+        font-size: 8pt;
+        height: 8pt;
+        width: 10pt;
+        vertical-align: middle;
+    }
+}
+.item-layout {
+  display: flex;
+  gap: 0;
+  align-items: flex-start;
+  height: 400px;
+  &-items {
+    flex: 0 0 65%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  &-brands {
+    flex: 1;  
+    app-brand-select {
+      width: 100%;
+      display: block;      
+    }
+  }
+}
+
+.detail-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  
+  &-quantity {
+    flex: 1 1 200px; 
+    min-width: 150px;
+  }
+
+  &-expires {
+    flex: 0 0 auto; 
+    margin-bottom: 20px;
+    padding: 0 10pt 0 5pt;
+    background-color: var(--mat-form-field-filled-container-color, var(--mat-sys-surface-variant));  
+    border-bottom: solid 1px;
+    height: 55px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: var(--mat-form-field-filled-container-shape, var(--mat-sys-corner-extra-small));
+    border-top-right-radius: var(--mat-form-field-filled-container-shape, var(--mat-sys-corner-extra-small));
+    .mat-mdc-checkbox {
+      margin-top: 5pt;
+    }
+  }
+
+  &-expires-on {
+    flex: 1 1 250px;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.review-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+
+  &-title {
+    margin: 0 0 10pt 0;    
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+  }
+
+  &-value {
+    font-size: 14pt;
+    font-weight: 500;
+    color: var(--mat-sys-primary);
+  }
+
+}
+
+.selection-list-with-scroll {
+  height: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+[hidden] {
+  display: none !important;
+}
