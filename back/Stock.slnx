@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="Stock.UnitTest/Stock.UnitTest.csproj" Id="07551f13-d59e-4120-86e7-fab36e892cd7" />
+  </Folder>
   <Project Path="Stock.Api/Stock.Api.csproj" Id="5e339f83-02fe-4539-8779-9c699ad9c9a2" />
   <Project Path="Stock.Application/Stock.Application.csproj" Id="f06de3ca-a7dc-414d-ae0c-86fe5a370cc9" />
   <Project Path="Stock.Domain/Stock.Domain.csproj" Id="0512ab24-6e80-4506-8f0c-94393cad1914" />

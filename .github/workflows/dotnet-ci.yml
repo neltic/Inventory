@@ -1,0 +1,31 @@
+name: .NET Core CI
+
+on:
+  push:
+    branches: [ "main", "develop" ] 
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest 
+
+    steps:
+    - name: 1. Download Code
+      uses: actions/checkout@v5
+
+    - name: 2. Install .Net sdk
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 8.0.x 
+
+    - name: 3. Restore Packages (NuGet)
+      run: dotnet restore back/Stock.slnx
+
+    - name: 4. Compile (Build)
+      run: dotnet build --no-restore --configuration Release
+      working-directory: ./back
+
+    - name: 5. Run Unit Tests ✅
+      run: dotnet test --no-build --configuration Release --verbosity normal
+      working-directory: ./back
