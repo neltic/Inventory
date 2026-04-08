@@ -22,6 +22,18 @@ builder.Services.AddControllers();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+}
+
+var redisConnectionHost = builder.Configuration.GetValue<string>("RedisConfig:ConnectionHost");
+
+if (string.IsNullOrWhiteSpace(redisConnectionHost))
+{
+    throw new InvalidOperationException("Connection 'RedisConfig:ConnectionHost' is not configured.");
+}
+
 builder.Services.AddDbContext<StockDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -31,6 +43,15 @@ builder.Services.AddProjectDependencies();
 // Register FileStorageOptions configuration
 builder.Services.Configure<FileStorageOptions>(
     builder.Configuration.GetSection(FileStorageOptions.SectionName));
+
+builder.Services.AddStackExchangeRedisCache(options =>
+    options.Configuration = $"{redisConnectionHost},abortConnect=false,connectTimeout=5000");
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddSqlServer(connectionString: connectionString,
+        name: "sql-check",
+        tags: new[] { "db", "sql" });
 
 // Build application
 var app = builder.Build();
@@ -48,5 +69,6 @@ app.UseCors("AllowSpecificAngularOrigins");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();

@@ -1,73 +1,89 @@
 ﻿using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using Stock.Application.Interfaces.Common;
 using Stock.Application.Mappings;
 using Stock.Domain.Interfaces;
 
 namespace Stock.Application.Services;
 
-public class BrandService(IBrandRepository BrandRepository) : IBrandService
+public class BrandService(IBrandRepository brandRepository, ICacheService cache)
+    : BaseCacheService("brand"), IBrandService
 {
     /// <inheritdoc />
-    public async Task<BrandDto?> GetByIdAsync(int BrandId)
+    public async Task<BrandDto?> GetByIdAsync(int brandId)
     {
-        if (BrandId > 0)
-        {
-            var Brand = await BrandRepository.GetByIdAsync(BrandId);
+        if (brandId <= 0) return null;
 
-            return Brand?.ToDto();
+        string key = GetCacheKeyItem(brandId);
+                
+        var dto = await cache.GetAsync<BrandDto>(key);
+        if (dto != null) return dto;
+                
+        var brand = await brandRepository.GetByIdAsync(brandId);
+        dto = brand?.ToDto();
+                
+        if (dto != null)
+        {
+            await cache.SetAsync(key, dto);
         }
-        return null;
+
+        return dto;
     }
 
     /// <inheritdoc />
     public async Task<IEnumerable<BrandDto>> GetAllAsync()
     {
-        var results = await BrandRepository.GetAllAsync();
+        var cacheList = await cache.GetAsync<IEnumerable<BrandDto>>(CacheKeyList);
+        if (cacheList != null) return cacheList;
 
-        return results.ToDtoList();
+        var results = await brandRepository.GetAllAsync();
+        var dtoList = results.ToDtoList();
+                
+        await cache.SetAsync(CacheKeyList, dtoList);
+
+        return dtoList;
     }
 
     /// <inheritdoc />
     public async Task<int> CreateAsync(BrandDto dto)
     {
-        var exists = await BrandRepository.ExistsAsync(dto.Name);
+        var exists = await brandRepository.ExistsAsync(dto.Name);
+        if (exists) throw new InvalidOperationException("A Brand with this name already exists.");
 
-        if (exists)
-        {
-            throw new InvalidOperationException("A Brand with this name already exists.");
-        }
+        var brand = dto.ToEntity(0);
+        var brandId = await brandRepository.AddAsync(brand);
+                
+        await cache.RemoveAsync(CacheKeyList);
 
-        var Brand = dto.ToEntity(0);
-
-        return await BrandRepository.AddAsync(Brand);
+        return brandId;
     }
 
     /// <inheritdoc />
-    public async Task<bool> UpdateAsync(int BrandId, BrandDto dto)
+    public async Task<bool> UpdateAsync(int brandId, BrandDto dto)
     {
-        var existingBrand = await BrandRepository.ExistsAsync(BrandId);
+        var existingBrand = await brandRepository.ExistsAsync(brandId);
+        if (!existingBrand) return false;
 
-        if (!existingBrand)
-        {
-            return false;
-        }
+        var exists = await brandRepository.ExistsAsync(dto.Name, dto.BrandId);
+        if (exists) throw new InvalidOperationException("A Brand with this name already exists.");
 
-        var exists = await BrandRepository.ExistsAsync(dto.Name, dto.BrandId);
+        var result = await brandRepository.UpdateAsync(dto.ToEntity(brandId));
 
-        if (exists)
-        {
-            throw new InvalidOperationException("A Brand with this name already exists.");
-        }
+        if (result) await cache.RemoveAsync(GetCacheKeyItem(brandId), CacheKeyList);
 
-        return await BrandRepository.UpdateAsync(dto.ToEntity(BrandId));
+        return result;
     }
 
     /// <inheritdoc />
-    public async Task<bool> DeleteAsync(int BrandId)
+    public async Task<bool> DeleteAsync(int brandId)
     {
-        var Brand = await BrandRepository.FindAsync(BrandId);
-        if (Brand == null) return false;
+        var brand = await brandRepository.FindAsync(brandId);
+        if (brand == null) return false;
 
-        return await BrandRepository.DeleteAsync(Brand);
+        var result = await brandRepository.DeleteAsync(brand);
+
+        if (result) await cache.RemoveAsync(GetCacheKeyItem(brandId), CacheKeyList);
+
+        return result;
     }
 }

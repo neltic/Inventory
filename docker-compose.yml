@@ -1,36 +1,30 @@
 services:
 
-  stock-back:
-    container_name: stock-back
-    build:
-      context: ./back
-      dockerfile: Stock.Api/Dockerfile
+  stock-cache:
+    image: redis:latest
+    container_name: stock-cache
     ports:
-      - "5000:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=${DB_CONNECTION}
-      - FileStorage__TempPath=/app/storage/temp/
-      - FileStorage__BoxPath=/app/storage/img/box/
-      - FileStorage__ItemPath=/app/storage/img/item/
-    volumes:
-      - "${STATIC_STORAGE_PATH}/temp:/app/storage/temp"
-      - "${STATIC_STORAGE_PATH}/img/box:/app/storage/img/box"
-      - "${STATIC_STORAGE_PATH}/img/item:/app/storage/img/item"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "6379:6379"
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - app-network
       
-  stock-front:
-    container_name: stock-front
-    build:
-      context: ./front/app
-      dockerfile: Dockerfile
+  stock-cache-insight:
+    image: redis/redisinsight:latest
+    container_name: stock-cache-insight
     ports:
-      - "4200:80"
+      - "5540:5540"
+    restart: always
     depends_on:
-      - stock-back
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      stock-cache:
+        condition: service_started
+    networks:
+      - app-network
       
   stock-cdn:
     image: nginx:alpine
@@ -51,6 +45,59 @@ services:
       - "./infra/cleaner/task.py:/task.py:ro"
     command: python -u /task.py
     restart: always
+    networks:
+      - app-network
+
+  stock-back:
+    container_name: stock-back
+    build:
+      context: ./back
+      dockerfile: Stock.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION}
+      - RedisConfig__ConnectionHost=stock-cache:6379
+      - FileStorage__TempPath=/app/storage/temp/
+      - FileStorage__BoxPath=/app/storage/img/box/
+      - FileStorage__ItemPath=/app/storage/img/item/
+    volumes:
+      - "${STATIC_STORAGE_PATH}/temp:/app/storage/temp"
+      - "${STATIC_STORAGE_PATH}/img/box:/app/storage/img/box"
+      - "${STATIC_STORAGE_PATH}/img/item:/app/storage/img/item"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      stock-cache:
+        condition: service_healthy
+      stock-cdn:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - app-network
+      
+  stock-front:
+    container_name: stock-front
+    build:
+      context: ./front/app
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      stock-back:
+        condition: service_healthy
+      stock-cdn:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network    
 
 networks:
   app-network:
