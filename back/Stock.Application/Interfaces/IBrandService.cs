@@ -10,9 +10,9 @@ public interface IBrandService
     /// <summary>
     /// Retrieves a specific brand by its unique identifier.
     /// </summary>
-    /// <param name="BrandId">The unique ID of the brand.</param>
+    /// <param name="brandId">The unique ID of the brand.</param>
     /// <returns>A <see cref="BrandDto"/> if found; otherwise, null.</returns>
-    Task<BrandDto?> GetByIdAsync(int BrandId);
+    Task<BrandDto?> GetByIdAsync(int brandId);
 
     /// <summary>
     /// Retrieves all brands registered in the system.
@@ -31,10 +31,10 @@ public interface IBrandService
     /// <summary>
     /// Updates the details of an existing brand.
     /// </summary>
-    /// <param name="BrandId">The ID of the brand to update.</param>
+    /// <param name="brandId">The ID of the brand to update.</param>
     /// <param name="dto">The updated brand information.</param>
     /// <returns>True if the update was successful; otherwise, false.</returns>
-    Task<bool> UpdateAsync(int BrandId, BrandDto dto);
+    Task<bool> UpdateAsync(int brandId, BrandDto dto);
 
     /// <summary>
     /// Deletes a brand from the system.
@@ -42,7 +42,7 @@ public interface IBrandService
     /// <remarks>
     /// Implementation should ensure that no items are currently associated with this brand before deletion.
     /// </remarks>
-    /// <param name="BrandId">The ID of the brand to remove.</param>
+    /// <param name="brandId">The ID of the brand to remove.</param>
     /// <returns>True if the deletion was successful; otherwise, false.</returns>
-    Task<bool> DeleteAsync(int BrandId);
+    Task<bool> DeleteAsync(int brandId);
 }

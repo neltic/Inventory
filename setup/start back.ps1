@@ -1,19 +1,11 @@
-Write-Host "Starting API..."
+Write-Host "Starting API..." -ForegroundColor Cyan
 
-docker compose up stock-back --build -d
+docker compose up stock-back stock-cache-insight stock-cleaner --build -d
 
-Write-Host "Starting CDN server..."
-
-docker-compose up -d stock-cdn
-
-Write-Host "Starting Cleaner server..."
-
-docker-compose up -d stock-cleaner
-
-Write-Host "Stopping the front application..."
+Write-Host "Stopping the front application..." -ForegroundColor Cyan
 
 docker compose stop stock-front
 
-Write-Host "Ready to work with the front end"
+Write-Host "Ready to work with the front end" -ForegroundColor Green
 
 Start-Sleep -Seconds 15
