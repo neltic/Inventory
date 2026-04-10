@@ -155,6 +155,8 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
         if (!deleted)
             return Conflict(new { message = $"Can not delete item with ID {id}." });
 
+        await fileService.DeleteItemImagesAsync(id);
+
         return NoContent();
     }
 
