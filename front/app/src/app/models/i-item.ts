@@ -6,7 +6,6 @@ export interface IItem {
   notes: string;
   categoryId: number;
   hasStock?: number;
-  inBox?: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
@@ -17,7 +16,7 @@ export interface ItemForm {
   notes: FormControl<string>;  
 }
 
-export interface IItemContentIn {
+export interface IItemLocation {
   boxId: number;
   brandId: number;
   name: string;

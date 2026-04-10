@@ -17,14 +17,20 @@ public class ItemService(IItemRepository itemRepository) : IItemService
     /// <inheritdoc />
     public async Task<ItemDetailedDto?> GetEmptyItemAsync()
     {
-        return new ItemDetailedDto(0, string.Empty, string.Empty, 0, string.Empty, DateTime.Today, DateTime.Today);
+        return new ItemDetailedDto(0, string.Empty, string.Empty, 0, DateTime.Today, DateTime.Today);
     }
 
     /// <inheritdoc />
     public async Task<IEnumerable<ItemListDto>> GetItemsAsync()
     {
         var results = await itemRepository.GetItemsAsync();
+        return results.ToDtoList();
+    }
 
+    /// <inheritdoc />
+    public async Task<IEnumerable<ItemLocationListDto>> GetItemLocationAsync(int itemId)
+    {
+        var results = await itemRepository.GetItemLocationAsync(itemId);
         return results.ToDtoList();
     }
 

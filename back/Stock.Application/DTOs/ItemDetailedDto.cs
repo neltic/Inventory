@@ -8,7 +8,6 @@
 /// <param name="Name">The descriptive name of the item (e.g., "Screwdriver Set").</param>
 /// <param name="Notes">Detailed description, specifications, or special handling instructions.</param>
 /// <param name="CategoryId">The identifier for the category classification.</param>
-/// <param name="InBox">The name or identifier of the box where this item is currently stored. Null if unassigned.</param>
 /// <param name="CreatedAt">The timestamp when the item record was first created.</param>
 /// <param name="UpdatedAt">The timestamp of the last modification to the item record.</param>
 public record ItemDetailedDto(
@@ -16,7 +15,6 @@ public record ItemDetailedDto(
     string Name,
     string Notes,
     int CategoryId,
-    string? InBox,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt
 );

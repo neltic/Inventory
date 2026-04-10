@@ -95,10 +95,10 @@ public class StoragesController(IStorageService storageService) : ControllerBase
     }
 
     /// <summary>
-    /// Removes the association between an item/brand and a box (Unbind).
+    /// Removes the association between an item/brand and a box.
     /// </summary>
     /// <remarks>
-    /// This effectively removes the item from the box and refreshes the storage state.
+    /// This effectively removes the item from the box.
     /// </remarks>
     /// <param name="boxId">The ID of the box.</param>
     /// <param name="itemId">The ID of the item.</param>
@@ -107,9 +107,9 @@ public class StoragesController(IStorageService storageService) : ControllerBase
     /// <response code="200">The association was successfully removed.</response>
     [HttpDelete("boxes/{boxId}/items/{itemId}/brands/{brandId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UnbindBoxAndRefresh(int boxId, int itemId, int brandId)
+    public async Task<IActionResult> Remove(int boxId, int itemId, int brandId)
     {
-        var result = await storageService.UnbindBoxAndRefreshAsync(boxId, itemId, brandId);
+        var result = await storageService.RemoveAsync(boxId, itemId, brandId);
 
         return Ok(result);
     }

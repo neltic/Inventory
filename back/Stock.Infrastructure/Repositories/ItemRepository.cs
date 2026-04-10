@@ -45,6 +45,15 @@ public class ItemRepository(StockDbContext context) : IItemRepository
             .ToListAsync();
 
     /// <inheritdoc />
+    public async Task<IEnumerable<ItemLocationList>> GetItemLocationAsync(int itemId)
+    {
+        return await context.Database
+               .SqlQuery<ItemLocationList>($"EXEC [dbo].[GetItemLocation] @ItemId = {itemId}")
+               .AsNoTracking()
+               .ToListAsync();
+    }
+
+    /// <inheritdoc />
     public async Task<int> AddAsync(Item item)
     {
         context.Items.Add(item);

@@ -40,4 +40,18 @@ public interface IFileStorageService
     /// <param name="itemId">The ID of the item to which the image will be assigned.</param>
     /// <returns>True if the assignment was successful; otherwise, false.</returns>
     Task<bool> AssignImageToItemAsync(string tempFileName, int itemId);
+
+    /// <summary>
+    /// Moves all images associated with a box (original, thumbnails, icons) to the temporary storage for deferred deletion.
+    /// </summary>
+    /// <param name="boxId">The unique identifier of the box.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task DeleteBoxImagesAsync(int boxId);
+
+    /// <summary>
+    /// Moves all images associated with an item (original, thumbnails, icons) to the temporary storage for deferred deletion.
+    /// </summary>
+    /// <param name="itemId">The unique identifier of the item.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task DeleteItemImagesAsync(int itemId);
 }

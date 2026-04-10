@@ -50,7 +50,19 @@ public class FileStorageService : IFileStorageService
     {
         return await AssignImageToAsync(tempFileName, itemId, _options.ItemPath);
     }
-        
+
+    /// <inheritdoc />
+    public Task DeleteBoxImagesAsync(int boxId)
+    {
+        return MoveToTempAsync(boxId, "box", _options.BoxPath);
+    }
+
+    /// <inheritdoc />
+    public Task DeleteItemImagesAsync(int itemId)
+    {
+        return MoveToTempAsync(itemId, "item", _options.ItemPath);
+    }    
+
     private async Task<bool> AssignImageToAsync(string tempFileName, int id, string idPath)
     {
         var tempPath = Path.Combine(_options.TempPath, $"{tempFileName}.png");
@@ -87,6 +99,39 @@ public class FileStorageService : IFileStorageService
         using (var newImage = image.Clone(x => x.Resize(new ResizeOptions { Size = size, Mode = ResizeMode.Max })))
         {
             await newImage.SaveAsync(fullPath);
+        }
+    }
+
+    /// <summary>
+    /// Internal helper to relocate files from structured storage to the temp directory.
+    /// This prevents immediate physical deletion and allows the background cleaner to handle disposal.
+    /// </summary>
+    /// <param name="id">The entity identifier (BoxId or ItemId).</param>
+    /// <param name="origin">The source entity type for naming purposes (e.g., "box" or "item").</param>
+    /// <param name="idPath">The base directory path where the source folders are located.</param>
+    private async Task MoveToTempAsync(int id, string origin, string idPath)
+    {
+        string[] subFolders = { "original", "thumbnails", "icons" };
+
+        foreach (var folder in subFolders)
+        {
+            var sourcePath = Path.Combine(idPath, folder, $"{id}.png");
+
+            if (File.Exists(sourcePath))
+            {                
+                var tempFileName = $"deleted_{origin}_{id}_{folder}_{Guid.NewGuid()}.png";
+                var destinationPath = Path.Combine(_options.TempPath, tempFileName);
+
+                try
+                {                    
+                    Directory.CreateDirectory(_options.TempPath);
+                    File.Move(sourcePath, destinationPath);
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
         }
     }
 }

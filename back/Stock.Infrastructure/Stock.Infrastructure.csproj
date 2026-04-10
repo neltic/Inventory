@@ -18,6 +18,9 @@
     <None Update="Persistence\Scripts\GetBoxFullPath.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Persistence\Scripts\GetItemLocation.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Persistence\Scripts\MoveBox.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -57,7 +60,7 @@
     <None Update="Persistence\Scripts\OrganizeCategories.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Persistence\Scripts\UnbindBoxAndRefresh.sql">
+    <None Update="Persistence\Scripts\RemoveItemFromBox.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

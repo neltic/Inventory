@@ -4,8 +4,7 @@ public record ItemDetailed(
     int ItemId,
     string Name,
     string Notes,
-    int CategoryId,
-    string? InBox,    
+    int CategoryId,      
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt
 );

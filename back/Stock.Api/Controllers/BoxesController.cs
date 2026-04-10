@@ -193,6 +193,8 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
         if (!deleted)
             return Conflict(new { message = $"Can not delete box with ID {id}." });
 
+        await fileService.DeleteBoxImagesAsync(id);
+
         return NoContent();
     }
 

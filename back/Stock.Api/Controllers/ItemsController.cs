@@ -56,6 +56,24 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
     }
 
     /// <summary>
+    /// Retrieves the storage locations and quantities for a specific item.
+    /// </summary>
+    /// <param name="itemId">The unique identifier of the item.</param>
+    /// <returns>
+    /// A list of <see cref="ItemLocationListDto"/> representing the storage locations.
+    /// Returns an empty list if no locations are found.
+    /// </returns>
+    /// <response code="200">Returns the list of locations (can be empty).</response>
+    [HttpGet("{itemId}/locations")]
+    [ProducesResponseType(typeof(IEnumerable<ItemLocationListDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetItemLocations(int itemId)
+    {
+        var locations = await itemService.GetItemLocationAsync(itemId);
+                
+        return Ok(locations ?? Enumerable.Empty<ItemLocationListDto>());
+    }
+
+    /// <summary>
     /// Creates a new item in the system.
     /// </summary>
     /// <param name="dto">The data for the new item.</param>
@@ -136,6 +154,8 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
 
         if (!deleted)
             return Conflict(new { message = $"Can not delete item with ID {id}." });
+
+        await fileService.DeleteItemImagesAsync(id);
 
         return NoContent();
     }

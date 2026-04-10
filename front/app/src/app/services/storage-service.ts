@@ -18,8 +18,8 @@ export class StorageService {
     return this.http.get<IItemInBox[]>(`${this.apiStorageUrl}boxes/${boxId}`);
   }
 
-  unbindBox(boxId: number, itemId: number, brandId: number): Observable<string> {    
-    return this.http.delete<string>(`${this.apiStorageUrl}boxes/${boxId}/items/${itemId}/brands/${brandId}`);
+  remove(boxId: number, itemId: number, brandId: number): Observable<boolean> {    
+    return this.http.delete<boolean>(`${this.apiStorageUrl}boxes/${boxId}/items/${itemId}/brands/${brandId}`);
   }
 
   getStorageByItem(itemId: number): Observable<IItemStorage[]> {
