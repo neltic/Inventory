@@ -1,4 +1,5 @@
 ﻿using Stock.Application.DTOs;
+using Stock.Domain.Entities.Views;
 
 namespace Stock.Application.Interfaces;
 
@@ -28,6 +29,21 @@ public interface IItemService
     /// </summary>
     /// <returns>A collection of items formatted for list views.</returns>
     Task<IEnumerable<ItemListDto>> GetItemsAsync();
+
+    /// <summary>
+    /// Retrieves a collection of storage locations where a specific item is currently stocked.
+    /// </summary>
+    /// <param name="itemId">The unique identifier of the item to locate.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. 
+    /// The task result contains an enumerable of <see cref="ItemLocationListDto"/> 
+    /// detailing the boxes, brands, and quantities associated with the item.
+    /// </returns>
+    /// <remarks>
+    /// This method performs a join between the Storage and Box entities to provide 
+    /// descriptive location data along with stock quantities.
+    /// </remarks>
+    Task<IEnumerable<ItemLocationListDto>> GetItemLocationAsync(int itemId);
 
     /// <summary>
     /// Creates a new item record.

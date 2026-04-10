@@ -47,6 +47,21 @@ public interface IItemRepository
     Task<IEnumerable<ItemList>> GetItemsAsync();
 
     /// <summary>
+    /// Retrieves a collection of storage locations where a specific item is currently stocked.
+    /// </summary>
+    /// <param name="itemId">The unique identifier of the item to locate.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. 
+    /// The task result contains an enumerable of <see cref="ItemLocationList"/> 
+    /// detailing the boxes, brands, and quantities associated with the item.
+    /// </returns>
+    /// <remarks>
+    /// This method performs a join between the Storage and Box entities to provide 
+    /// descriptive location data along with stock quantities.
+    /// </remarks>
+    Task<IEnumerable<ItemLocationList>> GetItemLocationAsync(int itemId);
+
+    /// <summary>
     /// Persists a new Item entity to the database.
     /// </summary>
     /// <param name="item">The item entity to add.</param>

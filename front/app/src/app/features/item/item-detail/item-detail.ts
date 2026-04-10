@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,7 +7,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { IItem, IItemContentIn } from '@models';
+import { IItem, IItemLocation } from '@models';
 import { BrandService, CategoryService, ItemService, StorageService } from '@services';
 import { BaseComponent } from '../../../shared/components/base/base';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
@@ -38,8 +38,9 @@ export class ItemDetail extends BaseComponent {
   public categoryService: CategoryService = inject(CategoryService);
   public brandService: BrandService = inject(BrandService);
   public isDeleting = signal<boolean>(false);
-  public inBox = signal<string | null>(null);
-  
+  public itemLocations = signal<IItemLocation[]>([]);
+  public isStored = computed(() => this.itemLocations().length > 0);
+
   itemResource = rxResource<IItem, any>({
     stream: () => { 
       return this.itemService.getItemBy(this.params.itemId()); 
@@ -50,8 +51,11 @@ export class ItemDetail extends BaseComponent {
     super();
     effect(() => {
       const item = this.itemResource.value();
-      if (item) {        
-        this.inBox.set(item.inBox ?? null);
+      if (item) {  
+        this.itemService.getItemLocations(item.itemId).subscribe({
+          next: (locations) => this.itemLocations.set(locations),
+          error: (err) => this.handleError(err)
+        });
       }
     });
   }
@@ -78,19 +82,27 @@ export class ItemDetail extends BaseComponent {
     });
   }
 
-  async unbindBox(inBox: IItemContentIn, itemId: number, brandName: string) {
+  async removeFromBox(location: IItemLocation, itemId: number, brandName: string) {
 
-    const confirmed = await this.openWarning('Are you sure you want to remove this "'+ brandName +'" branded item from the box "' + inBox.name + '"?');
+    const confirmed = await this.openWarning('Are you sure you want to remove this "'+ brandName +'" branded item from the box "' + location.name + '"?');
     if (!confirmed) {
       return;
     }
 
     this.isDeleting.set(true);
-    this.storageService.unbindBox(inBox.boxId, itemId, inBox.brandId).subscribe({
-      next: (ref: string) => {  
-        this.inBox.set(ref);      
-        this.openSnack('success', 'Item removed from the box successfully', 'Ok');
-        this.isDeleting.set(false);
+    this.storageService.remove(location.boxId, itemId, location.brandId).subscribe({
+      next: () => { 
+        this.itemService.getItemLocations(itemId).subscribe({
+          next: (locations) => {
+            this.itemLocations.set(locations);
+            this.isDeleting.set(false); 
+            this.openSnack('success', 'Item removed from the box successfully', 'Ok');
+          },
+          error: (error) => {
+            this.handleError(error);
+            this.isDeleting.set(false);
+          }
+        });        
       },
       error: (error) => {
         this.handleError(error, 'An error occurred while trying to remove item relashionsip')

@@ -28,13 +28,12 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
     }
 
     /// <inheritdoc />
-    public async Task<string> UnbindBoxAndRefreshAsync(int boxId, int itemId, int brandId)
+    public async Task<bool> RemoveAsync(int boxId, int itemId, int brandId)
     {
-        var results = await context.Database
-               .SqlQuery<string>($"EXEC [dbo].[UnbindBoxAndRefresh] @BoxId = {boxId}, @ItemId = {itemId}, @BrandId = {brandId}")
-               .ToListAsync();
+        var rows = await context.Database.ExecuteSqlInterpolatedAsync(
+                    $"EXEC [dbo].[RemoveItemFromBox] @BoxId = {boxId}, @ItemId = {itemId}, @BrandId = {brandId}");
 
-        return results.First();
+        return rows > 0;
     }
 
     /// <inheritdoc />

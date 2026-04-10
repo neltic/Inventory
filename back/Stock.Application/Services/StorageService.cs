@@ -16,12 +16,8 @@ public class StorageService(IStorageRepository storageRepository) : IStorageServ
     }
 
     /// <inheritdoc />
-    public async Task<string> UnbindBoxAndRefreshAsync(int boxId, int itemId, int brandId)
-    {
-        var result = await storageRepository.UnbindBoxAndRefreshAsync(boxId, itemId, brandId);
-
-        return result;
-    }
+    public async Task<bool> RemoveAsync(int boxId, int itemId, int brandId) => 
+        await storageRepository.RemoveAsync(boxId, itemId, brandId);
 
     /// <inheritdoc />
     public async Task<StorageDto> GetStorageAsync(int boxId, int itemId, int brandId)

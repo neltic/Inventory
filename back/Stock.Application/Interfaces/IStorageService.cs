@@ -18,14 +18,11 @@ public interface IStorageService
     /// <summary>
     /// Removes the link between a specific item/brand combination and a box.
     /// </summary>
-    /// <remarks>
-    /// This "unbinds" the product from the container and recalculates the storage state.
-    /// </remarks>
     /// <param name="boxId">The ID of the box.</param>
     /// <param name="itemId">The ID of the item.</param>
     /// <param name="brandId">The ID of the brand.</param>
-    /// <returns>A status message or refreshed identifier representing the operation result.</returns>
-    Task<string> UnbindBoxAndRefreshAsync(int boxId, int itemId, int brandId);
+    /// <returns>A boolean representing the operation result.</returns>
+    Task<bool> RemoveAsync(int boxId, int itemId, int brandId);
 
     /// <summary>
     /// Retrieves the precise storage details for a specific Box-Item-Brand triplet.

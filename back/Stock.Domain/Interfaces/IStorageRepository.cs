@@ -17,15 +17,12 @@ public interface IStorageRepository
 
     /// <summary>
     /// Removes the database relationship between a box and a specific item/brand triplet.
-    /// </summary>
-    /// <remarks>
-    /// This typically triggers a database-level refresh or cleanup of the storage record.
-    /// </remarks>
+    /// </summary>    
     /// <param name="boxId">The ID of the box.</param>
     /// <param name="itemId">The ID of the item.</param>
     /// <param name="brandId">The ID of the brand.</param>
-    /// <returns>A string representing the status or result of the unbinding operation.</returns>
-    Task<string> UnbindBoxAndRefreshAsync(int boxId, int itemId, int brandId);
+    /// <returns>A boolean representing the status of the removeving operation.</returns>
+    Task<bool> RemoveAsync(int boxId, int itemId, int brandId);
 
     /// <summary>
     /// Finds a specific Storage entity based on the unique combination of Box, Item, and Brand.
