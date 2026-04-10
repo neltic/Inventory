@@ -1,5 +1,8 @@
 ﻿![.NET 9](https://img.shields.io/badge/.NET-9.0-512bd4?logo=dotnet)
 ![Angular 21](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
+![Microsoft SQL Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-006dc1?logo=microsoft%20sql%20server&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-%23ff4438.svg?logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 # Inventory App
 Technical guide for the Inventory Control Application
