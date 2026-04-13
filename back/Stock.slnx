@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/services/">
+    <Project Path="Stock.Worker/Stock.Worker.csproj" Id="ed3bce46-4ca9-4a3b-af91-29639e7b2e7f" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="Stock.UnitTest/Stock.UnitTest.csproj" Id="07551f13-d59e-4120-86e7-fab36e892cd7" />
   </Folder>

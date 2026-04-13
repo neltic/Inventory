@@ -62,6 +62,7 @@ services:
       - FileStorage__TempPath=/app/storage/temp/
       - FileStorage__BoxPath=/app/storage/img/box/
       - FileStorage__ItemPath=/app/storage/img/item/
+      - ASPNETCORE_HTTP_MAXREQUESTBODYSIZE=20971520
     volumes:
       - "${STATIC_STORAGE_PATH}/temp:/app/storage/temp"
       - "${STATIC_STORAGE_PATH}/img/box:/app/storage/img/box"
