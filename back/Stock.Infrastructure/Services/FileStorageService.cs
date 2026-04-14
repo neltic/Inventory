@@ -6,14 +6,9 @@ using Stock.Application.Interfaces.Common;
 
 namespace Stock.Infrastructure.Services;
 
-public class FileStorageService : IFileStorageService
+public class FileStorageService(IOptions<FileStorageOptions> options) : IFileStorageService
 {
-    private readonly FileStorageOptions _options;
-
-    public FileStorageService(IOptions<FileStorageOptions> options)
-    {
-        _options = options.Value;
-    }
+    private readonly FileStorageOptions _options = options.Value;
 
     /// <inheritdoc />
     public async Task<string> SaveTempImageAsync(Stream fileStream)
@@ -42,13 +37,13 @@ public class FileStorageService : IFileStorageService
     /// <inheritdoc />
     public async Task<bool> AssignImageToBoxAsync(string tempFileName, int boxId)
     {
-        return await AssignImageToAsync(tempFileName, boxId, _options.BoxPath);
+        return await AssignImageToAsync(tempFileName, boxId, _options.BoxPath, "box");
     }
 
     /// <inheritdoc />
     public async Task<bool> AssignImageToItemAsync(string tempFileName, int itemId)
     {
-        return await AssignImageToAsync(tempFileName, itemId, _options.ItemPath);
+        return await AssignImageToAsync(tempFileName, itemId, _options.ItemPath, "item");
     }
 
     /// <inheritdoc />
@@ -61,14 +56,14 @@ public class FileStorageService : IFileStorageService
     public Task DeleteItemImagesAsync(int itemId)
     {
         return MoveToTempAsync(itemId, "item", _options.ItemPath);
-    }    
+    }
 
-    private async Task<bool> AssignImageToAsync(string tempFileName, int id, string idPath)
+    private async Task<bool> AssignImageToAsync(string tempFileName, int id, string idPath, string origin)
     {
         var tempPath = Path.Combine(_options.TempPath, $"{tempFileName}.png");
 
         if (!File.Exists(tempPath)) return false;
-        
+
         var finalPath = await GetCleanPath(id, Path.Combine(idPath, "original"));
 
         File.Move(tempPath, finalPath);
@@ -80,10 +75,17 @@ public class FileStorageService : IFileStorageService
 
         await CreateResizedImage(image, await GetCleanPath(id, Path.Combine(idPath, "icons")), new Size(128, 128));
 
+        // Create notification to syncronize with the cloud backup worker (linux only)
+        if (OperatingSystem.IsLinux())
+        {
+            var syncPath = Path.Combine(_options.TempPath, $"sync_{origin}_{id}.txt");
+            await File.WriteAllTextAsync(syncPath, string.Empty);
+        }
+
         return true;
     }
-        
-    private async Task<string> GetCleanPath(int id, string idPath)
+
+    private static async Task<string> GetCleanPath(int id, string idPath)
     {
         Directory.CreateDirectory(idPath);
 
@@ -93,13 +95,11 @@ public class FileStorageService : IFileStorageService
 
         return path;
     }
-        
-    private async Task CreateResizedImage(Image image, string fullPath, Size size)
+
+    private static async Task CreateResizedImage(Image image, string fullPath, Size size)
     {
-        using (var newImage = image.Clone(x => x.Resize(new ResizeOptions { Size = size, Mode = ResizeMode.Max })))
-        {
-            await newImage.SaveAsync(fullPath);
-        }
+        using var newImage = image.Clone(x => x.Resize(new ResizeOptions { Size = size, Mode = ResizeMode.Max }));
+        await newImage.SaveAsync(fullPath);
     }
 
     /// <summary>
@@ -111,19 +111,19 @@ public class FileStorageService : IFileStorageService
     /// <param name="idPath">The base directory path where the source folders are located.</param>
     private async Task MoveToTempAsync(int id, string origin, string idPath)
     {
-        string[] subFolders = { "original", "thumbnails", "icons" };
+        string[] subFolders = ["original", "thumbnails", "icons"];
 
         foreach (var folder in subFolders)
         {
             var sourcePath = Path.Combine(idPath, folder, $"{id}.png");
 
             if (File.Exists(sourcePath))
-            {                
+            {
                 var tempFileName = $"deleted_{origin}_{id}_{folder}_{Guid.NewGuid()}.png";
                 var destinationPath = Path.Combine(_options.TempPath, tempFileName);
 
                 try
-                {                    
+                {
                     Directory.CreateDirectory(_options.TempPath);
                     File.Move(sourcePath, destinationPath);
                 }

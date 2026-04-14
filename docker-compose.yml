@@ -98,7 +98,27 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - app-network    
+      - app-network  
+
+  stock-worker:
+    container_name: stock-worker
+    build:
+      context: ./back
+      dockerfile: Stock.Worker/Dockerfile
+    restart: always
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+      - STATIC_STORAGE_PATH=/app/storage
+      - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_REFRESH_TOKEN=${GOOGLE_REFRESH_TOKEN}
+      - WORKER_USER_ID=${WORKER_USER_ID}
+      - WORKER_APP_NAME=${WORKER_APP_NAME}
+    volumes:      
+      - "${STATIC_STORAGE_PATH}:/app/storage:rw"    
+    networks:
+      - app-network
 
 networks:
   app-network:

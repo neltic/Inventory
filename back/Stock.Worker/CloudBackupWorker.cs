@@ -1,222 +1,205 @@
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
+using Google;
 using Google.Apis.Upload;
-using Microsoft.AspNetCore.StaticFiles;
-using System.Collections.Concurrent;
+using Stock.Worker.Interfaces;
 
 namespace Stock.Worker;
 
-public class CloudBackupWorker : BackgroundService
+public partial class CloudBackupWorker(
+    ILogger<CloudBackupWorker> logger,
+    IGoogleDriveService driveService,
+    ILocalFileService localFileService,
+    IProcessedFileService processedFileService
+    ) : BackgroundService
 {
-    private readonly ILogger<CloudBackupWorker> _logger;
-    private readonly string _imgFolderId;
-    private readonly string _localImgPath;
-    private DriveService _driveService;
-    private readonly ConcurrentDictionary<string, string> _folderCache = new();
-    private readonly ConcurrentDictionary<string, DateTime> _processedFiles = new();
-    private static readonly SemaphoreSlim _folderLock = new SemaphoreSlim(1, 1);
-    private const int WAIT_TO_PROCESS = 3000; // mili seconds
-
-    public CloudBackupWorker(ILogger<CloudBackupWorker> logger)
-    {
-        DotNetEnv.Env.TraversePath().Load();
-        _logger = logger;
-        _imgFolderId = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_IMAGE_FOLDER_ID") ?? "";
-        _localImgPath = Environment.GetEnvironmentVariable("LOCAL_IMAGE_STORAGE_PATH") ?? "";
-        _driveService = InitializeDriveService();
-    }
-
-    private DriveService InitializeDriveService()
-    {
-        string clientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") ?? "";
-        string clientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET") ?? "";
-        string refreshToken = Environment.GetEnvironmentVariable("GOOGLE_REFRESH_TOKEN") ?? "";
-        string userId = Environment.GetEnvironmentVariable("WORKER_USER_ID") ?? "";
-        string appName = Environment.GetEnvironmentVariable("WORKER_APP_NAME") ?? "";
-        var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-        {
-            ClientSecrets = new ClientSecrets
-            {
-                ClientId = clientId,
-                ClientSecret = clientSecret
-            }
-        });
-        var tokenResponse = new TokenResponse { RefreshToken = refreshToken };
-        var credential = new UserCredential(flow, userId, tokenResponse);
-
-        return new DriveService(new BaseClientService.Initializer
-        {
-            HttpClientInitializer = credential,
-            ApplicationName = appName
-        });
-    }
+    private const int WAIT_TO_PROCESS_MS = 3000;
+    private const int INITIAL_SYNC_DELAY_MS = 300;
+    private const int CLEANUP_INTERVAL_MIN = 15;
+    private const int QUICK_CHECK_DELAY_MS = 300;
+    private const int MAX_RETRIES = 3;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (_logger.IsEnabled(LogLevel.Information))
-            _logger.LogInformation("Active Image Watcher: {path}", _localImgPath);
+        string storagePath = localFileService.GetStaticPath();
+        LogWatcherActive(logger, storagePath);
 
-        if (!Directory.Exists(_localImgPath)) Directory.CreateDirectory(_localImgPath);
+        localFileService.CheckStaticDirectory();
 
-        using var watcher = new FileSystemWatcher(_localImgPath)
+        using var watcher = new FileSystemWatcher(storagePath)
         {
             IncludeSubdirectories = true,
-            EnableRaisingEvents = true
+            EnableRaisingEvents = true,
+            InternalBufferSize = 65536
         };
-
+                
         watcher.Created += (s, e) => _ = Task.Run(() => ProcessFile(e.FullPath, e.Name));
         watcher.Changed += (s, e) => _ = Task.Run(() => ProcessFile(e.FullPath, e.Name));
+        
+        _ = Task.Run(() => SyncLocalToCloud(stoppingToken), stoppingToken);
+
+        DateTime lastCleanup = DateTime.UtcNow;
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            if ((DateTime.UtcNow - lastCleanup).TotalMinutes >= CLEANUP_INTERVAL_MIN)
+            {
+                int cleaned = processedFileService.CleanupProcessedFiles();
+                if (cleaned > 0) LogCacheCleanup(logger, cleaned);
+                lastCleanup = DateTime.UtcNow;
+            }
+
             await Task.Delay(1000, stoppingToken);
         }
     }
 
-    private async Task<string> GetOrCreateFolderRecursive(string[] pathParts)
+    private async Task SyncLocalToCloud(CancellationToken ct)
     {
-        string currentParentId = _imgFolderId;
-        string currentPathKey = "root";
-
-        foreach (var part in pathParts)
+        try
         {
-            currentPathKey = $"{currentPathKey}/{part.ToLower()}";
+            LogInitialSyncStart(logger);
 
-            if (_folderCache.TryGetValue(currentPathKey, out var cachedId))
+            var files = localFileService.GetFiles();
+
+            foreach (var file in files)
             {
-                currentParentId = cachedId;
-                continue;
+                if (ct.IsCancellationRequested) break;
+
+                string relativePath = localFileService.GetRelativeToStaticPath(file);
+
+                await ProcessFile(file, relativePath);
+
+                await Task.Delay(INITIAL_SYNC_DELAY_MS, ct);
             }
 
-            await _folderLock.WaitAsync();
-            try
-            {
-                if (_folderCache.TryGetValue(currentPathKey, out var retryCachedId))
-                {
-                    currentParentId = retryCachedId;
-                }
-                else
-                {
-                    currentParentId = await GetOrCreateSingleFolder(part, currentParentId);
-                    _folderCache.TryAdd(currentPathKey, currentParentId);
-                }
-            }
-            finally
-            {
-                _folderLock.Release();
-            }
+            LogInitialSyncEnd(logger, files.Length);
         }
-
-        return currentParentId;
-    }
-
-
-    private async Task<string> GetOrCreateSingleFolder(string folderName, string parentId)
-    {
-        var listRequest = _driveService.Files.List();
-        listRequest.Q = $"name = '{folderName}' and '{parentId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false";
-        listRequest.Fields = "files(id)";
-
-        var result = await listRequest.ExecuteAsync();
-        var folderId = result.Files.FirstOrDefault()?.Id;
-
-        if (folderId == null)
+        catch (Exception ex)
         {
-            if (_logger.IsEnabled(LogLevel.Information))
-                _logger.LogInformation("Creating remote folder: {name}", folderName);
-            var folderMetadata = new Google.Apis.Drive.v3.Data.File()
-            {
-                Name = folderName,
-                MimeType = "application/vnd.google-apps.folder",
-                Parents = new List<string> { parentId }
-            };
-            var newFolder = await _driveService.Files.Create(folderMetadata).ExecuteAsync();
-            folderId = newFolder.Id;
+            LogInitialSyncError(logger, ex.Message);
         }
-
-        return folderId;
     }
 
     private async Task ProcessFile(string fullPath, string? relativePath)
     {
         if (string.IsNullOrEmpty(relativePath) || Directory.Exists(fullPath)) return;
-
-        var now = DateTime.UtcNow;
-        if (_processedFiles.TryGetValue(fullPath, out var lastProcessed))
+        
+        if (localFileService.IsRemovable(relativePath, out var fileName))
         {
-            if ((now - lastProcessed).TotalSeconds < (WAIT_TO_PROCESS / 1000.0)) return;
+            await HandleDeletionFromTemp(fullPath, fileName);
+            return;
         }
-        _processedFiles[fullPath] = now;
 
-        var pathParts = Path.GetDirectoryName(relativePath)?
-                            .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                            .Where(p => !string.IsNullOrEmpty(p))
-                            .ToArray() ?? Array.Empty<string>();
+        if (localFileService.IsInImageFolder(relativePath))
+        {
+            if (!processedFileService.ShouldProcess(fullPath, WAIT_TO_PROCESS_MS)) return;
 
-        await UploadToDrive(fullPath, Path.GetFileName(relativePath), pathParts);
+            var pathParts = localFileService.GetPathParts(relativePath);
+
+            await UploadToDrive(fullPath, Path.GetFileName(relativePath), pathParts);
+            return;
+        }
+        
+        if (localFileService.IsSyncFile(relativePath, out var syncFileName))
+        {
+            await HandleSyncFromTemp(fullPath, syncFileName);
+            return;
+        }
     }
 
     private async Task UploadToDrive(string fullPath, string fileName, string[] pathParts)
     {
+        int retryCount = 0;
+
+        while (retryCount < MAX_RETRIES)
+        {
+            try
+            {
+                await Task.Delay(QUICK_CHECK_DELAY_MS);
+
+                if (!File.Exists(fullPath)) return;
+
+                string folderId = await driveService.GetOrCreateFolderRecursiveAsync(pathParts);
+                var existingFile = await driveService.GetExistingFileAsync(fileName, folderId);
+
+                if (driveService.IsAlreadySync(existingFile, fullPath))
+                {
+                    LogSkipFile(logger, fileName);
+                    return;
+                }
+
+                await Task.Delay(WAIT_TO_PROCESS_MS - QUICK_CHECK_DELAY_MS);
+
+                if (!File.Exists(fullPath)) return;
+
+                var result = await driveService.UploadFileAsync(fullPath, fileName, folderId, existingFile?.Id);
+
+                ProcessResult(result, existingFile == null ? "Created" : "Updated", fileName, pathParts);
+
+                break;
+            }
+            catch (GoogleApiException ex) when (
+                ex.HttpStatusCode == System.Net.HttpStatusCode.ServiceUnavailable ||
+                ex.HttpStatusCode == System.Net.HttpStatusCode.Gone)
+            {
+                retryCount++;
+                logger.LogWarning("Google temporary error. Retry {n}/{max} for {file}", retryCount, MAX_RETRIES, fileName);
+                await Task.Delay(WAIT_TO_PROCESS_MS * retryCount);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Sync Error");
+                break;
+            }
+        }
+    }
+
+
+    private async Task HandleSyncFromTemp(string fullPath, string syncFileName)
+    {
+        if (!File.Exists(fullPath)) return;
+
+        localFileService.DeleteFile(fullPath);
+
+        if (localFileService.TryGetPendingSyncFiles(syncFileName, out var pendingFiles))
+        {            
+            foreach (var pendingFile in pendingFiles)
+            {
+                await ProcessFile(pendingFile, localFileService.GetRelativeToStaticPath(pendingFile));
+            }
+        }
+    }
+
+    private async Task HandleDeletionFromTemp(string fullPath, string fileName)
+    {
+        if (!processedFileService.ShouldProcess(fullPath, WAIT_TO_PROCESS_MS)) return;
+
+        if (!File.Exists(fullPath)) return;
+
         try
         {
-            await Task.Delay(WAIT_TO_PROCESS);
-            if (!File.Exists(fullPath)) return;
+            if (!localFileService.TryGetFileNameAndParts(fileName, out string originalFileName, out string[] pathParts)) return;
 
-            string targetFolderId = await GetOrCreateFolderRecursive(pathParts);
-            string mimeType = GetMimeTypeBy(fullPath);
+            string folderId = await driveService.GetOrCreateFolderRecursiveAsync(pathParts);
+            var driveFile = await driveService.GetExistingFileAsync(originalFileName, folderId);
 
-            var listRequest = _driveService.Files.List();
-            listRequest.Q = $"name = '{fileName}' and '{targetFolderId}' in parents and trashed = false";
-            listRequest.Fields = "files(id)";
-            var existingFiles = await listRequest.ExecuteAsync();
-            var existingFile = existingFiles.Files.FirstOrDefault();
+            localFileService.DeleteFile(fullPath);
 
-            using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-            if (existingFile != null)
+            if (driveFile != null)
             {
-                var updateRequest = _driveService.Files.Update(new Google.Apis.Drive.v3.Data.File(), existingFile.Id, stream, mimeType);
-                ProcessResult(await updateRequest.UploadAsync(), "update", fileName, pathParts);
-            }
-            else
-            {                
-                var fileMetadata = new Google.Apis.Drive.v3.Data.File()
-                {
-                    Name = fileName,
-                    Parents = new List<string> { targetFolderId }
-                };
-                var createRequest = _driveService.Files.Create(fileMetadata, stream, mimeType);
-                ProcessResult(await createRequest.UploadAsync(), "create", fileName, pathParts);
+                string displayPath = localFileService.FormatPath([.. pathParts, originalFileName]);
+                await driveService.MoveToTrashAsync(driveFile.Id);
+                LogRemoteDelete(logger, displayPath);
             }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError("Sync Error: {exception}", ex);
-        }
+        catch (Exception ex) { logger.LogError(ex, "Error during remote deletion"); }
     }
 
     private void ProcessResult(IUploadProgress result, string action, string fileName, string[] pathParts)
     {
-        if (result.Status == UploadStatus.Completed)
-        {
-            if (_logger.IsEnabled(LogLevel.Information))
-                _logger.LogInformation("Synchronized ({action}): {path}/{file}", action, string.Join("/", pathParts), fileName);
-        }
-        else
-            _logger.LogError("Failed to upload: {path}/{file} - {exception}", string.Join("/", pathParts), fileName, result.Exception);
-    }
+        string displayPath = localFileService.FormatPath([.. pathParts, fileName]);
 
-    private string GetMimeTypeBy(string fullPath)
-    {
-        var provider = new FileExtensionContentTypeProvider();
-        if (!provider.TryGetContentType(fullPath, out string? mimeType))
-        {
-            mimeType = "application/octet-stream";
-        }
-        return mimeType;
+        if (result.Status == UploadStatus.Completed)
+            LogSyncSuccess(logger, action, displayPath);
+        else
+            LogSyncError(logger, displayPath, result.Exception);
     }
 }

@@ -5,19 +5,6 @@ using Stock.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CORS service
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecificAngularOrigins",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:4200")
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
-        });
-});
-
 builder.Services.AddControllers();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -51,7 +38,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddHealthChecks()
     .AddSqlServer(connectionString: connectionString,
         name: "sql-check",
-        tags: new[] { "db", "sql" });
+        tags: ["db", "sql"]);
 
 // Build application
 var app = builder.Build();
@@ -65,7 +52,6 @@ await app.Services.CreateDummyDataAsync();
 #endif
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors("AllowSpecificAngularOrigins");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
