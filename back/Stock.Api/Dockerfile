@@ -12,6 +12,7 @@ COPY ["Stock.Api/Stock.Api.csproj", "Stock.Api/"]
 COPY ["Stock.Infrastructure/Stock.Infrastructure.csproj", "Stock.Infrastructure/"]
 COPY ["Stock.Application/Stock.Application.csproj", "Stock.Application/"]
 COPY ["Stock.Domain/Stock.Domain.csproj", "Stock.Domain/"]
+COPY ["Stock.Foundation/Stock.Foundation.csproj", "Stock.Foundation/"]
 RUN dotnet restore "./Stock.Api/Stock.Api.csproj"
 COPY . .
 WORKDIR "/src/Stock.Api"

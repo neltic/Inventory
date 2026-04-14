@@ -1,12 +1,25 @@
 <Solution>
-  <Folder Name="/services/">
+  <Folder Name="/src/" />
+  <Folder Name="/src/01 Domain/">
+    <Project Path="Stock.Domain/Stock.Domain.csproj" Id="0512ab24-6e80-4506-8f0c-94393cad1914" />
+  </Folder>
+  <Folder Name="/src/02 Application/">
+    <Project Path="Stock.Application/Stock.Application.csproj" Id="f06de3ca-a7dc-414d-ae0c-86fe5a370cc9" />
+  </Folder>
+  <Folder Name="/src/03 Infrastructure/">
+    <Project Path="Stock.Infrastructure/Stock.Infrastructure.csproj" Id="6dd3d556-957c-4798-811d-d66b9bee7a0c" />
+  </Folder>
+  <Folder Name="/src/04 Apps/">
+    <Project Path="Stock.Api/Stock.Api.csproj" Id="5e339f83-02fe-4539-8779-9c699ad9c9a2" />
     <Project Path="Stock.Worker/Stock.Worker.csproj" Id="ed3bce46-4ca9-4a3b-af91-29639e7b2e7f" />
+  </Folder>
+  <Folder Name="/src/05 Shared/">
+    <Project Path="Stock.Foundation/Stock.Foundation.csproj" Id="b18110d9-e6f0-4df2-9009-d16445380bf6" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="Stock.UnitTest/Stock.UnitTest.csproj" Id="07551f13-d59e-4120-86e7-fab36e892cd7" />
   </Folder>
-  <Project Path="Stock.Api/Stock.Api.csproj" Id="5e339f83-02fe-4539-8779-9c699ad9c9a2" />
-  <Project Path="Stock.Application/Stock.Application.csproj" Id="f06de3ca-a7dc-414d-ae0c-86fe5a370cc9" />
-  <Project Path="Stock.Domain/Stock.Domain.csproj" Id="0512ab24-6e80-4506-8f0c-94393cad1914" />
-  <Project Path="Stock.Infrastructure/Stock.Infrastructure.csproj" Id="6dd3d556-957c-4798-811d-d66b9bee7a0c" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>
