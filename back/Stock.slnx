@@ -19,7 +19,4 @@
   <Folder Name="/tests/">
     <Project Path="Stock.UnitTest/Stock.UnitTest.csproj" Id="07551f13-d59e-4120-86e7-fab36e892cd7" />
   </Folder>
-  <Project Path="docker-compose.dcproj">
-    <Build />
-  </Project>
 </Solution>
