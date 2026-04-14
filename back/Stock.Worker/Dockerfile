@@ -6,6 +6,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Stock.Worker/Stock.Worker.csproj", "Stock.Worker/"]
+COPY ["Stock.Foundation/Stock.Foundation.csproj", "Stock.Foundation/"]
 RUN dotnet restore "./Stock.Worker/Stock.Worker.csproj"
 COPY . .
 WORKDIR "/src/Stock.Worker"

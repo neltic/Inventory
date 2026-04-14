@@ -41,6 +41,12 @@ The project uses a .env file to manage local paths and credentials. Create a fil
 ```
 STATIC_STORAGE_PATH=/host_mnt/c/your/path/Storage/front/static
 DB_CONNECTION="Server=host.docker.internal,1433;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;"
+GOOGLE_DRIVE_FOLDER_ID=YourGoogleDriveFolderId
+GOOGLE_CLIENT_ID=YourGoogleDriveClientId
+GOOGLE_CLIENT_SECRET=YourGoogleDriveSecret
+GOOGLE_REFRESH_TOKEN=YourGoogleDriveRefreshToken
+WORKER_USER_ID=Storage OAuth
+WORKER_APP_NAME=Storage-Data-Backup
 ```
 
 This ensures your private configuration and connection strings are decoupled from the code.
