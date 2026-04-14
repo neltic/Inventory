@@ -29,12 +29,10 @@ export abstract class BaseComponent {
         const dialogRef = this.dialog.open(ConfirmDialog, {
             data: { type: type, question: question },
         });
-
         const result = await firstValueFrom(dialogRef.afterClosed());
-
         return !!result;
     }
-    async openSuccess(question: string): Promise<boolean> { return this.openConfirm('error', question); }
+    async openSuccess(question: string): Promise<boolean> { return this.openConfirm('success', question); }
     async openError(question: string): Promise<boolean> { return this.openConfirm('error', question); }
     async openWarning(question: string): Promise<boolean> { return this.openConfirm('warning', question); }
     async openInfo(question: string): Promise<boolean> { return this.openConfirm('info', question); }

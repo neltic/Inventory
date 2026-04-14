@@ -14,7 +14,14 @@ while True:
         
         for f in os.listdir(PATH):
             f_path = os.path.join(PATH, f)            
-            if os.path.isfile(f_path):               
+            if os.path.isfile(f_path):
+                
+                if f.lower().startswith("deleted_"):
+                    continue
+                    
+                if f.lower().startswith("sync_"):
+                    continue
+            
                 if os.stat(f_path).st_mtime < now - SECONDS_TO_EXPIRE:
                     os.remove(f_path)
                     print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Deleted: {f}")
