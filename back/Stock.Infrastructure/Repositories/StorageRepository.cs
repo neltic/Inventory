@@ -23,7 +23,7 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
                 s.Item.CategoryId,
                 s.Quantity,
                 s.Item.UpdatedAt
-            ))            
+            ))
             .ToListAsync();
     }
 
@@ -55,7 +55,7 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
 
     /// <inheritdoc />
     public async Task<bool> UpdateAsync(Storage storage)
-    {        
+    {
         var rows = await context.Database.ExecuteSqlInterpolatedAsync(
                 $"[dbo].[AddOrEditStorage] @BoxId = {storage.BoxId}, @ItemId = {storage.ItemId}, @BrandId = {storage.BrandId}, @Quantity = {storage.Quantity}, @Expires = {storage.Expires}, @ExpiresOn = {(storage.Expires ? storage.ExpiresOn : null)}"
                 );

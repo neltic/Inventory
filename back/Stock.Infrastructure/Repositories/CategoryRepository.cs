@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Stock.Domain.Entities;
-using Stock.Domain.Entities.Views;
 using Stock.Domain.Interfaces;
 using Stock.Infrastructure.Persistence;
 
@@ -56,8 +55,8 @@ public class CategoryRepository(StockDbContext context) : ICategoryRepository
 
             return true;
         }
-        catch 
-        {            
+        catch
+        {
             return false;
         }
     }

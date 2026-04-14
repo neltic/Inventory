@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Stock.Worker.Interfaces;
+﻿namespace Stock.Worker.Interfaces;
 
 public interface IProcessedFileService
 {

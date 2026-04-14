@@ -2,7 +2,6 @@
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
-using Stock.Application.Services;
 using Stock.Domain.Entities.Views;
 
 namespace Stock.Api.Controllers;
@@ -105,10 +104,10 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
     /// Use without an ID for new box creation, or with an ID to move an existing box.
     /// </summary>
     /// <param name="targetBoxId">The optional ID of the box to be moved.</param>
-    [HttpGet("available-parents/{targetBoxId?}")] 
+    [HttpGet("available-parents/{targetBoxId?}")]
     [ProducesResponseType(typeof(IEnumerable<BoxTransferList>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BoxTransferList>>> GetAvailableParents(int? targetBoxId)
-    {        
+    {
         var availableParents = await boxService.GetAvailableParentBoxesByAsync(targetBoxId);
 
         return Ok(availableParents);
@@ -247,12 +246,12 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
     public async Task<ActionResult> MoveBox(int id, int? newParentId)
     {
         try
-        {            
+        {
             await boxService.MoveBoxAsync(id, newParentId);
             return NoContent();
         }
         catch (Exception ex)
-        {            
+        {
             return BadRequest(new { ex.Message });
         }
     }

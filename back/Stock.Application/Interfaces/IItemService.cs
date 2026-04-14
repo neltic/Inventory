@@ -1,5 +1,4 @@
 ﻿using Stock.Application.DTOs;
-using Stock.Domain.Entities.Views;
 
 namespace Stock.Application.Interfaces;
 

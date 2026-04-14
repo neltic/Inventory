@@ -4,7 +4,7 @@ public record ItemDetailed(
     int ItemId,
     string Name,
     string Notes,
-    int CategoryId,      
+    int CategoryId,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt
 );

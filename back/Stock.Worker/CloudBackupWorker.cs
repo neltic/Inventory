@@ -30,10 +30,10 @@ public partial class CloudBackupWorker(
             EnableRaisingEvents = true,
             InternalBufferSize = 65536
         };
-                
+
         watcher.Created += (s, e) => _ = Task.Run(() => ProcessFile(e.FullPath, e.Name));
         watcher.Changed += (s, e) => _ = Task.Run(() => ProcessFile(e.FullPath, e.Name));
-        
+
         _ = Task.Run(() => SyncLocalToCloud(stoppingToken), stoppingToken);
 
         DateTime lastCleanup = DateTime.UtcNow;
@@ -81,7 +81,7 @@ public partial class CloudBackupWorker(
     private async Task ProcessFile(string fullPath, string? relativePath)
     {
         if (string.IsNullOrEmpty(relativePath) || Directory.Exists(fullPath)) return;
-        
+
         if (localFileService.IsRemovable(relativePath, out var fileName))
         {
             await HandleDeletionFromTemp(fullPath, fileName);
@@ -97,7 +97,7 @@ public partial class CloudBackupWorker(
             await UploadToDrive(fullPath, Path.GetFileName(relativePath), pathParts);
             return;
         }
-        
+
         if (localFileService.IsSyncFile(relativePath, out var syncFileName))
         {
             await HandleSyncFromTemp(fullPath, syncFileName);
@@ -160,7 +160,7 @@ public partial class CloudBackupWorker(
         localFileService.DeleteFile(fullPath);
 
         if (localFileService.TryGetPendingSyncFiles(syncFileName, out var pendingFiles))
-        {            
+        {
             foreach (var pendingFile in pendingFiles)
             {
                 await ProcessFile(pendingFile, localFileService.GetRelativeToStaticPath(pendingFile));

@@ -58,7 +58,7 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
         var exists = await boxRepository.ExistsAsync(dto.Name, dto.ParentBoxId);
 
         if (exists)
-        {            
+        {
             throw new InvalidOperationException("A box with this name already exists in this location.");
         }
 
@@ -106,7 +106,7 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
     public async Task<BoxDetailedDto> GetEmptyBoxByParentBoxIdAsync(int? parentBoxId)
     {
         var path = await boxRepository.GetBoxFullPathByParentAsync(parentBoxId);
-                
+
         return new(0, parentBoxId, string.Empty, -1, 0, 0, 0, 0, 0, string.Empty, DateTime.Today, DateTime.Today, path);
     }
 }

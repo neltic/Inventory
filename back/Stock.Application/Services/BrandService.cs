@@ -15,13 +15,13 @@ public class BrandService(IBrandRepository brandRepository, ICacheService cache)
         if (brandId <= 0) return null;
 
         string key = GetCacheKeyItem(brandId);
-                
+
         var dto = await cache.GetAsync<BrandDto>(key);
         if (dto != null) return dto;
-                
+
         var brand = await brandRepository.GetByIdAsync(brandId);
         dto = brand?.ToDto();
-                
+
         if (dto != null)
         {
             await cache.SetAsync(key, dto);
@@ -38,7 +38,7 @@ public class BrandService(IBrandRepository brandRepository, ICacheService cache)
 
         var results = await brandRepository.GetAllAsync();
         var dtoList = results.ToDtoList();
-                
+
         await cache.SetAsync(CacheKeyList, dtoList);
 
         return dtoList;
@@ -52,7 +52,7 @@ public class BrandService(IBrandRepository brandRepository, ICacheService cache)
 
         var brand = dto.ToEntity(0);
         var brandId = await brandRepository.AddAsync(brand);
-                
+
         await cache.RemoveAsync(CacheKeyList);
 
         return brandId;

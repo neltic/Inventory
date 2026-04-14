@@ -5,7 +5,7 @@ using Stock.Worker.Interfaces;
 namespace Stock.Worker.Services;
 
 public class LocalFileService(LocalFileOptions options) : ILocalFileService
-{    
+{
     private readonly string StaticPath = FileRegistry.Path.GetLocal(options.StoragePath);
 
     public string GetStaticPath() => StaticPath;
@@ -26,7 +26,7 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
     {
         var parts = syncFileName.Replace(FileRegistry.Extension.Sync, "", StringComparison.OrdinalIgnoreCase).Split('_');
 
-        if(parts.Length < 2)
+        if (parts.Length < 2)
         {
             pendingFiles = [];
             return false;
@@ -34,7 +34,7 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
 
         string origin = parts[1];
         string id = parts[2];
-        
+
         pendingFiles = [.. FileRegistry.Folder.SubFolder.All.Select(sub => Path.Combine(GetImagePath(), origin, sub, FileRegistry.GetImageName(id)))];
 
         return true;
@@ -48,21 +48,21 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
     public bool IsRemovable(string relativePath, out string fileName)
     {
         fileName = Path.GetFileName(relativePath);
-        string normalizedPath =  FileRegistry.Path.Normalize(relativePath);
+        string normalizedPath = FileRegistry.Path.Normalize(relativePath);
         return normalizedPath.StartsWith(FileRegistry.Folder.TempSlashed, StringComparison.OrdinalIgnoreCase) &&
                fileName.StartsWith(FileRegistry.Prefix.Deleted, StringComparison.OrdinalIgnoreCase);
     }
 
     public bool IsInImageFolder(string relativePath)
     {
-        string normalizedPath =  FileRegistry.Path.Normalize(relativePath);
+        string normalizedPath = FileRegistry.Path.Normalize(relativePath);
         return normalizedPath.StartsWith(FileRegistry.Folder.ImageSlashed, StringComparison.OrdinalIgnoreCase);
     }
 
     public bool IsSyncFile(string relativePath, out string fileName)
     {
         fileName = Path.GetFileName(relativePath);
-        string normalizedPath =  FileRegistry.Path.Normalize(relativePath);
+        string normalizedPath = FileRegistry.Path.Normalize(relativePath);
         return normalizedPath.StartsWith(FileRegistry.Folder.TempSlashed, StringComparison.OrdinalIgnoreCase) &&
                fileName.StartsWith(FileRegistry.Prefix.Sync, StringComparison.OrdinalIgnoreCase) &&
                fileName.EndsWith(FileRegistry.Extension.Sync, StringComparison.OrdinalIgnoreCase);

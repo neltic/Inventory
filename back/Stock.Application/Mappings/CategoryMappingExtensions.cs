@@ -1,6 +1,5 @@
 ﻿using Stock.Application.DTOs;
 using Stock.Domain.Entities;
-using Stock.Domain.Entities.Views;
 
 namespace Stock.Application.Mappings;
 

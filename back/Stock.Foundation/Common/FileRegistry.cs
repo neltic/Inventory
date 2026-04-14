@@ -14,10 +14,10 @@ public static class FileRegistry
     }
 
     public static string GetSyncFileName(string origin, int id)
-    {        
+    {
         return $"{Prefix.Sync}{origin}_{id}{Extension.Sync}";
     }
-    
+
     public static string GetDeletedImageName(string origin, int id, string folder)
     {
         return $"{Prefix.Deleted}{origin}_{id}_{folder}_{Guid.NewGuid()}{Extension.Image}";

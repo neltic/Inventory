@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration.UserSecrets;
 using Stock.Worker;
 using Stock.Worker.Common;
 using Stock.Worker.Interfaces;

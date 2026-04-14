@@ -40,7 +40,7 @@ public static class StorageMappingExtensions
             BrandId = dto.BrandId,
             Quantity = dto.Quantity,
             Expires = dto.Expires,
-            ExpiresOn = dto.ExpiresOn,            
+            ExpiresOn = dto.ExpiresOn,
         };
     }
 

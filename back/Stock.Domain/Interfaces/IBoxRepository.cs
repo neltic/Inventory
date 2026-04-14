@@ -148,5 +148,5 @@ public interface IBoxRepository
     /// <param name="boxId">The ID of the box to update.</param>
     /// <returns>The new <see cref="DateTime"/> value persisted to the database.</returns>
     Task<DateTime> ChangeUpdatedAtAsync(int boxId);
-    
+
 }

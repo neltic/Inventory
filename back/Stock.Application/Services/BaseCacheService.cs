@@ -1,6 +1,4 @@
-﻿using Stock.Application.Interfaces.Common;
-
-namespace Stock.Application.Services;
+﻿namespace Stock.Application.Services;
 
 public abstract class BaseCacheService(string entityName)
 {

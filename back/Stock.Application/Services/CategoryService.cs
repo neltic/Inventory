@@ -8,7 +8,7 @@ namespace Stock.Application.Services;
 
 public class CategoryService(ICategoryRepository categoryRepository, ICacheService cache)
     : BaseCacheService("category"), ICategoryService
-{    
+{
     /// <inheritdoc />
     public async Task<CategoryDto?> GetByIdAsync(int categoryId)
     {
@@ -22,7 +22,7 @@ public class CategoryService(ICategoryRepository categoryRepository, ICacheServi
 
         var category = await categoryRepository.GetByIdAsync(categoryId);
         dto = category?.ToDto();
-                
+
         if (dto != null)
         {
             await cache.SetAsync(key, dto);
@@ -35,13 +35,13 @@ public class CategoryService(ICategoryRepository categoryRepository, ICacheServi
     public async Task<IEnumerable<CategoryDto>> GetAllAsync()
     {
         var cacheList = await cache.GetAsync<IEnumerable<CategoryDto>>(CacheKeyList);
-        
+
         if (cacheList != null) return cacheList;
 
-        
+
         var results = await categoryRepository.GetAllAsync();
         var dtoList = results.ToDtoList();
-        
+
         await cache.SetAsync(CacheKeyList, dtoList);
 
         return dtoList;

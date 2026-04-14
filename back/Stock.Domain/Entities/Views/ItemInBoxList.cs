@@ -4,7 +4,7 @@ public record ItemInBoxList(
     int ItemId,
     string Name,
     int BrandId,
-    int CategoryId,    
+    int CategoryId,
     int Quantity,
     DateTimeOffset UpdatedAt
     );

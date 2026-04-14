@@ -16,7 +16,7 @@ public class StorageService(IStorageRepository storageRepository) : IStorageServ
     }
 
     /// <inheritdoc />
-    public async Task<bool> RemoveAsync(int boxId, int itemId, int brandId) => 
+    public async Task<bool> RemoveAsync(int boxId, int itemId, int brandId) =>
         await storageRepository.RemoveAsync(boxId, itemId, brandId);
 
     /// <inheritdoc />

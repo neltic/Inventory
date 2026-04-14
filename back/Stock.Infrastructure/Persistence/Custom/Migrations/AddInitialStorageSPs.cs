@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Stock.Infrastructure.Migrations;
 

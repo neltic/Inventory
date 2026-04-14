@@ -1,6 +1,6 @@
 ﻿namespace Stock.Worker;
 
-public partial class CloudBackupWorker 
+public partial class CloudBackupWorker
 {
     [LoggerMessage(Level = LogLevel.Information, Message = "Active Image Watcher: {Path}")]
     static partial void LogWatcherActive(ILogger logger, string path);

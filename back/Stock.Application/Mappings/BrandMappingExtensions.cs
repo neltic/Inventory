@@ -9,7 +9,7 @@ public static class BrandMappingExtensions
     {
         return new BrandDto(
             model.BrandId,
-            model.Name,            
+            model.Name,
             model.Color,
             model.Background,
             model.IncludedIn

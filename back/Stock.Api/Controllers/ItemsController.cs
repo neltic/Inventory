@@ -69,7 +69,7 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
     public async Task<IActionResult> GetItemLocations(int itemId)
     {
         var locations = await itemService.GetItemLocationAsync(itemId);
-                
+
         return Ok(locations ?? Enumerable.Empty<ItemLocationListDto>());
     }
 

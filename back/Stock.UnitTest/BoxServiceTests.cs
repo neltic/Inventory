@@ -14,7 +14,7 @@ public class BoxServiceTests
 
     public BoxServiceTests()
     {
-        _boxRepositoryMock = new Mock<IBoxRepository>();        
+        _boxRepositoryMock = new Mock<IBoxRepository>();
         _service = new BoxService(_boxRepositoryMock.Object);
     }
 
@@ -23,7 +23,7 @@ public class BoxServiceTests
     {
         // Arrange
         var dto = new BoxDto(0, 5, "Duplicate box", 1, 1, 10, 10, 10, "Notes");
-                
+
         _boxRepositoryMock.Setup(r => r.ExistsAsync(dto.Name, dto.ParentBoxId))
             .ReturnsAsync(true);
 
@@ -33,7 +33,7 @@ public class BoxServiceTests
         // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("A box with this name already exists in this location.");
-                
+
         _boxRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Box>()), Times.Never);
     }
 
@@ -43,10 +43,10 @@ public class BoxServiceTests
         // Arrange
         var dto = new BoxDto(0, null, "New Box", 1, 1, 5, 5, 5, "Ok");
         var expectedId = 99;
-                
+
         _boxRepositoryMock.Setup(r => r.ExistsAsync(dto.Name, dto.ParentBoxId))
             .ReturnsAsync(false);
-                
+
         _boxRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Box>()))
             .ReturnsAsync(expectedId);
 
@@ -55,7 +55,7 @@ public class BoxServiceTests
 
         // Assert
         result.Should().Be(expectedId);
-                
+
         _boxRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Box>()), Times.Once);
     }
 
@@ -74,7 +74,7 @@ public class BoxServiceTests
 
         // Assert
         result.Should().Be(expectedResult);
-                
+
         _boxRepositoryMock.Verify(r => r.MoveBoxAsync(boxId, newParentId), Times.Once);
     }
 
