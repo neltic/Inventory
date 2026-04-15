@@ -1,5 +1,6 @@
 using Google;
 using Google.Apis.Upload;
+using Stock.Foundation.Common;
 using Stock.Worker.Interfaces;
 
 namespace Stock.Worker;
@@ -8,7 +9,8 @@ public partial class CloudBackupWorker(
     ILogger<CloudBackupWorker> logger,
     IGoogleDriveService driveService,
     ILocalFileService localFileService,
-    IProcessedFileService processedFileService
+    IProcessedFileService processedFileService,
+    IDbBackupService dbBackupService
     ) : BackgroundService
 {
     private const int WAIT_TO_PROCESS_MS = 3000;
@@ -16,11 +18,17 @@ public partial class CloudBackupWorker(
     private const int CLEANUP_INTERVAL_MIN = 15;
     private const int QUICK_CHECK_DELAY_MS = 300;
     private const int MAX_RETRIES = 3;
+    private const int BACKUP_INTERVAL_HOURS = 12;
+    private DateTime _lastDbBackup = DateTime.MinValue;
+    private DateTime _lastCleanup = DateTime.UtcNow;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         string storagePath = localFileService.GetStaticPath();
-        LogWatcherActive(logger, storagePath);
+
+        _lastDbBackup = await dbBackupService.GetLastBackupDateAsync();
+
+        LogWatcherActive(logger, storagePath, _lastDbBackup);
 
         localFileService.CheckStaticDirectory();
 
@@ -36,18 +44,50 @@ public partial class CloudBackupWorker(
 
         _ = Task.Run(() => SyncLocalToCloud(stoppingToken), stoppingToken);
 
-        DateTime lastCleanup = DateTime.UtcNow;
-
         while (!stoppingToken.IsCancellationRequested)
         {
-            if ((DateTime.UtcNow - lastCleanup).TotalMinutes >= CLEANUP_INTERVAL_MIN)
-            {
-                int cleaned = processedFileService.CleanupProcessedFiles();
-                if (cleaned > 0) LogCacheCleanup(logger, cleaned);
-                lastCleanup = DateTime.UtcNow;
-            }
+            CheckCleanupProcess();
 
-            await Task.Delay(1000, stoppingToken);
+            await CheckDbBackupProcessAsync();
+
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+        }
+    }
+
+    private void CheckCleanupProcess()
+    {
+        if ((DateTime.UtcNow - _lastCleanup).TotalMinutes >= CLEANUP_INTERVAL_MIN)
+        {
+            int cleaned = processedFileService.CleanupProcessedFiles();
+            if (cleaned > 0) LogCacheCleanup(logger, cleaned);
+            _lastCleanup = DateTime.UtcNow;
+        }
+    }
+
+    private async Task CheckDbBackupProcessAsync()
+    {
+        if ((DateTime.UtcNow - _lastDbBackup).TotalHours >= BACKUP_INTERVAL_HOURS)
+        {
+            try
+            {
+                logger.LogInformation("Starting scheduled database backup...");
+
+                string fileName = await dbBackupService.CreateAsync();
+
+                LogDbBackupCreated(logger, fileName);
+
+                string relativePath = Path.Combine(FileRegistry.Folder.Temp, fileName);
+                string fullPath = Path.Combine(localFileService.GetStaticPath(), relativePath);
+
+                LogDbBackupManualTrigger(logger, relativePath);
+
+                await ProcessFile(fullPath, relativePath);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error during scheduled database backup");
+            }
+            _lastDbBackup = DateTime.UtcNow;
         }
     }
 
@@ -101,6 +141,16 @@ public partial class CloudBackupWorker(
         if (localFileService.IsSyncFile(relativePath, out var syncFileName))
         {
             await HandleSyncFromTemp(fullPath, syncFileName);
+            return;
+        }
+
+        if (localFileService.IsDbBackupFile(relativePath, out var dbBackupFileName))
+        {
+            if (!processedFileService.ShouldProcess(fullPath, WAIT_TO_PROCESS_MS)) return;
+
+            var pathParts = localFileService.GetDbPathParts();
+
+            await UploadToDrive(fullPath, dbBackupFileName, pathParts);
             return;
         }
     }

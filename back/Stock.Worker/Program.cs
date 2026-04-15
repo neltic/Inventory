@@ -29,6 +29,15 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton<IProcessedFileService, ProcessedFileService>();
 
+        services.AddSingleton(new DbBackupOptions
+        {
+            ConnectionString = Environment.GetEnvironmentVariable("DB_BACKUP_CONNECTION") ?? "",
+            Path = Environment.GetEnvironmentVariable("DB_BACKUP_PATH") ?? "",
+            StoragePath = Environment.GetEnvironmentVariable("STATIC_STORAGE_PATH") ?? ""
+        });
+
+        services.AddSingleton<IDbBackupService, DbBackupService>();
+
         services.AddHostedService<CloudBackupWorker>();
     })
     .Build();

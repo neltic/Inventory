@@ -41,6 +41,8 @@ The project uses a .env file to manage local paths and credentials. Create a fil
 ```
 STATIC_STORAGE_PATH=/host_mnt/c/your/path/Storage/front/static
 DB_CONNECTION="Server=host.docker.internal,1433;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;"
+DB_BACKUP_CONNECTION=Server=YourLocalServer;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;
+DB_BACKUP_PATH=C:\your\path\Storage\front\static\temp
 GOOGLE_DRIVE_FOLDER_ID=YourGoogleDriveFolderId
 GOOGLE_CLIENT_ID=YourGoogleDriveClientId
 GOOGLE_CLIENT_SECRET=YourGoogleDriveSecret

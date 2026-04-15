@@ -109,6 +109,8 @@ services:
     environment:
       - DOTNET_ENVIRONMENT=Development
       - STATIC_STORAGE_PATH=/app/storage
+      - DB_BACKUP_CONNECTION=${DB_CONNECTION}
+      - DB_BACKUP_PATH=${DB_BACKUP_PATH}
       - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
@@ -116,7 +118,10 @@ services:
       - WORKER_USER_ID=${WORKER_USER_ID}
       - WORKER_APP_NAME=${WORKER_APP_NAME}
     volumes:      
-      - "${STATIC_STORAGE_PATH}:/app/storage:rw"    
+      - "${STATIC_STORAGE_PATH}:/app/storage:rw"
+    depends_on:
+      stock-back:
+        condition: service_healthy
     networks:
       - app-network
 

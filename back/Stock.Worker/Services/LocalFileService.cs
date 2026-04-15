@@ -68,6 +68,15 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
                fileName.EndsWith(FileRegistry.Extension.Sync, StringComparison.OrdinalIgnoreCase);
     }
 
+    public bool IsDbBackupFile(string relativePath, out string fileName)
+    {
+        fileName = Path.GetFileName(relativePath);
+        string normalizedPath = FileRegistry.Path.Normalize(relativePath);
+        return normalizedPath.StartsWith(FileRegistry.Folder.TempSlashed, StringComparison.OrdinalIgnoreCase) &&
+               fileName.StartsWith(FileRegistry.Prefix.DbBackup, StringComparison.OrdinalIgnoreCase) &&
+               fileName.EndsWith(FileRegistry.Extension.DbBackup, StringComparison.OrdinalIgnoreCase);
+    }
+
     public bool TryGetFileNameAndParts(string fileName, out string originalFileName, out string[] pathParts)
     {
         var parts = fileName.Replace(FileRegistry.Extension.Image, "", StringComparison.OrdinalIgnoreCase).Split('_');
@@ -95,6 +104,11 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
                    .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                    .Where(p => !string.IsNullOrEmpty(p))
                    .ToArray() ?? [];
+    }
+
+    public string[] GetDbPathParts()
+    {
+        return [FileRegistry.Folder.Database];
     }
 
     public string FormatPath(string[] parts)
