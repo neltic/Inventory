@@ -1,44 +1,53 @@
-﻿![.NET 9](https://img.shields.io/badge/.NET-9.0-512bd4?logo=dotnet)
+﻿# Inventory App
+Technical guide for the Inventory Control Application
+
+![.NET 9](https://img.shields.io/badge/.NET-9.0-512bd4?logo=dotnet)
 ![Angular 21](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
 ![Microsoft SQL Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-006dc1?logo=microsoft%20sql%20server&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-%23ff4438.svg?logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
-# Inventory App
-Technical guide for the Inventory Control Application
 
-## 📋 Content
-- [Technologies](#technologies)
-- [Domain Structure](#domain-structure)
-- [Setup](#setup)
-- [Features](#features)
-- [Migrations](#migrations)
+## 🎯 Overview
+Inventory App is a comprehensive stock control system designed under **Clean Architecture** principles. It doesn't just manage physical inventory; it ensures data integrity and availability through a coordinated micro-services architecture for temporary file cleanup and automated cloud backups.
 
-## 🚀 Technologies
-- **Backend:** .NET 9.0 (C# 13), Clean Architecture, Entity Framework Core.
-- **Frontend:** Angular 21, Signals, Angular Material.
+
+## 🧭 Content
+- [🏗️ Domain Structure](#️-domain-structure)
+- [🚀 Technologies & Tools](#-technologies--tools)
+- [⚙️ Setup & Configuration](#️-setup--configuration)
+- [🐳 Container Infrastructure](#-container-infrastructure)
+- [🛡️ Resilience Strategy (DRP)](#️-resilience-strategy-drp)
+- [🛠️ Development & Migrations](#️-development--migrations)
+- [📝 Key Features](#-key-features)
+
 
 ## 🏗️ Domain Structure
-The system manages a hierarchical inventory based on:
-- **Boxes:** Containers that support nesting (boxes within boxes).
-- **Items:** Product definitions from the catalog.
-- **Storage:** A record of actual stock levels, linking Box + Item + Brand.
+The system uses a logical hierarchy for stock control:
+- **Boxes:** Containers with support for infinite nesting (Box in Box).
+- **Items:** Global product definitions from the catalog.
+- **Storage:** The actual stock record, linking the triad: **Box + Item + Brand**.
 
-## Setup
 
-Follow these steps to configure your development environment.
+## 🚀 Technologies & Tools
+- **Backend:** .NET 9.0 (C# 13), EF Core, SqlClient.
+- **Frontend:** Angular 21, Signals, Angular Material.
+- **Cache:** Redis for frequent query optimization.
+- **Storage:** Hybrid system (Local + Google Drive API).
+- **Infrastructure:** Docker & Nginx as CDN.
+
+
+## ⚙️ Setup & Configuration
 
 ### 1. Prerequisites
-* Docker Desktop (Must be running).
-* SQL Server (Local or network accessible).
-* .NET 8 SDK & Node.js / Angular CLI.
-
----
+* Docker Desktop must be running.
+* .NET 9 SDK & Node.js / Angular CLI.
+* A Google Cloud account (for Google Drive API credentials).
 
 ### 2. Environment Configuration (.env)
-The project uses a .env file to manage local paths and credentials. Create a file named .env in the root directory:
+Configure the `.env` file in the root directory. This file acts as the bridge between your Host and the containers:
 
-```
+```env
 STATIC_STORAGE_PATH=/host_mnt/c/your/path/Storage/front/static
 DB_CONNECTION="Server=host.docker.internal,1433;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;"
 DB_BACKUP_CONNECTION=Server=YourLocalServer;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;
@@ -50,62 +59,45 @@ GOOGLE_REFRESH_TOKEN=YourGoogleDriveRefreshToken
 WORKER_USER_ID=Storage OAuth
 WORKER_APP_NAME=Storage-Data-Backup
 ```
-
 This ensures your private configuration and connection strings are decoupled from the code.
 
----
 
-### 3. Infrastructure & CDN (Docker)
-The system orchestrates three specialized containers:
-* stock-cdn: Nginx image server at http://localhost/cdn/
-* stock-cleaner: Python service that automatically deletes files in /temp older than 24 hours.
-* stock-back: Containerized API environment.
+## 🐳 Container Infrastructure
+The system orchestrates 6 specialized services:
+
+| Container | Function | Access |
+| :--- | :--- | :--- |
+| **stock-back** | Main API (ASP.NET Core) | `http://localhost:5000` |
+| **stock-front** | Web Application (Angular) | `http://localhost:4200` |
+| **stock-worker** | Background Service (Backups & Cloud Sync) | Logs via Docker |
+| **stock-cdn** | Image Server (Nginx) | `http://localhost/cdn/` |
+| **stock-cleaner** | `/temp` folder cleanup (Python) | Automated |
+| **stock-cache** | Fast persistence engine (Redis) | Port 6379 |
 
 Important: If you have a local IIS service running on port 80, you must stop it (`iisreset /stop`) before starting the containers to avoid port conflicts.
 
-In the `/setup/` folder, you will find PowerShell scripts to manage the services:
-* **To work with the API from your IDE (Visual Studio/VS Code):**
-  Run: `.\setup\start-cdn.ps1`  
-  *This will only start the image server at http://localhost/cdn/.*
 
-* **To start the backend environment (API + CDN):**
-  Run: `.\setup\start-back.ps1`
+## 🛡️ Resilience Strategy (DRP)
+This application implements an automated **Disaster Recovery Plan (DRP)**:
 
-* **To start the full environment (All containers):**
-  Run: `.\setup\start-all.ps1`
+### 1. Cloud Sync (Files)
+The `stock-worker` utilizes a **FileSystemWatcher** to detect new images or synchronization files. Once a file is created, it is automatically uploaded to Google Drive, preserving the original folder structure.
 
----
+### 2. Database Backup (Scheduled)
+Every **12 hours**, the Worker instructs SQL Server to generate a Full Backup (`.bak`).
+- **Local Resilience:** The file is saved directly to the Host's physical volume.
+- **Cloud Resilience:** The Worker detects the new backup and uploads it immediately to the cloud.
+- **Self-Healing:** On startup, the Worker verifies the last existing backup to decide whether to execute a new one, avoiding unnecessary duplication.
 
-### 4. Data Persistence & Migrations
-The project uses a Hybrid Migration Strategy:
-* Schema: Managed by standard EF Core Migrations.
-* Persistent Data: SQL scripts (Brands, Categories, etc.) are stored in `Persistence` folder.
-* Logic: These scripts are linked via Partial Classes to the migrations, ensuring your data-seeding logic survives database resets or migration cleanups.
 
----
+## 🛠️ Development & Migrations
 
-### 5. Service Access
-* Frontend Application: http://localhost:4200
-* Data API: http://localhost:5000
-* Image CDN: http://localhost/cdn/
-* Cleanup Service: Monitors the /temp folder automatically.
+### Execution Scripts
+The `/setup/` folder contains PowerShell scripts to streamline the environment for example:
+- `.\setup\start-all.ps1`: Starts the entire ecosystem.
+- `.\setup\start-cdn.ps1`: Only starts the image server (useful for local API debugging).
 
----
-
-### 6. Development Workflow
-1. Frontend: Run `npm install` for the first time and then `npm start`.
-2. Backend: Open `Stock.slnx` and select the `AppStock-Dev` profile in Visual Studio.
-3. Verification: Use `docker logs -f stock-cleaner` to verify the automated cleanup service.
-
-Note on Persistence: The system uses Docker Volumes to map your physical Storage folder to the containers. Even if you stop or delete the containers, your physical images and configuration data will remain intact.
-
-## 📝 Features
-- **Automatic Auditing:** Via the EF Core interceptor that manages `CreatedAt` and `UpdatedAt`.
-- **Duplicate Validation:** Integrated logic in the save flow based on the triad (Box/Item/Brand).
-- **Reactive UI:** Extensive use of **Angular Signals** for state management and computed data.
-- **Dynamic Customization:** Colors, icons, and visibility (Scopes) controlled directly from the database for Categories and Brands.
-
-## 🛠️ Migrations
+### Migrations
 The following details the commands needed to manage data persistence (If you want to return to the initial state and add something different from the beginning).
 
 ```bash
@@ -116,7 +108,6 @@ dotnet ef migrations add AddInitialItemsSPs --project Stock.Infrastructure --sta
 dotnet ef migrations add AddInitialStorageSPs --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddInitialCategoriesSPs --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddFeatBoxTransferSPs --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef database update --project Stock.Infrastructure --startup-project Stock.Api
 ```
 
 ### Restore to initial migration
@@ -125,3 +116,18 @@ To revert the database to its initial state:
 dotnet ef database update 0 --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef database remove --project Stock.Infrastructure --startup-project Stock.Api
 ```
+
+### Database Management
+```bash
+# Add new migration
+dotnet ef migrations add <Name> --project Stock.Infrastructure --startup-project Stock.Api
+# Update database
+dotnet ef database update --project Stock.Infrastructure --startup-project Stock.Api
+```
+
+
+## 📝 Key Features
+- **Hybrid Storage:** Files are served locally for speed (CDN) but backed up in the cloud for security.
+- **Audit Interceptors:** Automatic management of `CreatedAt` and `UpdatedAt` in EF Core.
+- **Reactive State:** Powered by **Angular Signals** for a fluid UI experience without unnecessary refreshes.
+- **Soft Delete Sync:** Support for cloud file removal via temporary markers.
