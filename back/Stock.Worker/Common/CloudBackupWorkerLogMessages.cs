@@ -2,8 +2,8 @@
 
 public partial class CloudBackupWorker
 {
-    [LoggerMessage(Level = LogLevel.Information, Message = "Active Image Watcher: {Path}")]
-    static partial void LogWatcherActive(ILogger logger, string path);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Active Image Watcher: {Path} | Last backup at {LastBackup}")]
+    static partial void LogWatcherActive(ILogger logger, string path, DateTime lastBackup);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Starting sync local to cloud")]
     static partial void LogInitialSyncStart(ILogger logger);
@@ -28,4 +28,10 @@ public partial class CloudBackupWorker
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Remote file sent to trash: {File}")]
     static partial void LogRemoteDelete(ILogger logger, string file);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Database backup created: {File}")]
+    static partial void LogDbBackupCreated(ILogger logger, string file);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Manually triggering process for: {Path}")]
+    static partial void LogDbBackupManualTrigger(ILogger logger, string path);
 }
