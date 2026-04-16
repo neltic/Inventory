@@ -21,8 +21,86 @@ public partial class StockDbContext : DbContext
 
     public virtual DbSet<Brand> Brands { get; set; }
 
+    public virtual DbSet<Language> Languages { get; set; }
+
+    public virtual DbSet<Label> Labels { get; set; }
+
+    public virtual DbSet<Translation> Translations { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Language>(entity =>
+        {
+            entity.HasKey(e => e.LanguageCode);
+
+            // Properties
+            entity.Property(e => e.LanguageCode)
+                .HasMaxLength(8);
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(64);
+
+            entity.Property(e => e.IsDefault)
+                .HasDefaultValue(false, "DF_Language_IsDefault");
+
+            // Unique index to ensure only one default language
+            entity.HasIndex(e => e.IsDefault)
+                .IsUnique()
+                .HasFilter("[IsDefault] = 1")
+                .HasDatabaseName("UQ_Language_SingleDefault");
+        });
+
+        modelBuilder.Entity<Label>(entity =>
+        {
+            entity.HasKey(e => e.LabelId);
+
+            // Properties
+            entity.Property(e => e.Context)
+                .IsRequired()
+                .HasMaxLength(32);
+
+            entity.Property(e => e.LabelKey)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            // Unique index on Context + LabelKey
+            entity.HasIndex(e => new { e.Context, e.LabelKey })
+                .IsUnique()
+                .HasDatabaseName("UQ_Label_Context_Key");
+        });
+
+        modelBuilder.Entity<Translation>(entity =>
+        {
+            entity.HasKey(e => e.TranslationId);
+
+            // Properties
+            entity.Property(e => e.Text)
+                .IsRequired();
+
+            entity.Property(e => e.LanguageCode)
+                .IsRequired()
+                .HasMaxLength(8);
+
+            // Relationships
+            entity.HasOne(d => d.Label)
+                .WithMany(p => p.Translations)
+                .HasForeignKey(d => d.LabelId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Translation_LabelId");
+            
+            entity.HasOne(d => d.Language)
+                .WithMany(p => p.Translations)
+                .HasForeignKey(d => d.LanguageCode)
+                .OnDelete(DeleteBehavior.Restrict) 
+                .HasConstraintName("FK_Translation_LanguageCode");
+
+            // Unique index to ensure one translation per Label + Language combination
+            entity.HasIndex(e => new { e.LabelId, e.LanguageCode })
+                .IsUnique()
+                .HasDatabaseName("UQ_Translation_Label_Language");
+        });
+
         modelBuilder.Entity<Brand>(entity =>
         {
             entity.HasKey(e => e.BrandId);

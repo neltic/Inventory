@@ -22,6 +22,9 @@
     <None Update="Persistence\Scripts\GetItemLocation.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Persistence\Scripts\InitialData\GlobalizationData.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Persistence\Scripts\MoveBox.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
