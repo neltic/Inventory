@@ -1,7 +1,8 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
 import { PreloadAllModules, provideRouter, withComponentInputBinding, withPreloading, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
+import { languageInterceptor } from './core/interceptors/language.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +16,10 @@ export const appConfig: ApplicationConfig = {
       }),
       withPreloading(PreloadAllModules)
     ),
-    provideHttpClient()
+    provideHttpClient(
+      withInterceptors([
+        languageInterceptor
+      ])
+    )
   ]
 };

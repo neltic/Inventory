@@ -2,6 +2,7 @@
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
+using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
 
@@ -10,7 +11,11 @@ namespace Stock.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ItemsController(IItemService itemService, IFileStorageService fileService) : ControllerBase
+public class ItemsController(
+    IItemService itemService,
+    IFileStorageService fileService,
+    IGlobalizationService globalization) :
+    ApiBaseController(globalization, Context.Item)
 {
     /// <summary>
     /// Retrieves a list of all items in the inventory.
@@ -38,7 +43,7 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
     public async Task<ActionResult<ItemDetailedDto>> GetById(int id)
     {
         var item = await itemService.GetItemByIdAsync(id);
-        return item != null ? Ok(item) : NotFound(new { message = $"Item with ID {id} was not found." });
+        return item != null ? Ok(item) : NotFound(new { message = Translate(Key.NotFound, id) });
     }
 
     /// <summary>
@@ -124,7 +129,7 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
             var updated = await itemService.UpdateAsync(id, dto);
 
             if (!updated)
-                return NotFound(new { message = $"Can not update item with ID {id}." });
+                return NotFound(new { message = Translate(Key.CanNotUpdate, id) });
 
             return Ok(new { itemId = id, updated });
         }
@@ -153,7 +158,7 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
         var deleted = await itemService.DeleteAsync(id);
 
         if (!deleted)
-            return Conflict(new { message = $"Can not delete item with ID {id}." });
+            return Conflict(new { message = Translate(Key.CanNotDelete, id) });
 
         await fileService.DeleteItemImagesAsync(id);
 
@@ -179,7 +184,7 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
         try
         {
             var processed = await fileService.AssignImageToItemAsync(fileGuid, id);
-            if (!processed) throw new Exception("Failed to assign the image to the item.");
+            if (!processed) return StatusCode(500, Translate(Key.ImageAssignFailed));
 
             var updatedAt = await itemService.ChangeUpdatedAtAsync(id);
 
@@ -187,7 +192,7 @@ public class ItemsController(IItemService itemService, IFileStorageService fileS
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Internal error processing the image: {ex.Message}");
+            return StatusCode(500, Translate(Key.ImageProcessError, ex.Message));
         }
     }
 }

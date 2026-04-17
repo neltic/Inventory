@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
-using Stock.Application.Services;
 using Stock.Domain.Entities;
 using Stock.Infrastructure.Persistence;
 using Stock.Infrastructure.Services;

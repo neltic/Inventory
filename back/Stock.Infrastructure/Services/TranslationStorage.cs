@@ -16,7 +16,7 @@ public class TranslationStorage : ITranslationStorage
         return _cache.TryGetValue(languageCode, out var data) ? data : new Dictionary<string, IDictionary<string, string>>();
     }
 
-    public bool TryGetLanguage(string languageCode, out IDictionary<string, IDictionary<string, string>> data)
+    public bool TryGetLanguageDictionary(string languageCode, out IDictionary<string, IDictionary<string, string>> data)
     {
         if (_cache.TryGetValue(languageCode, out var d))
         {
@@ -25,5 +25,12 @@ public class TranslationStorage : ITranslationStorage
         }
         data = new Dictionary<string, IDictionary<string, string>>();
         return false;
+    }
+
+    public bool IsValidLanguage(string languageCode)
+    {
+        if (string.IsNullOrWhiteSpace(languageCode)) return false;
+
+        return _cache.ContainsKey(languageCode);
     }
 }

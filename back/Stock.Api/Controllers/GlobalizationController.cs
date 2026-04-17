@@ -8,19 +8,18 @@ namespace Stock.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class GlobalizationController(IGlobalizationService globalizationService) : ControllerBase
+public class GlobalizationController(IGlobalizationService globalization) : ControllerBase
 {
     /// <summary>
     /// Retrieves a structured dictionary of translations for a specific language.
     /// </summary>
-    /// <param name="lang">The ISO 639-1 language code (e.g., "en", "es").</param>
     /// <returns>A JSON object containing translations grouped by context and keys.</returns>
     /// <response code="200">Returns the translation dictionary. If the requested language is missing, the default language is returned.</response>
-    [HttpGet("locales/{lang}")]
+    [HttpGet("locales")]
     [ProducesResponseType(typeof(IDictionary<string, IDictionary<string, string>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetLocales(string lang)
+    public async Task<IActionResult> GetLocales()
     {
-        var translations = await globalizationService.GetLanguageJsonAsync(lang);
+        var translations = await globalization.GetLanguageDictionaryAsync();
         return Ok(translations);
     }
 
@@ -39,7 +38,7 @@ public class GlobalizationController(IGlobalizationService globalizationService)
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Refresh()
     {
-        await globalizationService.InitializeCacheAsync();
+        await globalization.InitializeCacheAsync();
         return Ok(new { message = "Cache refreshed" });
     }
 }

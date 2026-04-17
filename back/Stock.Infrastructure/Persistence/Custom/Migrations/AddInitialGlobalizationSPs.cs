@@ -9,8 +9,8 @@ public partial class AddInitialGlobalizationSPs
         string scriptsPath = Path.Combine(AppContext.BaseDirectory, "Persistence", "Scripts");
 
         string sqlGetAllTranslations = File.ReadAllText(Path.Combine(scriptsPath, "GetAllTranslations.sql"));
-        
-        migrationBuilder.Sql(sqlGetAllTranslations);        
+
+        migrationBuilder.Sql(sqlGetAllTranslations);
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

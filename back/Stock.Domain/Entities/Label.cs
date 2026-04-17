@@ -4,7 +4,7 @@
 /// Represents a unique text key used for globalization throughout the application.
 /// Groups translations by context to optimize organization and retrieval.
 /// </summary>
-public class Label 
+public class Label
 {
     /// <summary>The unique identifier for the label key.</summary>
     public int LabelId { get; set; }
@@ -19,7 +19,7 @@ public class Label
     /// The specific code or key name used in code (e.g., "Title", "Name").
     /// </summary>
     public string LabelKey { get; set; } = null!;
-    
+
     /* --- Navigation Properties --- */
 
     /// <summary>

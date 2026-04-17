@@ -8,5 +8,7 @@ public interface ITranslationStorage
 
     IDictionary<string, IDictionary<string, string>> GetLanguage(string languageCode);
 
-    bool TryGetLanguage(string languageCode, out IDictionary<string, IDictionary<string, string>> data);
+    bool TryGetLanguageDictionary(string languageCode, out IDictionary<string, IDictionary<string, string>> data);
+
+    bool IsValidLanguage(string languageCode);
 }

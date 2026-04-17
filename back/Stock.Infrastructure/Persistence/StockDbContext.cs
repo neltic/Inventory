@@ -88,11 +88,11 @@ public partial class StockDbContext : DbContext
                 .HasForeignKey(d => d.LabelId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Translation_LabelId");
-            
+
             entity.HasOne(d => d.Language)
                 .WithMany(p => p.Translations)
                 .HasForeignKey(d => d.LanguageCode)
-                .OnDelete(DeleteBehavior.Restrict) 
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Translation_LanguageCode");
 
             // Unique index to ensure one translation per Label + Language combination
@@ -196,7 +196,7 @@ public partial class StockDbContext : DbContext
             entity.ToTable(t => t.HasCheckConstraint("CK_Box_Height", "[Height] > 0"));
             entity.ToTable(t => t.HasCheckConstraint("CK_Box_Width", "[Width] > 0"));
         });
-        
+
         modelBuilder.Entity<Item>(entity =>
         {
             entity.HasKey(e => e.ItemId);
@@ -219,7 +219,7 @@ public partial class StockDbContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.Items)
                .HasForeignKey(s => s.CategoryId)
                .OnDelete(DeleteBehavior.Restrict)
-               .HasConstraintName("FK_Item_CategoryId");            
+               .HasConstraintName("FK_Item_CategoryId");
         });
 
         modelBuilder.Entity<Storage>(entity =>
@@ -284,7 +284,7 @@ public partial class StockDbContext : DbContext
                     .IsRequired()
                     .HasDefaultValueSql("SYSDATETIMEOFFSET()", $"DF_{tableName}_UpdatedAt");
             }
-        }        
+        }
 
         OnModelCreatingPartial(modelBuilder);
     }

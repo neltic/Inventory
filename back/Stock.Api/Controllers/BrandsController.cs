@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
 
@@ -9,7 +10,10 @@ namespace Stock.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class BrandsController(IBrandService BrandService) : ControllerBase
+public class BrandsController(
+    IBrandService BrandService,
+    IGlobalizationService globalization) :
+    ApiBaseController(globalization, Context.Brand)
 {
 
     /// <summary>
@@ -40,7 +44,7 @@ public class BrandsController(IBrandService BrandService) : ControllerBase
         var result = await BrandService.GetByIdAsync(id);
 
         if (result == null)
-            return NotFound(new { message = $"Brand with ID {id} was not found." });
+            return NotFound(new { message = Translate(Key.NotFound, id) });
 
         return Ok(result);
     }
@@ -69,7 +73,7 @@ public class BrandsController(IBrandService BrandService) : ControllerBase
             var updated = await BrandService.UpdateAsync(id, dto);
 
             if (!updated)
-                return NotFound(new { message = $"Can not update Brand with ID {id}." });
+                return NotFound(new { message = Translate(Key.CanNotUpdate, id) });
 
             return Ok(new { BrandId = id, updated });
         }
@@ -124,7 +128,7 @@ public class BrandsController(IBrandService BrandService) : ControllerBase
         var deleted = await BrandService.DeleteAsync(id);
 
         if (!deleted)
-            return Conflict(new { message = $"Can not delete Brand with ID {id}." });
+            return Conflict(new { message = Translate(Key.CanNotDelete, id) });
 
         return NoContent();
     }

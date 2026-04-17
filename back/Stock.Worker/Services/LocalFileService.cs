@@ -26,14 +26,11 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
     {
         var parts = syncFileName.Replace(FileRegistry.Extension.Sync, "", StringComparison.OrdinalIgnoreCase).Split('_');
 
-        if (parts.Length < 2)
+        if (parts is not [_, var origin, var id, ..])
         {
             pendingFiles = [];
             return false;
         }
-
-        string origin = parts[1];
-        string id = parts[2];
 
         pendingFiles = [.. FileRegistry.Folder.SubFolder.All.Select(sub => Path.Combine(GetImagePath(), origin, sub, FileRegistry.GetImageName(id)))];
 
@@ -81,16 +78,12 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
     {
         var parts = fileName.Replace(FileRegistry.Extension.Image, "", StringComparison.OrdinalIgnoreCase).Split('_');
 
-        if (parts.Length < 4)
+        if (parts is not [_, var origin, var id, var folder, ..])
         {
             originalFileName = string.Empty;
             pathParts = [];
             return false;
         }
-
-        string origin = parts[1];
-        string id = parts[2];
-        string folder = parts[3];
 
         originalFileName = FileRegistry.GetImageName(id);
         pathParts = [FileRegistry.Folder.Image, origin, folder];

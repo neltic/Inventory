@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
 
@@ -9,7 +10,10 @@ namespace Stock.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class StoragesController(IStorageService storageService) : ControllerBase
+public class StoragesController(
+    IStorageService storageService,
+    IGlobalizationService globalization) :
+    ApiBaseController(globalization, Context.Storage)
 {
     /// <summary>
     /// Retrieves storage information filtered by a specific item.
@@ -41,7 +45,7 @@ public class StoragesController(IStorageService storageService) : ControllerBase
         var result = await storageService.GetItemsByBoxIdAsync(boxId);
 
         if (result == null)
-            return NotFound(new { message = $"There are no items in that box with ID {boxId}." });
+            return NotFound(new { message = Translate(Key.NoItemsInBox, boxId) });
 
         return Ok(result);
     }
@@ -89,7 +93,7 @@ public class StoragesController(IStorageService storageService) : ControllerBase
         var updated = await storageService.UpdateAsync(dto);
 
         if (!updated)
-            return NotFound(new { message = $"Can not update storage.", updated });
+            return NotFound(new { message = Translate(Key.CanNotUpdate) });
 
         return Ok(new { updated });
     }

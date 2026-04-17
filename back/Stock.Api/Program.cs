@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Stock.Api.Utils;
 using Stock.Application.Common;
-using Stock.Application.Interfaces;
-using Stock.Application.Services;
 using Stock.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,6 +58,7 @@ await app.Services.CreateDummyDataAsync();
 await app.Services.InitializeCacheAsync();
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<LanguageDetectionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

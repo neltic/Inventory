@@ -5,7 +5,7 @@ BEGIN
 
     SELECT 
         [t].[LanguageCode]
-        ,  [l].[Context]
+        , [l].[Context]
         , [l].[LabelKey]
         , [t].[Text]
     FROM 

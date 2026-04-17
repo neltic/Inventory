@@ -3,6 +3,7 @@ using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities.Views;
+using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
 
@@ -11,9 +12,12 @@ namespace Stock.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class BoxesController(IBoxService boxService, IFileStorageService fileService) : ControllerBase
+public class BoxesController(
+    IBoxService boxService,
+    IFileStorageService fileService,
+    IGlobalizationService globalization)
+    : ApiBaseController(globalization, Context.Box)
 {
-
     /// <summary>
     /// Retrieves a list of boxes filtered by their parent container.
     /// </summary>
@@ -58,7 +62,7 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
         var result = await boxService.GetBoxByIdAsync(id);
 
         if (result == null)
-            return NotFound(new { message = $"Box with ID {id} was not found." });
+            return NotFound(new { message = Translate(Key.NotFound, id) });
 
         return Ok(result);
     }
@@ -162,7 +166,7 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
             var updated = await boxService.UpdateAsync(id, dto);
 
             if (!updated)
-                return NotFound(new { message = $"Can not update box with ID {id}." });
+                return NotFound(new { message = Translate(Key.CanNotUpdate, id) });
 
             return Ok(new { boxId = id, updated });
         }
@@ -190,7 +194,7 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
         var deleted = await boxService.DeleteAsync(id);
 
         if (!deleted)
-            return Conflict(new { message = $"Can not delete box with ID {id}." });
+            return Conflict(new { message = Translate(Key.CanNotDelete, id) });
 
         await fileService.DeleteBoxImagesAsync(id);
 
@@ -217,7 +221,7 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
         try
         {
             var processed = await fileService.AssignImageToBoxAsync(fileGuid, id);
-            if (!processed) throw new Exception("Failed to assign the image to the box.");
+            if (!processed) return StatusCode(500, Translate(Key.ImageAssignFailed));
 
             var updatedAt = await boxService.ChangeUpdatedAtAsync(id);
 
@@ -225,7 +229,7 @@ public class BoxesController(IBoxService boxService, IFileStorageService fileSer
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Internal error processing the image: {ex.Message}");
+            return StatusCode(500, Translate(Key.ImageProcessError, ex.Message));
         }
     }
 

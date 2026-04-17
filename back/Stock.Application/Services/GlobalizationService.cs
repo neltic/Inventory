@@ -10,7 +10,9 @@ public class GlobalizationService(
     ICacheService cache,
     ITranslationStorage storage)
     : BaseCacheService("globalization", "translation"), IGlobalizationService
-{    
+{
+    public string CurrentLanguage { get; set; } = string.Empty;
+
     public async Task InitializeCacheAsync()
     {
         var languages = await repository.GetAllLanguagesAsync();
@@ -26,42 +28,38 @@ public class GlobalizationService(
         }
     }
 
-    public string GetTranslation(string contextKey, params object[] values)
-    {
-        int dotIndex = contextKey.IndexOf('.');
-        if (dotIndex <= 0) return contextKey;
-        string context = contextKey[..dotIndex];
-        string key = contextKey[(dotIndex + 1)..];
-        return GetTranslation(context, key, values);
-    }
+    public string Translate(string context, string key, params object[] values)
+        => Translate(CurrentLanguage, context, key, values);
 
-    public string GetTranslation(string context, string key, params object[] values)
-        => GetTranslation(storage.DefaultLanguage, context, key, values);
-
-    public string GetTranslation(string languageCode, string context, string key, params object[] values)
+    public string Translate(string languageCode, string context, string key, params object[] values)
     {
-        if (storage.TryGetLanguage(languageCode, out var contexts) &&
+        if (storage.TryGetLanguageDictionary(languageCode, out var contexts) &&
             contexts.TryGetValue(context, out var labels) &&
             labels.TryGetValue(key, out var template))
         {
-            return Interpolate(template, values);
+            return Format(template, values);
         }
 
         if (languageCode != storage.DefaultLanguage &&
-            storage.TryGetLanguage(storage.DefaultLanguage, out var defaultContexts) &&
+            storage.TryGetLanguageDictionary(storage.DefaultLanguage, out var defaultContexts) &&
             defaultContexts.TryGetValue(context, out var defaultLabels) &&
             defaultLabels.TryGetValue(key, out var defaultTemplate))
         {
-            return Interpolate(defaultTemplate, values);
+            return Format(defaultTemplate, values);
         }
 
         return $"{context}.{key}";
     }
 
-    public async Task<IDictionary<string, IDictionary<string, string>>> GetLanguageJsonAsync(string languageCode)
+    public async Task<IDictionary<string, IDictionary<string, string>>> GetLanguageDictionaryAsync()
+    {
+        return await GetLanguageDictionaryAsync(CurrentLanguage);
+    }
+
+    public async Task<IDictionary<string, IDictionary<string, string>>> GetLanguageDictionaryAsync(string languageCode)
     {
         // RAM
-        if (storage.TryGetLanguage(languageCode, out var data)) return data;
+        if (storage.TryGetLanguageDictionary(languageCode, out var data)) return data;
 
         // Redis
         var redisData = await cache.GetAsync<IDictionary<string, IDictionary<string, string>>>(GetCacheKeyItem(languageCode));
@@ -73,7 +71,7 @@ public class GlobalizationService(
         }
 
         // RAM default
-        if (languageCode != storage.DefaultLanguage && storage.TryGetLanguage(storage.DefaultLanguage, out var defaultData)) return defaultData;
+        if (languageCode != storage.DefaultLanguage && storage.TryGetLanguageDictionary(storage.DefaultLanguage, out var defaultData)) return defaultData;
 
         // Empty
         return new Dictionary<string, IDictionary<string, string>>();
@@ -94,21 +92,19 @@ public class GlobalizationService(
         await cache.SetAsync(GetCacheKeyItem(languageCode), structuredData, TimeSpan.FromHours(24));
     }
 
-    private static string Interpolate(string template, params object[] values)
+    private static string Format(string template, params object[] values)
     {
-        if (values == null || values.Length == 0) return template;
-        var result = template;
-        foreach (var obj in values)
+        if (string.IsNullOrEmpty(template) || values == null || values.Length == 0)
+            return template;
+
+        try
         {
-            if (obj == null) continue;
-            foreach (var prop in obj.GetType().GetProperties())
-            {
-                var placeholder = $"{{{prop.Name}}}";
-                if (result.Contains(placeholder))
-                    result = result.Replace(placeholder, prop.GetValue(obj)?.ToString() ?? string.Empty);
-            }
+            return string.Format(template, values);
         }
-        return result;
+        catch
+        {
+            return template;
+        }
     }
 
 }

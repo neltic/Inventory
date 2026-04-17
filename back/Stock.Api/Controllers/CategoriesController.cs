@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
 
@@ -9,7 +10,10 @@ namespace Stock.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class CategoriesController(ICategoryService categoryService) : ControllerBase
+public class CategoriesController(
+    ICategoryService categoryService,
+    IGlobalizationService globalization) :
+    ApiBaseController(globalization, Context.Category)
 {
     /// <summary>
     /// Retrieves all categories registered in the system.
@@ -39,7 +43,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
         var result = await categoryService.GetByIdAsync(id);
 
         if (result == null)
-            return NotFound(new { message = $"Category with ID {id} was not found." });
+            return NotFound(new { message = Translate(Key.NotFound, id) });
 
         return Ok(result);
     }
@@ -68,7 +72,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
             var updated = await categoryService.UpdateAsync(id, dto);
 
             if (!updated)
-                return NotFound(new { message = $"Can not update category with ID {id}." });
+                return NotFound(new { message = Translate(Key.CanNotUpdate, id) });
 
             return Ok(new { categoryId = id, updated });
         }
@@ -123,7 +127,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
         var deleted = await categoryService.DeleteAsync(id);
 
         if (!deleted)
-            return Conflict(new { message = $"Can not delete category with ID {id}." });
+            return Conflict(new { message = Translate(Key.CanNotDelete, id) });
 
         return NoContent();
     }

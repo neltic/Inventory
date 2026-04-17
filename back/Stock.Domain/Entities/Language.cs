@@ -11,7 +11,7 @@ public class Language
 
     /// <summary>The friendly name of the language (e.g., "Español (México)").</summary>
     public string Name { get; set; } = null!;
-        
+
     /// <summary>Indicates if this is the system's fallback language.</summary>
     public bool IsDefault { get; set; }
 
