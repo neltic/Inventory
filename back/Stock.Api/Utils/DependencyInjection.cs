@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Stock.Application.Interfaces;
+using Stock.Application.Interfaces.Common;
+using Stock.Application.Services;
 using Stock.Domain.Entities;
 using Stock.Infrastructure.Persistence;
+using Stock.Infrastructure.Services;
 using System.Reflection;
 
 namespace Stock.Api.Utils;
@@ -11,6 +15,7 @@ public static class DependencyInjection
     {
         DependencyInjection,
         DataBase,
+        Globalization,
         Error,
         None
     }
@@ -42,31 +47,59 @@ public static class DependencyInjection
         Console.ResetColor();
     }
 
+    public static void AddSingletonDependencies(this IServiceCollection services)
+    {
+        InfoMessage(MessageSource.DependencyInjection, $"Singleton injected:");
+
+        services.AddSingleton<ITranslationStorage, TranslationStorage>();
+        OkMessage(MessageSource.None, $"ITranslationStorage -> TranslationStorage");
+
+        Console.ResetColor();
+    }
+
     public static void RunDataBaseUpdate(this IServiceProvider appServices)
     {
-        using (var scope = appServices.CreateScope())
+        using var scope = appServices.CreateScope();
+
+        var serviceProvider = scope.ServiceProvider;
+
+        try
         {
-            var serviceProvider = scope.ServiceProvider;
+            InfoMessage(MessageSource.DataBase, "Starting database update...");
 
-            try
-            {
-                InfoMessage(MessageSource.DataBase, "Starting database update...");
+            var context = serviceProvider.GetRequiredService<StockDbContext>();
 
-                var context = serviceProvider.GetRequiredService<StockDbContext>();
+            context.Database.Migrate();
 
-                context.Database.Migrate();
+            OkMessage(MessageSource.DataBase, "Database and stored procedures successfully updated!");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage(MessageSource.DataBase, "CRITICAL ERROR when adding database data:");
+            ErrorMessage(MessageSource.Error, ex.Message);
+        }
+        finally
+        {
+            Console.ResetColor();
+        }
+    }
 
-                OkMessage(MessageSource.DataBase, "Database and stored procedures successfully updated!");
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage(MessageSource.DataBase, "CRITICAL ERROR when adding database data:");
-                ErrorMessage(MessageSource.Error, ex.Message);
-            }
-            finally
-            {
-                Console.ResetColor();
-            }
+    public static async Task InitializeCacheAsync(this IServiceProvider appServices)
+    {
+        using var scope = appServices.CreateScope();
+        var services = scope.ServiceProvider;
+        try
+        {
+            var globalizationService = services.GetRequiredService<IGlobalizationService>();
+
+            await globalizationService.InitializeCacheAsync();
+
+            OkMessage(MessageSource.Globalization, "Globalization cache initialized successfully.");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage(MessageSource.Globalization, "CRITICAL ERROR when initializing globalization cache:");
+            ErrorMessage(MessageSource.Error, ex.Message);
         }
     }
 
@@ -74,13 +107,11 @@ public static class DependencyInjection
     {
         try
         {
-            using (var scope = appServices.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<StockDbContext>();
-                await SeedBoxesAsync(context);
-                await SeedItemsAsync(context);
-                await SeedStorageAsync(context);
-            }
+            using var scope = appServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<StockDbContext>();
+            await SeedBoxesAsync(context);
+            await SeedItemsAsync(context);
+            await SeedStorageAsync(context);
         }
         catch (Exception ex)
         {
@@ -105,8 +136,7 @@ public static class DependencyInjection
 
         var initialBoxes = new List<Box>
         {
-            new Box
-            {
+            new() {
                 Name = "DEWALT TSTAK VI",
                 CategoryId = 7,
                 BrandId = 5,
@@ -117,8 +147,7 @@ public static class DependencyInjection
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             },
-            new Box
-            {
+            new() {
                 Name = "DEWALT ToughSystem 2.0",
                 CategoryId = 7,
                 BrandId = 5,
@@ -129,8 +158,7 @@ public static class DependencyInjection
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             },
-            new Box
-            {
+            new() {
                 Name = "DEWALT Small Parts Organizer",
                 CategoryId = 7,
                 BrandId = 5,
@@ -161,11 +189,11 @@ public static class DependencyInjection
 
         var items = new List<Item>
         {
-            new Item { Name = "20V Drill", CategoryId = 7, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new Item { Name = "Earphones", CategoryId = 4, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new Item { Name = "Mouse", CategoryId = 4, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new Item { Name = "Pencils", CategoryId = 5, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new Item { Name = "AA Batteries", CategoryId = 2, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow }
+            new() { Name = "20V Drill", CategoryId = 7, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "Earphones", CategoryId = 4, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "Mouse", CategoryId = 4, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "Pencils", CategoryId = 5, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "AA Batteries", CategoryId = 2, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow }
         };
 
         await context.Items.AddRangeAsync(items);
@@ -200,8 +228,7 @@ public static class DependencyInjection
 
         var initialStorage = new List<Storage>
         {
-            new Storage
-            {
+            new() {
                 BoxId = boxTStak.BoxId,
                 ItemId = itemDrill.ItemId,
                 BrandId = 5,
@@ -210,8 +237,7 @@ public static class DependencyInjection
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             },
-            new Storage
-            {
+            new() {
                 BoxId = boxOrganizer.BoxId,
                 ItemId = itemBatteries!.ItemId,
                 BrandId = 8,
@@ -221,8 +247,7 @@ public static class DependencyInjection
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             },
-            new Storage
-            {
+            new() {
                 BoxId = boxOrganizer.BoxId,
                 ItemId = itemPencils!.ItemId,
                 BrandId = 2,
@@ -231,8 +256,7 @@ public static class DependencyInjection
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             },
-            new Storage
-            {
+            new() {
                 BoxId = boxOrganizer.BoxId,
                 ItemId = itemBatteries!.ItemId,
                 BrandId = 0,
@@ -261,6 +285,10 @@ public static class DependencyInjection
             case MessageSource.DataBase:
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("DB");
+                break;
+            case MessageSource.Globalization:
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("GL");
                 break;
             case MessageSource.Error:
                 Console.ForegroundColor = ConsoleColor.DarkRed;

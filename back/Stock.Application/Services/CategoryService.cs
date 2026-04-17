@@ -7,7 +7,7 @@ using Stock.Domain.Interfaces;
 namespace Stock.Application.Services;
 
 public class CategoryService(ICategoryRepository categoryRepository, ICacheService cache)
-    : BaseCacheService("category"), ICategoryService
+    : BaseCacheService("catalog", "category"), ICategoryService
 {
     /// <inheritdoc />
     public async Task<CategoryDto?> GetByIdAsync(int categoryId)

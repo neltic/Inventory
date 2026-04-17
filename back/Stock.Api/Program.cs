@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Stock.Api.Utils;
 using Stock.Application.Common;
+using Stock.Application.Interfaces;
+using Stock.Application.Services;
 using Stock.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,9 @@ builder.Services.AddDbContext<StockDbContext>(options =>
 // IoC registration
 builder.Services.AddProjectDependencies();
 
+// Register singleton services
+builder.Services.AddSingletonDependencies();
+
 // Register FileStorageOptions configuration
 builder.Services.Configure<FileStorageOptions>(
     builder.Configuration.GetSection(FileStorageOptions.SectionName));
@@ -50,6 +55,9 @@ app.Services.RunDataBaseUpdate();
 // Dummy Data
 await app.Services.CreateDummyDataAsync();
 #endif
+
+// Initialize cache on startup
+await app.Services.InitializeCacheAsync();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();

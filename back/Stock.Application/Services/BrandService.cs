@@ -7,7 +7,7 @@ using Stock.Domain.Interfaces;
 namespace Stock.Application.Services;
 
 public class BrandService(IBrandRepository brandRepository, ICacheService cache)
-    : BaseCacheService("brand"), IBrandService
+    : BaseCacheService("catalog", "brand"), IBrandService
 {
     /// <inheritdoc />
     public async Task<BrandDto?> GetByIdAsync(int brandId)

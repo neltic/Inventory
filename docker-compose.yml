@@ -20,9 +20,17 @@ services:
     ports:
       - "5540:5540"
     restart: always
+    environment:
+      - RI_APP_PORT=5540
+      - RI_APP_HOST=0.0.0.0
+      - RI_REDIS_HOST=stock-cache
+      - RI_REDIS_PORT=6379
+      - RI_REDIS_ALIAS=stock-local-cache
+    volumes:
+      - stock_cache_insight_data:/data
     depends_on:
       stock-cache:
-        condition: service_started
+        condition: service_healthy
     networks:
       - app-network
       
@@ -124,6 +132,9 @@ services:
         condition: service_healthy
     networks:
       - app-network
+
+volumes:
+    stock_cache_insight_data:
 
 networks:
   app-network:
