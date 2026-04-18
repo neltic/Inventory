@@ -17,6 +17,7 @@ public static class LabelRegistry
         public const string NotFound = "NOT_FOUND";
         public const string CanNotUpdate = "CAN_NOT_UPDATE";
         public const string CanNotDelete = "CAN_NOT_DELETE";
+        public const string AlreadyExists = "ALREADY_EXISTS";
         public const string NoItemsInBox = "NO_ITEMS_IN_BOX";
         public const string ImageAssignFailed = "IMAGE_ASSIGN_FAILED";
         public const string ImageProcessError = "IMAGE_PROCESS_ERROR";

@@ -1,6 +1,7 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { PreloadAllModules, provideRouter, withComponentInputBinding, withPreloading, withRouterConfig } from '@angular/router';
+import { GlobalizationService } from '@services';
 import { routes } from './app.routes';
 import { languageInterceptor } from './core/interceptors/language.interceptor';
 
@@ -20,6 +21,10 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([
         languageInterceptor
       ])
-    )
+    ),
+    provideAppInitializer(() => {
+        const globalization = inject(GlobalizationService);
+        return globalization.initializeApp();
+    }),
   ]
 };

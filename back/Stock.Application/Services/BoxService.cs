@@ -2,6 +2,7 @@
 using Stock.Application.Interfaces;
 using Stock.Application.Mappings;
 using Stock.Domain.Interfaces;
+using Stock.Foundation.Common;
 
 namespace Stock.Application.Services;
 
@@ -59,7 +60,7 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
 
         if (exists)
         {
-            throw new InvalidOperationException("A box with this name already exists in this location.");
+            throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
         }
 
         var box = dto.ToEntity(0);
@@ -81,7 +82,7 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
 
         if (exists)
         {
-            throw new InvalidOperationException("A box with this name already exists in this location.");
+            throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
         }
 
         return await boxRepository.UpdateAsync(dto.ToEntity(boxId));

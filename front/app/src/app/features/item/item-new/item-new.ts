@@ -105,7 +105,10 @@ export class ItemNew extends BaseFormComponent implements OnInit {
           this.goBack();
         });
       },
-      error: (error) => this.handleError(error)
+      error: (error) => {
+        this.handleError(error);
+        this.isSaving.set(false);
+      }
     });
   }  
   

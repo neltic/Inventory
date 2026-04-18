@@ -1,5 +1,7 @@
-﻿using Stock.Application.Interfaces;
+﻿using Stock.Application.DTOs;
+using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
+using Stock.Application.Mappings;
 using Stock.Domain.Entities.Views;
 using Stock.Domain.Interfaces;
 
@@ -11,14 +13,16 @@ public class GlobalizationService(
     ITranslationStorage storage)
     : BaseCacheService("globalization", "translation"), IGlobalizationService
 {
+    /// <inheritdoc />
     public string CurrentLanguage { get; set; } = string.Empty;
 
+    /// <inheritdoc />
     public async Task InitializeCacheAsync()
     {
         var languages = await repository.GetAllLanguagesAsync();
-        var defaultLang = languages.FirstOrDefault(l => l.IsDefault);
+        var defaultLanguage = languages.FirstOrDefault(l => l.IsDefault);
 
-        if (defaultLang != null) storage.DefaultLanguage = defaultLang.LanguageCode;
+        if (defaultLanguage != null) storage.DefaultLanguage = defaultLanguage.LanguageCode;
 
         var translations = await repository.GetAllTranslationsAsync();
 
@@ -28,9 +32,18 @@ public class GlobalizationService(
         }
     }
 
+    /// <inheritdoc />
+    public async Task<IEnumerable<LanguageDto>> GetAllLanguagesAsync()
+    {
+        var result = await repository.GetAllLanguagesAsync();
+        return result.ToDtoList();
+    }
+
+    /// <inheritdoc />
     public string Translate(string context, string key, params object[] values)
         => Translate(CurrentLanguage, context, key, values);
 
+    /// <inheritdoc />
     public string Translate(string languageCode, string context, string key, params object[] values)
     {
         if (storage.TryGetLanguageDictionary(languageCode, out var contexts) &&
@@ -51,11 +64,13 @@ public class GlobalizationService(
         return $"{context}.{key}";
     }
 
+    /// <inheritdoc />
     public async Task<IDictionary<string, IDictionary<string, string>>> GetLanguageDictionaryAsync()
     {
         return await GetLanguageDictionaryAsync(CurrentLanguage);
     }
 
+    /// <inheritdoc />
     public async Task<IDictionary<string, IDictionary<string, string>>> GetLanguageDictionaryAsync(string languageCode)
     {
         // RAM

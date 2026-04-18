@@ -76,7 +76,11 @@ export class BrandEditDialog extends BaseFormComponent implements OnInit {
     };    
     this.brandService.save(brandToSave).subscribe({
       next: () => this.dialogRef.close(true),
-      complete: () => this.isSaving.set(false)
+      complete: () => this.isSaving.set(false),
+      error: (error) => {
+          this.handleError(error);
+          this.isSaving.set(false);
+        }
     }); 
   }
   

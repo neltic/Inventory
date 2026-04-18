@@ -3,6 +3,7 @@ using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
 using Stock.Application.Mappings;
 using Stock.Domain.Interfaces;
+using Stock.Foundation.Common;
 
 namespace Stock.Application.Services;
 
@@ -48,7 +49,7 @@ public class BrandService(IBrandRepository brandRepository, ICacheService cache)
     public async Task<int> CreateAsync(BrandDto dto)
     {
         var exists = await brandRepository.ExistsAsync(dto.Name);
-        if (exists) throw new InvalidOperationException("A Brand with this name already exists.");
+        if (exists) throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
 
         var brand = dto.ToEntity(0);
         var brandId = await brandRepository.AddAsync(brand);
@@ -65,7 +66,7 @@ public class BrandService(IBrandRepository brandRepository, ICacheService cache)
         if (!existingBrand) return false;
 
         var exists = await brandRepository.ExistsAsync(dto.Name, dto.BrandId);
-        if (exists) throw new InvalidOperationException("A Brand with this name already exists.");
+        if (exists) throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
 
         var result = await brandRepository.UpdateAsync(dto.ToEntity(brandId));
 

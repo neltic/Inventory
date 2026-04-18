@@ -8,8 +8,6 @@ namespace Stock.Api.Controllers;
 /// <summary>
 /// Controller for managing product categories and their display order.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class CategoriesController(
     ICategoryService categoryService,
     IGlobalizationService globalization) :
@@ -78,7 +76,7 @@ public class CategoriesController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 
@@ -105,7 +103,7 @@ public class CategoriesController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 

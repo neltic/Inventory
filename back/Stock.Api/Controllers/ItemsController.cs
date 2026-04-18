@@ -9,8 +9,6 @@ namespace Stock.Api.Controllers;
 /// <summary>
 /// Controller for managing inventory items.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class ItemsController(
     IItemService itemService,
     IFileStorageService fileService,
@@ -101,7 +99,7 @@ public class ItemsController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 
@@ -135,7 +133,7 @@ public class ItemsController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 

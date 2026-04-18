@@ -1,12 +1,17 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
+const DEFAULT_LANG = 'en';
+
 export const languageInterceptor: HttpInterceptorFn = (req, next) => {
 
-    const lang = 'es-MX';
+    const lang = localStorage.getItem('language') || DEFAULT_LANG;
 
-    const languageReq = req.clone({
-        headers: req.headers.set('Accept-Language', lang),
-    });
+    if (req.url.includes('api/')) {
+        const clonedReq = req.clone({
+            setHeaders: { 'Accept-Language': lang }
+        });
+        return next(clonedReq);
+    }
 
-    return next(languageReq);
+    return next(req);
 };

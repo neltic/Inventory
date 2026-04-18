@@ -10,8 +10,6 @@ namespace Stock.Api.Controllers;
 /// <summary>
 /// Controller for managing boxes.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class BoxesController(
     IBoxService boxService,
     IFileStorageService fileService,
@@ -140,7 +138,7 @@ public class BoxesController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 
@@ -172,7 +170,7 @@ public class BoxesController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 

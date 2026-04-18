@@ -69,4 +69,20 @@
         </button>
     </mat-menu>   
 
+    <button mat-button [matMenuTriggerFor]="langMenu">
+        <mat-icon>language</mat-icon>
+        <span>{{ globalization.currentLanguageName() }}</span>
+    </button>
+
+    <mat-menu #langMenu="matMenu">
+        @for (lang of globalization.languages(); track lang.languageCode) {
+            <button mat-menu-item (click)="onLanguageChange(lang)">
+                <mat-icon>
+                    {{ isCurrentLang(lang.languageCode) ? 'check' : 'translate' }}
+                </mat-icon>
+                <span>{{ lang.name }}</span>
+            </button>
+        }
+    </mat-menu>
+
 </div>

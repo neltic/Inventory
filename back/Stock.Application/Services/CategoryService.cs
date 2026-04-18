@@ -3,6 +3,7 @@ using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
 using Stock.Application.Mappings;
 using Stock.Domain.Interfaces;
+using Stock.Foundation.Common;
 
 namespace Stock.Application.Services;
 
@@ -51,7 +52,7 @@ public class CategoryService(ICategoryRepository categoryRepository, ICacheServi
     public async Task<int> CreateAsync(CategoryDto dto)
     {
         var exists = await categoryRepository.ExistsAsync(dto.Name);
-        if (exists) throw new InvalidOperationException("A category with this name already exists.");
+        if (exists) throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
 
         var category = dto.ToEntity(0);
         var categoryId = await categoryRepository.AddAsync(category);
@@ -68,7 +69,7 @@ public class CategoryService(ICategoryRepository categoryRepository, ICacheServi
         if (!existingCategory) return false;
 
         var exists = await categoryRepository.ExistsAsync(dto.Name, dto.CategoryId);
-        if (exists) throw new InvalidOperationException("A category with this name already exists.");
+        if (exists) throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
 
         var result = await categoryRepository.UpdateAsync(dto.ToEntity(categoryId));
 

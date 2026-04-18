@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 
 namespace Stock.Api.Controllers;
@@ -10,6 +11,19 @@ namespace Stock.Api.Controllers;
 [Route("api/[controller]")]
 public class GlobalizationController(IGlobalizationService globalization) : ControllerBase
 {
+    /// <summary>
+    /// Retrieves all available languages for the application.
+    /// </summary>
+    /// <returns>A list of languages including their codes and names.</returns>
+    /// <response code="200">Returns the list of supported languages.</response>
+    [HttpGet("languages")]
+    [ProducesResponseType(typeof(IEnumerable<LanguageDto>), 200)]
+    public async Task<ActionResult<IEnumerable<LanguageDto>>> GetAllLanguages()
+    {
+        var result = await globalization.GetAllLanguagesAsync();
+        return Ok(result);
+    }
+
     /// <summary>
     /// Retrieves a structured dictionary of translations for a specific language.
     /// </summary>
@@ -32,7 +46,6 @@ public class GlobalizationController(IGlobalizationService globalization) : Cont
     /// </remarks>
     /// <returns>A confirmation message indicating the cache has been refreshed.</returns>
     /// <response code="200">Cache successfully refreshed.</response>
-    /// <response code="500">Internal error during cache synchronization or database connectivity issues.</response>
     [HttpPost("refresh")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

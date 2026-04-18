@@ -8,8 +8,6 @@ namespace Stock.Api.Controllers;
 /// <summary>
 /// Controller for managing product brands within the inventory system.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class BrandsController(
     IBrandService BrandService,
     IGlobalizationService globalization) :
@@ -79,7 +77,7 @@ public class BrandsController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 
@@ -106,7 +104,7 @@ public class BrandsController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(new { message = Translate(ex.Message) });
         }
     }
 

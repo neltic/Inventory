@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Directive, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import { GlobalizationService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { EntityScope, SCOPE_NONE_OPTION, SCOPE_OPTIONS, SCOPE_SELECTABLE_OPTIONS, ScopeOption } from '../../../models/e-entity-scope';
 import { RouteParamsService } from '../../../services/route-params-service';
@@ -10,10 +11,11 @@ import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 @Directive()
 export abstract class BaseComponent {
 
-    private snackBar = inject(MatSnackBar);
-    private location = inject(Location); 
-    protected readonly dialog = inject(MatDialog);
-    protected params = inject(RouteParamsService);
+    private snackBar: MatSnackBar = inject(MatSnackBar);
+    private location: Location = inject(Location); 
+    protected readonly dialog: MatDialog = inject(MatDialog);
+    protected params: RouteParamsService = inject(RouteParamsService);
+    protected globalization: GlobalizationService = inject(GlobalizationService);
     protected readonly scopeOptions = SCOPE_OPTIONS;
     protected readonly scopeSelectableOptions = SCOPE_SELECTABLE_OPTIONS;    
     public readonly EntityScope = EntityScope;    

@@ -8,8 +8,6 @@ namespace Stock.Api.Controllers;
 /// <summary>
 /// Controller for managing the association between boxes, items, and brands (Inventory Storage).
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class StoragesController(
     IStorageService storageService,
     IGlobalizationService globalization) :

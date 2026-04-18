@@ -73,7 +73,11 @@ export class CategoryEditDialog extends BaseFormComponent implements OnInit {
     
     this.categoryService.save(categoryToSave).subscribe({
       next: () => this.dialogRef.close(true),
-      complete: () => this.isSaving.set(false)
+      complete: () => this.isSaving.set(false),
+      error: (error) => {
+          this.handleError(error);
+          this.isSaving.set(false);
+        }
     });
   }
   

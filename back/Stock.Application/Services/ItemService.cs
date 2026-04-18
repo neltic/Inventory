@@ -2,6 +2,7 @@
 using Stock.Application.Interfaces;
 using Stock.Application.Mappings;
 using Stock.Domain.Interfaces;
+using Stock.Foundation.Common;
 
 namespace Stock.Application.Services;
 
@@ -41,7 +42,7 @@ public class ItemService(IItemRepository itemRepository) : IItemService
 
         if (exists)
         {
-            throw new InvalidOperationException("An item with this name already exists.");
+            throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
         }
 
         var entity = dto.ToEntity(0);
@@ -63,7 +64,7 @@ public class ItemService(IItemRepository itemRepository) : IItemService
 
         if (exists)
         {
-            throw new InvalidOperationException("An item with this name already exists.");
+            throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
         }
 
         return await itemRepository.UpdateAsync(dto.ToEntity(itemId));

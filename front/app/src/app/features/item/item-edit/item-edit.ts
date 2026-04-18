@@ -102,7 +102,7 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
           this.openSnack('success', '¡Item saved!', 'Ok');
           this.mainForm.markAsPristine();   
         },
-        error: (error) => this.handleError(error)
+        error: (error) => { this.handleError(error); }
       });
   }
 
