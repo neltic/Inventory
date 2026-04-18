@@ -9,7 +9,7 @@
 
       <img mat-card-image 
           [src]="box.boxId | asPhoto:'box':box.updatedAt"
-          alt="Exterior photo of {{ box.name }}"
+          alt="{{ box.name }}"
           appImgFallback
           class="image-container-photo always-visible"
           crossorigin>

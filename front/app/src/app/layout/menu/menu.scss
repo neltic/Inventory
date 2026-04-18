@@ -4,8 +4,17 @@
     border-bottom-color:#0dd;
     padding: 0;
 
+    display: flex;
+    align-items: center;     
+    min-width: 100%; 
+    justify-content: flex-start;
+
     .only-icon {
         margin: 0;
         padding: 0;
+    }
+
+    .main-menu-right {
+        margin-left: auto;
     }
 }

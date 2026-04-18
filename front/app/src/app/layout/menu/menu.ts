@@ -5,10 +5,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { ILanguage } from '@models';
 import { BaseComponent } from '../../shared/components/base/base';
+import { TranslateDirective } from '../../shared/directives/translate-directive';
 
 @Component({
   selector: 'app-menu',
-  imports: [RouterLink, MatIconModule, MatButtonModule, MatMenuModule],
+  imports: [RouterLink, MatIconModule, MatButtonModule, MatMenuModule, TranslateDirective],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
 })

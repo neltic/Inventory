@@ -6,72 +6,72 @@
 
     <button matButton [matMenuTriggerFor]="boxMenu">
         <mat-icon>inventory</mat-icon>
-        <span>Boxes</span>
+        <span translate="Menu.BOX"></span>
     </button>
     <mat-menu #boxMenu="matMenu">
         <button mat-menu-item [routerLink]="['/box/new', this.params.parentBoxId()]">
             <mat-icon>add</mat-icon>
-            <span>New</span>
+            <span translate="Menu.NEW"></span>
         </button>
         <button mat-menu-item [routerLink]="['/box/list', null]">
             <mat-icon>search</mat-icon>
-            <span>Search</span>
+            <span translate="Menu.SEARCH"></span>
         </button>
     </mat-menu>
 
     <button matButton [matMenuTriggerFor]="itemMenu">
         <mat-icon>art_track</mat-icon>
-        <span>Items</span>
+        <span translate="Menu.ITEM"></span>
     </button>
     <mat-menu #itemMenu="matMenu">
         <button mat-menu-item [routerLink]="['/item/new']">
             <mat-icon>add</mat-icon>
-            <span>New</span>
+            <span translate="Menu.NEW"></span>
         </button>
         <button mat-menu-item [routerLink]="['/item/list']">
             <mat-icon>search</mat-icon>
-            <span>Search</span>
+            <span translate="Menu.SEARCH"></span>
         </button>
     </mat-menu>   
     
     <button matButton [routerLink]="['/storage']">
         <mat-icon>storage</mat-icon>
-        <span>Storage</span>
+        <span translate="Menu.STORAGE"></span>
     </button>
 
     <button matButton [matMenuTriggerFor]="categoryMenu">
         <mat-icon>category</mat-icon>
-        <span>Categories</span>
+        <span translate="Menu.CATEGORY"></span>
     </button>
     <mat-menu #categoryMenu="matMenu">        
         <button mat-menu-item [routerLink]="['/category/list']" [queryParams]="{ action: 'add' }">
             <mat-icon>add</mat-icon>
-            <span>New</span>
+            <span translate="Menu.NEW"></span>
         </button>        
         <button mat-menu-item [routerLink]="['/category/list']">
             <mat-icon>dashboard_customize</mat-icon>
-            <span>Setup</span>
+            <span translate="Menu.SETUP"></span>
         </button>
     </mat-menu>
 
     <button matButton [matMenuTriggerFor]="brandMenu">
         <mat-icon>verified</mat-icon>
-        <span>Brands</span>
+        <span translate="Menu.BRAND"></span>
     </button>
     <mat-menu #brandMenu="matMenu">        
         <button mat-menu-item [routerLink]="['/brand/list']" [queryParams]="{ action: 'add' }">
             <mat-icon>add</mat-icon>
-            <span>New</span>
+            <span translate="Menu.NEW"></span>
         </button>        
         <button mat-menu-item [routerLink]="['/brand/list']">
             <mat-icon>dashboard_customize</mat-icon>
-            <span>Setup</span>
+            <span translate="Menu.SETUP"></span>
         </button>
     </mat-menu>   
 
-    <button mat-button [matMenuTriggerFor]="langMenu">
+    <button mat-button [matMenuTriggerFor]="langMenu" class="main-menu-right">
         <mat-icon>language</mat-icon>
-        <span>{{ globalization.currentLanguageName() }}</span>
+        <span [translate]="globalization.currentLanguageLabelKey()"></span>
     </button>
 
     <mat-menu #langMenu="matMenu">
@@ -80,7 +80,7 @@
                 <mat-icon>
                     {{ isCurrentLang(lang.languageCode) ? 'check' : 'translate' }}
                 </mat-icon>
-                <span>{{ lang.name }}</span>
+                <span [translate]="globalization.getLanguageLabelKey(lang.languageCode)"></span>
             </button>
         }
     </mat-menu>

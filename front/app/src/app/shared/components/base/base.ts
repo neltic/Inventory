@@ -47,7 +47,7 @@ export abstract class BaseComponent {
         const apiMessage = error.error?.message;
         const msg = (error.status >= 400 && error.status <= 500 && apiMessage)
                     ? apiMessage
-                    : (customErrorMessage || 'Error saving data');
+                    : (customErrorMessage || 'Error executing action');
         
         this.openSnack('error', msg, 'Close');
 

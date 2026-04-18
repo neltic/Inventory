@@ -18,11 +18,13 @@ export class GlobalizationService {
   public currentLanguage = this._currentLanguage.asReadonly();
   public languages = this._languages.asReadonly();
 
-  public currentLanguageName = computed(() => {
-    const code = this.currentLanguage();
-    const list = this.languages();    
-    const found = list.find(l => l.languageCode === code);
-    return found ? found.name : 'Unknown';
+  public getLanguageLabelKey(languageCode: string): string {
+    const formattedCode = languageCode.toUpperCase().replace('-', '_');
+    return `Menu.LANG_${formattedCode}`;
+  }
+
+  public currentLanguageLabelKey = computed(() => {
+    return this.getLanguageLabelKey(this.currentLanguage());
   });
 
   updateLanguage(languageCode: string) {
@@ -38,10 +40,10 @@ export class GlobalizationService {
   translate(context: string, key: string, params: any[] = []): string {
     const contextData = this.translations()[context];
     const translation = contextData ? contextData[key] : null;
-    if (!translation) {
-      return `[${context}.${key}]`; 
-    }
+
+    if (!translation) return `[${context}.${key}]`; 
     if (params.length === 0) return translation;
+
     return translation.replace(/{(\d+)}/g, (match, index) => {
       const val = params[index];
       return typeof val !== 'undefined' ? val : match;
@@ -49,7 +51,7 @@ export class GlobalizationService {
   }
 
   refreshServerCache(): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.apiUrl}/refresh`, {});
+    return this.http.post<{ message: string }>(`${this.apiUrl}refresh`, {});
   }
   
   public async initializeApp(): Promise<void> {
