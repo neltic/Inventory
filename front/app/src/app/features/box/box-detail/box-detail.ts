@@ -11,6 +11,7 @@ import { BoxService, BrandService, CategoryService } from '@services';
 import { filter, firstValueFrom, switchMap } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
 import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
@@ -29,7 +30,8 @@ import { BoxParentSelectDialog } from '../box-parent-select-dialog/box-parent-se
     MatProgressSpinnerModule, 
     ImgFallbackDirective,
     BoxBreadcrumb,
-    AsPhotoPipe
+    AsPhotoPipe,
+    TranslateDirective
   ],
   templateUrl: './box-detail.html',
   styleUrl: './box-detail.scss',

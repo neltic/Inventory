@@ -13,8 +13,11 @@ import { BaseFormComponent } from '../../../shared/components/base-form/base-for
 import { BrandSelect } from '../../../shared/components/brand-select/brand-select';
 import { CategorySelect } from '../../../shared/components/category-select/category-select';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
+import { TranslateErrorPipe } from '../../../shared/pipes/translate-error-pipe';
+import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
 
 @Component({
@@ -37,7 +40,10 @@ import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
     BoxBreadcrumb,
     CategorySelect,
     BrandSelect,
-    AsPhotoPipe
+    AsPhotoPipe,
+    TranslatePipe,
+    TranslateDirective,
+    TranslateErrorPipe
   ],
   providers: [{ provide: BaseFormComponent, useExisting: BoxEdit }],
   templateUrl: './box-edit.html',

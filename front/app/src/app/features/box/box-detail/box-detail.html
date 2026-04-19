@@ -40,21 +40,21 @@
             <strong>{{ box.height }}</strong>cm
             x
             <strong>{{ box.depth }}</strong>cm
-            = <strong>{{ box.volume }}</strong>cm³ (width x height x depth = volume)
+            = <strong>{{ box.volume }}</strong>cm³ <span translate="Box.VOLUME_FORMULA"></span>
         </span>
     </p>
     <p>
         <mat-icon>event</mat-icon>
         <span 
           [matTooltip]="(box.createdAt | date:'full')!"
-          matTooltipPosition="above">Created {{ box.createdAt | relativeTime }}
+          matTooltipPosition="above"><span translate="Global.CREATED"></span> {{ box.createdAt | relativeTime }}
         </span>
     </p>
     <p>
         <mat-icon>access_time</mat-icon>
         <span
           [matTooltip]="(box.updatedAt | date:'full')!"
-          matTooltipPosition="above">Updated {{ box.updatedAt | relativeTime }}
+          matTooltipPosition="above"><span translate="Global.UPDATED"></span> {{ box.updatedAt | relativeTime }}
         </span>
     </p>
   </mat-card-content>
@@ -65,17 +65,15 @@
         <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
       } @else {
         <mat-icon>delete_forever</mat-icon>
-      }
-      <span>
-        @if(!isDeleting()) { Delete }
-        @else { Deleting... }
-      </span>
+      }      
+      @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
+      @else { <span translate="Global.DELETING"></span> }      
     </button>    
     <button type="button" matButton (click)="openBoxParentSelectDialog(box)" [disabled]="isDeleting()">
-      <mat-icon>move_to_inbox</mat-icon><span>Move To</span>
+      <mat-icon>move_to_inbox</mat-icon><span translate="Box.MOVE_TO"></span>
     </button>
     <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
-      <mat-icon>navigate_before</mat-icon><span>Back</span>
+      <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span>
     </button>
   </mat-card-actions>
 

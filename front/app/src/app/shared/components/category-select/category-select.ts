@@ -6,6 +6,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ICategory } from '../../../models/i-category';
 import { CategoryService } from '../../../services/category-service';
 import { FindInListPipe } from '../../pipes/find-in-list-pipe';
+import { TranslateErrorPipe } from '../../pipes/translate-error-pipe';
 import { BaseSelectComponent } from '../base-select/base-select';
 
 @Component({
@@ -15,7 +16,8 @@ import { BaseSelectComponent } from '../base-select/base-select';
     MatFormFieldModule, 
     MatSelectModule, 
     MatIconModule,
-    FindInListPipe
+    FindInListPipe,
+    TranslateErrorPipe
   ],
   viewProviders: [
     {

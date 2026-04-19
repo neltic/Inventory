@@ -1,11 +1,11 @@
-export const ERROR_FORM_MESSAGES: Record<string, (name: string) => string> = {
-    required: (name) => `You must enter: ${name}`,
-    minlength: (name) => `The ${name} is too short`,
-    maxlength: (name) => `The ${name} is too long`,
-    min: (_) => `The value must be greater than 0`,
-    brandNotFound: (name) => `The selected ${name} is invalid`,
-    categoryNotFound: (name) => `The selected ${name} is invalid`,
-    entityNotFound: (name) => `The selected ${name} is invalid`,
-    invalidDestination: (_) => `Please select a valid destination`,
-    requiredTrue: (_) => `You must accept the change to continue.`,
+export const ERROR_FORM_MESSAGES: Record<string, string> = {
+    required: 'Error.REQUIRED',
+    minlength: 'Error.MIN_LENGTH',
+    maxlength: 'Error.MAX_LENGTH',
+    min: 'Error.MIN',
+    brandNotFound: 'Error.BRAND_NOT_FOUND',
+    categoryNotFound: 'Error.CATEGORY_NOT_FOUND',
+    entityNotFound: 'Error.ENTITY_NOT_FOUND',
+    invalidDestination: 'Error.INVALID_DESTINATION',
+    requiredTrue: 'Error.REQUIRED_TRUE',
 };

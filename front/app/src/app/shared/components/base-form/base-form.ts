@@ -43,10 +43,11 @@ export abstract class BaseFormComponent extends BaseComponent {
     updateErrorMessage(fieldName: string, friendlyErrorName: string) {        
         const control = this.findControlRecursive(this.mainForm, fieldName);
         const errorSignal = this.errorMessages[fieldName];               
-        if (!control || !errorSignal) return;        
-        const firstErrorKey = Object.keys(control.errors || {})[0];        
-        if (firstErrorKey && ERROR_FORM_MESSAGES[firstErrorKey]) {
-            errorSignal.set(ERROR_FORM_MESSAGES[firstErrorKey](friendlyErrorName));
+        if (!control || !errorSignal) return; 
+        const firstErrorKey = Object.keys(control.errors || {})[0];   
+        const labelKey = ERROR_FORM_MESSAGES[firstErrorKey]     
+        if (firstErrorKey && labelKey) {
+            errorSignal.set(`${labelKey}|${friendlyErrorName}`);
         } else {
             errorSignal.set('');
         }

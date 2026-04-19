@@ -1,9 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+const DEFAULT_LANG = 'en';
+
 @Pipe({
   name: 'relativeTime',
   standalone: true,
-  pure: true
+  pure: false
 })
 export class RelativeTimePipe implements PipeTransform {
 
@@ -13,11 +15,12 @@ export class RelativeTimePipe implements PipeTransform {
     const date = new Date(value);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    // Si la fecha es inválida
+    
     if (isNaN(date.getTime())) return 'Invalid date';
 
-    const formatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    const lang = localStorage.getItem('language') || DEFAULT_LANG;
+
+    const formatter = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' });
 
     if (diffInSeconds < 60) return 'a moment ago';
     

@@ -4,18 +4,18 @@
 <mat-card class="custom-card" appearance="outlined">
     <mat-card-header>    
         <mat-form-field>
-            <mat-label>Box name</mat-label>
+            <mat-label>{{ 'Box.NAME' | translate }}</mat-label>
             <input
                 matInput
-                placeholder="Box name"
+                [placeholder]="'Box.NAME' | translate"
                 formControlName="name"
-                (blur)="updateErrorMessage('name', 'Box name')"
+                (blur)="updateErrorMessage('name', 'Box.BOX_NAME')"
                 required
                 maxlength="64"
             />
             <mat-hint align="end">{{ mainForm.get('name')?.value?.length || 0 }}/64</mat-hint>
             @if (errorMessages['name']()) {
-                <mat-error>{{ errorMessages['name']() }}</mat-error>
+                <mat-error>{{ errorMessages['name']() | translateError }}</mat-error>
             }
         </mat-form-field>
     </mat-card-header>
@@ -29,7 +29,7 @@
             [class.image-container-loaded]="!isUploadingImage()"
             (load)="onImageLoad()"
             (error)="onImageLoad()"
-            alt="Exterior photo of {{ box.name }}"
+            alt="{{ box.name }}"
             class="image-container-photo"
             appImgFallback
             crossorigin>
@@ -37,7 +37,7 @@
         @if (!isUploadingImage()) {
             <div class="image-container-overlay" [class.image-container-disabled]="isBusy()">
                 <mat-icon>photo_camera</mat-icon>
-                <span>Change Photo</span>
+                <span translate="Global.CHANGE_PHOTO"></span>
             </div>
         }
         <input 
@@ -53,35 +53,35 @@
         
         <app-box-breadcrumb [fullPath]="box.fullPath" />
 
-        <app-brand-select controlName="brandId" label="Brand" [scope]="EntityScope.Box" friendlyErrorName="Box brand" />
+        <app-brand-select controlName="brandId" label="{{'Box.BRAND' | translate}}" [scope]="EntityScope.Box" friendlyErrorName="Box.BOX_BRAND" />
 
-        <app-category-select controlName="categoryId" label="Category" [scope]="EntityScope.Box" friendlyErrorName="Box category" />        
+        <app-category-select controlName="categoryId" label="{{'Box.CATEGORY' | translate}}" [scope]="EntityScope.Box" friendlyErrorName="Box.BOX_CATEGORY" />        
 
         <mat-form-field>
-            <mat-label>Notes</mat-label>
+            <mat-label>{{ 'Box.NOTES' | translate }}</mat-label>
             <textarea 
                 matInput
-                placeholder="Notes"
+                [placeholder]="'Box.NOTES' | translate"
                 formControlName="notes"
-                (blur)="updateErrorMessage('notes', 'Box notes')"
+                (blur)="updateErrorMessage('notes', 'Box.BOX_NOTES')"
                 required
                 maxlength="512">
             </textarea>
             <span matTextPrefix><mat-icon>note</mat-icon></span>
             <mat-hint align="end">{{ mainForm.get('notes')?.value?.length || 0 }}/512</mat-hint>
             @if (errorMessages['notes']()) {
-                <mat-error>{{ errorMessages['notes']() }}</mat-error>
+                <mat-error>{{ errorMessages['notes']() | translateError }}</mat-error>
             }
         </mat-form-field>
 
         <mat-form-field floatLabel="always">
-            <mat-label>Width</mat-label>
+            <mat-label>{{ 'Box.WIDTH' | translate }}</mat-label>
             <input 
                 matInput 
                 type="number" 
                 min="0"
                 formControlName="width"
-                (blur)="updateErrorMessage('width', 'Box width')"
+                (blur)="updateErrorMessage('width', 'Box.BOX_WIDTH')"
                 required 
                 class="right-align" 
                 placeholder="0" 
@@ -89,18 +89,18 @@
             <span matTextPrefix><mat-icon>straighten</mat-icon></span>
             <span matTextSuffix>cm</span>
             @if (errorMessages['width']()) {
-                <mat-error>{{ errorMessages['width']() }}</mat-error>
+                <mat-error>{{ errorMessages['width']() | translateError }}</mat-error>
             }
         </mat-form-field>
 
         <mat-form-field floatLabel="always">
-            <mat-label>Height</mat-label>
+            <mat-label>{{ 'Box.HEIGHT' | translate }}</mat-label>
             <input 
                 matInput 
                 type="number" 
                 min="0"
                 formControlName="height"
-                (blur)="updateErrorMessage('height', 'Box height')"
+                (blur)="updateErrorMessage('height', 'Box.BOX_HEIGHT')"
                 required 
                 class="right-align" 
                 placeholder="0" 
@@ -108,18 +108,18 @@
             <span matTextPrefix><mat-icon>straighten</mat-icon></span>
             <span matTextSuffix>cm</span>
             @if (errorMessages['height']()) {
-                <mat-error>{{ errorMessages['height']() }}</mat-error>
+                <mat-error>{{ errorMessages['height']() | translateError }}</mat-error>
             }
         </mat-form-field>
 
         <mat-form-field floatLabel="always">
-            <mat-label>Depth</mat-label>
+            <mat-label>{{ 'Box.DEPTH' | translate }}</mat-label>
             <input 
                 matInput 
                 type="number" 
                 min="0"
                 formControlName="depth"
-                (blur)="updateErrorMessage('depth', 'Box depth')"
+                (blur)="updateErrorMessage('depth', 'Box.BOX_DEPTH')"
                 required 
                 class="right-align" 
                 placeholder="0" 
@@ -127,13 +127,13 @@
             <span matTextPrefix><mat-icon>straighten</mat-icon></span>
             <span matTextSuffix>cm</span>
             @if (errorMessages['depth']()) {
-                <mat-error>{{ errorMessages['depth']() }}</mat-error>
+                <mat-error>{{ errorMessages['depth']() | translateError }}</mat-error>
             }
         </mat-form-field>
 
         <p>
             <mat-icon>access_time</mat-icon>
-            <span>Updated {{ box.updatedAt | relativeTime }}</span>
+            <span><span translate="Global.UPDATED"></span> {{ box.updatedAt | relativeTime }}</span>
         </p>
 
     </mat-card-content>
@@ -145,21 +145,17 @@
             } @else {
                 <mat-icon>save</mat-icon>
             }
-            <span>
-                @if (isSaving()) { Saving... }
-                @else if (isUploadingImage()) { Uploading image... }
-                @else { Save }
-            </span>
+            @if (isSaving()) { <span translate="Global.SAVING"></span> }
+            @else if (isUploadingImage()) { <span translate="Global.UPLOADING_IMAGE"></span> }
+            @else { <span translate="Global.SAVE"></span> }            
         </button>
         <button type="button" matButton (click)="onCancel()" class="btn-cancel">
             <mat-icon>
                 @if (mainForm.dirty) { cancel }            
                 @else { navigate_before }        
             </mat-icon>
-            <span>
-                @if (mainForm.dirty) { Cancel }
-                @else { Back }
-            </span>
+            @if (mainForm.dirty) { <span translate="Global.CANCEL"></span> }
+            @else { <span translate="Global.BACK"></span> }            
         </button> 
     </mat-card-actions>
 

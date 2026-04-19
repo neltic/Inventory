@@ -225,7 +225,7 @@ export class Storage extends BaseFormComponent implements OnInit {
       ...item,
       ...details
     };
-    // Only date part (DateOnly in .Net)
+    
     const formattedDate = data['expires'] && data['expiresOn'] 
                           ? new Date(data['expiresOn']).toISOString().split('T')[0] 
                           : null;
@@ -262,9 +262,9 @@ export class Storage extends BaseFormComponent implements OnInit {
     const selectedBrand = brands.find(i => i.brandId === data.brandId);
 
     this.reviewSummary.set({
-      boxName: selectedBox?.name ?? 'Not selected',
-      itemName: selectedItem?.name ?? 'Not selected',
-      brandName: selectedBrand?.name ?? 'Not selected',
+      boxName: selectedBox?.name ?? '---',
+      itemName: selectedItem?.name ?? '---',
+      brandName: selectedBrand?.name ?? '---',
       quantity: data.quantity,
       expires: data.expires,
       expiresOn: data.expiresOn

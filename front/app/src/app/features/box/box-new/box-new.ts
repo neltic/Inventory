@@ -13,6 +13,9 @@ import { BaseFormComponent } from '../../../shared/components/base-form/base-for
 import { BrandSelect } from '../../../shared/components/brand-select/brand-select';
 import { CategorySelect } from '../../../shared/components/category-select/category-select';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
+import { TranslateErrorPipe } from '../../../shared/pipes/translate-error-pipe';
+import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
 
 @Component({
@@ -34,6 +37,9 @@ import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
     BoxBreadcrumb,
     CategorySelect,
     BrandSelect,
+    TranslateDirective,
+    TranslateErrorPipe,
+    TranslatePipe
   ],
   providers: [{ provide: BaseFormComponent, useExisting: BoxNew }],
   templateUrl: './box-new.html',
