@@ -1,7 +1,7 @@
 <div class="welcome-layout">
   <header class="welcome-layout-header">
-    <h1>Inventory Management</h1>
-    <p>Select a module to start</p>
+    <h1>{{ 'Welcome.TITLE' | translate }}</h1>
+    <p>{{ 'Welcome.SUBTITLE' | translate }}</p>
   </header>
 
   <div class="welcome-layout-grid">    
@@ -9,26 +9,26 @@
     <mat-card class="welcome-layout-card primary" [routerLink]="['/storage']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>storage</mat-icon>
-        <mat-card-title>Storage</mat-card-title>    
-        <mat-card-subtitle>Direct stock entry</mat-card-subtitle>   
+        <mat-card-title>{{ 'Welcome.STORAGE_CARD_TITLE' | translate }}</mat-card-title>    
+        <mat-card-subtitle>{{ 'Welcome.STORAGE_CARD_SUBTITLE' | translate }}</mat-card-subtitle>   
       </mat-card-header>
       <mat-card-content>
-        <p>Efficiently register new items into existing boxes with step-by-step validation.</p>
+        <p>{{ 'Welcome.STORAGE_CARD_CONTENT' | translate }}</p>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="welcome-layout-card" [routerLink]="['/box/list', null]" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>inventory</mat-icon>
-        <mat-card-title>Boxes</mat-card-title>
-        <mat-card-subtitle>Manage your storage</mat-card-subtitle>
+        <mat-card-title>{{ 'Welcome.BOX_CARD_TITLE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'Welcome.BOX_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>Create new containers or search through your current setup.</p>
+        <p>{{ 'Welcome.BOX_CARD_CONTENT' | translate }}</p>
       </mat-card-content>
       <mat-card-actions>
         <button mat-button [routerLink]="['/box/new', null]">
-          <mat-icon>add</mat-icon> NEW
+          <mat-icon>add</mat-icon> {{ 'Menu.NEW' | translate }}
         </button>
       </mat-card-actions>
     </mat-card>
@@ -36,15 +36,15 @@
     <mat-card class="welcome-layout-card" [routerLink]="['/item/list']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>art_track</mat-icon>
-        <mat-card-title>Items</mat-card-title>
-        <mat-card-subtitle>Manage your items</mat-card-subtitle>
+        <mat-card-title>{{ 'Welcome.ITEM_CARD_TITLE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'Welcome.ITEM_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>Browse your complete catalog of items, define new products, and manage descriptions.</p>
+        <p>{{ 'Welcome.ITEM_CARD_CONTENT' | translate }}</p>
       </mat-card-content>
       <mat-card-actions>
         <button mat-button [routerLink]="['/item/new']">
-          <mat-icon>add</mat-icon> NEW
+          <mat-icon>add</mat-icon> {{ 'Menu.NEW' | translate }}
         </button>
       </mat-card-actions>
     </mat-card>
@@ -52,22 +52,22 @@
     <mat-card class="welcome-layout-card setup" [routerLink]="['/category/list']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>category</mat-icon>
-        <mat-card-title>Categories</mat-card-title>
-        <mat-card-subtitle>Classification</mat-card-subtitle>
+        <mat-card-title>{{ 'Welcome.CATEGORY_CARD_TITLE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'Welcome.CATEGORY_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>Organize your inventory by types and groups for better searching.</p>
+        <p>{{ 'Welcome.CATEGORY_CARD_CONTENT' | translate }}</p>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="welcome-layout-card setup" [routerLink]="['/brand/list']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>verified</mat-icon>
-        <mat-card-title>Brands</mat-card-title>
-        <mat-card-subtitle>Manufacturers</mat-card-subtitle>
+        <mat-card-title>{{ 'Welcome.BRAND_CARD_TITLE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'Welcome.BRAND_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>Manage item and brands suppliers in your system.</p>
+        <p>{{ 'Welcome.BRAND_CARD_CONTENT' | translate }}</p>
       </mat-card-content>
     </mat-card>
 

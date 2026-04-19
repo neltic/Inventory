@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '../../shared/pipes/translate-pipe';
 
 @Component({
   selector: 'app-welcome',
@@ -13,7 +14,8 @@ import { RouterLink } from '@angular/router';
     MatCardModule,   
     MatButtonModule, 
     MatIconModule,   
-    MatRippleModule
+    MatRippleModule,
+    TranslatePipe
   ],  
   templateUrl: './welcome.html',
   styleUrl: './welcome.scss',

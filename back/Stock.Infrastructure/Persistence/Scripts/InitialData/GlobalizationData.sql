@@ -157,7 +157,26 @@ VALUES
   -- Scope
   ('Scope', 'ALL'),
   ('Scope', 'ITEM'),
-  ('Scope', 'BOX');
+  ('Scope', 'BOX'),
+
+  -- Welcome
+  ('Welcome', 'TITLE'),
+  ('Welcome', 'SUBTITLE'),
+  ('Welcome', 'STORAGE_CARD_TITLE'),
+  ('Welcome', 'STORAGE_CARD_SUBTITLE'),
+  ('Welcome', 'STORAGE_CARD_CONTENT'),
+  ('Welcome', 'BOX_CARD_TITLE'),
+  ('Welcome', 'BOX_CARD_SUBTITLE'),
+  ('Welcome', 'BOX_CARD_CONTENT'),
+  ('Welcome', 'ITEM_CARD_TITLE'),
+  ('Welcome', 'ITEM_CARD_SUBTITLE'),
+  ('Welcome', 'ITEM_CARD_CONTENT'),
+  ('Welcome', 'CATEGORY_CARD_TITLE'),
+  ('Welcome', 'CATEGORY_CARD_SUBTITLE'),
+  ('Welcome', 'CATEGORY_CARD_CONTENT'),
+  ('Welcome', 'BRAND_CARD_TITLE'),
+  ('Welcome', 'BRAND_CARD_SUBTITLE'),
+  ('Welcome', 'BRAND_CARD_CONTENT');
 
 
 INSERT INTO [dbo].[Translation] (LabelId, LanguageCode, [Text], CreatedAt, UpdatedAt)
@@ -321,6 +340,26 @@ CASE
     WHEN Context = 'Message' AND LabelKey = 'ITEM_REMOVED_FROM_BOX' THEN 'Item removed from the box successfully'
     WHEN Context = 'Message' AND LabelKey = 'ITEM_SAVED' THEN '¡Item saved!'
     WHEN Context = 'Message' AND LabelKey = 'STORAGE_UPDATED' THEN 'Storage updated successfully'
+
+    -- Welcome
+    WHEN Context = 'Welcome' AND LabelKey = 'TITLE' THEN 'Inventory Management'
+    WHEN Context = 'Welcome' AND LabelKey = 'SUBTITLE' THEN 'Select a module to start'
+    WHEN Context = 'Welcome' AND LabelKey = 'STORAGE_CARD_TITLE' THEN 'Storage'
+    WHEN Context = 'Welcome' AND LabelKey = 'STORAGE_CARD_SUBTITLE' THEN 'Direct stock entry'
+    WHEN Context = 'Welcome' AND LabelKey = 'STORAGE_CARD_CONTENT' THEN 'Efficiently register new items into existing boxes with step-by-step validation.'
+    WHEN Context = 'Welcome' AND LabelKey = 'BOX_CARD_TITLE' THEN 'Boxes'
+    WHEN Context = 'Welcome' AND LabelKey = 'BOX_CARD_SUBTITLE' THEN 'Manage your storage'
+    WHEN Context = 'Welcome' AND LabelKey = 'BOX_CARD_CONTENT' THEN 'Create new containers or search through your current setup.'
+    WHEN Context = 'Welcome' AND LabelKey = 'ITEM_CARD_TITLE' THEN 'Items'
+    WHEN Context = 'Welcome' AND LabelKey = 'ITEM_CARD_SUBTITLE' THEN 'Manage your items'
+    WHEN Context = 'Welcome' AND LabelKey = 'ITEM_CARD_CONTENT' THEN 'Browse your complete catalog of items, define new products, and manage descriptions.'
+    WHEN Context = 'Welcome' AND LabelKey = 'CATEGORY_CARD_TITLE' THEN 'Categories'
+    WHEN Context = 'Welcome' AND LabelKey = 'CATEGORY_CARD_SUBTITLE' THEN 'Classification'
+    WHEN Context = 'Welcome' AND LabelKey = 'CATEGORY_CARD_CONTENT' THEN 'Organize your inventory by types and groups for better searching.'
+    WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_TITLE' THEN 'Brands'
+    WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_SUBTITLE' THEN 'Manufacturers'
+    WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_CONTENT' THEN 'Manage item and brands suppliers in your system.'
+
 END, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET()
 FROM [Label];
 
@@ -486,5 +525,25 @@ CASE
     WHEN Context = 'Message' AND LabelKey = 'ITEM_REMOVED_FROM_BOX' THEN 'Artículo quitado de la caja con éxito'
     WHEN Context = 'Message' AND LabelKey = 'ITEM_SAVED' THEN '¡Artículo guardado!'
     WHEN Context = 'Message' AND LabelKey = 'STORAGE_UPDATED' THEN 'Almacenamiento actualizado con éxito'
+
+    -- Welcome
+    WHEN Context = 'Welcome' AND LabelKey = 'TITLE' THEN 'Gestión de Inventario'
+    WHEN Context = 'Welcome' AND LabelKey = 'SUBTITLE' THEN 'Selecciona un módulo para comenzar'
+    WHEN Context = 'Welcome' AND LabelKey = 'STORAGE_CARD_TITLE' THEN 'Almacenamiento'
+    WHEN Context = 'Welcome' AND LabelKey = 'STORAGE_CARD_SUBTITLE' THEN 'Entrada directa de stock'
+    WHEN Context = 'Welcome' AND LabelKey = 'STORAGE_CARD_CONTENT' THEN 'Registra eficientemente nuevos artículos en cajas existentes con validación paso a paso.'
+    WHEN Context = 'Welcome' AND LabelKey = 'BOX_CARD_TITLE' THEN 'Cajas'
+    WHEN Context = 'Welcome' AND LabelKey = 'BOX_CARD_SUBTITLE' THEN 'Gestiona tu almacenamiento'
+    WHEN Context = 'Welcome' AND LabelKey = 'BOX_CARD_CONTENT' THEN 'Crea nuevos contenedores o busca en tu configuración actual.'
+    WHEN Context = 'Welcome' AND LabelKey = 'ITEM_CARD_TITLE' THEN 'Artículos'
+    WHEN Context = 'Welcome' AND LabelKey = 'ITEM_CARD_SUBTITLE' THEN 'Gestiona tus artículos'
+    WHEN Context = 'Welcome' AND LabelKey = 'ITEM_CARD_CONTENT' THEN 'Explora tu catálogo completo, define nuevos productos y gestiona descripciones.'
+    WHEN Context = 'Welcome' AND LabelKey = 'CATEGORY_CARD_TITLE' THEN 'Categorías'
+    WHEN Context = 'Welcome' AND LabelKey = 'CATEGORY_CARD_SUBTITLE' THEN 'Clasificación'
+    WHEN Context = 'Welcome' AND LabelKey = 'CATEGORY_CARD_CONTENT' THEN 'Organiza tu inventario por tipos y grupos para una mejor búsqueda.'
+    WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_TITLE' THEN 'Marcas'
+    WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_SUBTITLE' THEN 'Fabricantes'
+    WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_CONTENT' THEN 'Gestiona marcas y proveedores en tu sistema.'
+
 END, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET()
 FROM [Label];
