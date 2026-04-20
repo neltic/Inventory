@@ -4,6 +4,7 @@ using Stock.Application.DTOs;
 using Stock.Application.Services;
 using Stock.Domain.Entities;
 using Stock.Domain.Interfaces;
+using Stock.Foundation.Common;
 
 namespace Stock.UnitTest;
 
@@ -32,7 +33,7 @@ public class BoxServiceTests
 
         // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("A box with this name already exists in this location.");
+            .WithMessage(LabelRegistry.Key.AlreadyExists);
 
         _boxRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Box>()), Times.Never);
     }
