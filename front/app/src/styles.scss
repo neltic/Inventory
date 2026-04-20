@@ -278,7 +278,7 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
 .list-result {
   display: grid;
   column-gap: 10pt;
-  row-gap: 10pt;
+  row-gap: 20pt;
   grid-template-columns: repeat(auto-fill, minmax(380px, 420px));
   justify-content: space-around;
   padding-bottom: 50pt;
@@ -319,8 +319,8 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
 }
 
 .list-card {
-  width: 360px;
-  max-width: 400px;
+  width: 420px;
+  max-width: 420px;
   position: relative;
   transition: box-shadow 0.3s ease-in-out;
   margin: 0 auto;
@@ -358,7 +358,7 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
 
   img[mat-card-image] {
     width: 100%;
-    height: 240px;
+    height: 320px;
     object-fit: cover;
     object-position: center;
     image-rendering: auto;
@@ -468,7 +468,7 @@ mat-drawer {
         height: 98px;
         margin-bottom: 5pt;
         img {
-          border-radius: 50%;
+          border-radius: 10pt;
           width: 100%;
           height: 98px;
           object-fit: cover;
@@ -739,7 +739,7 @@ mat-drawer {
     width: 48px !important;
     height: 48px !important;    
     img {
-      border-radius: 50%;
+      border-radius: 10pt;
       width: 100%;
       height: 48px;
       object-fit: cover;
@@ -759,4 +759,21 @@ mat-drawer {
   @include mat.chips-overrides((
     outline-color: transparent,
   ));
+}
+
+/* Empty Message */
+.empty-message {
+  p {
+    margin: 0;
+  }
+}
+
+/* translation */
+.translate-effect {
+  transition: opacity 0.2s ease-in-out;
+  opacity: 1;
+}
+
+.translate-fading {
+  opacity: 0;
 }

@@ -2,9 +2,9 @@
 <form [formGroup]="mainForm" class="custom-form">
 
 <mat-card class="custom-card" appearance="outlined">
-    <mat-card-header>    
+    <mat-card-header>
         <mat-form-field>
-            <mat-label>{{ 'Box.NAME' | translate }}</mat-label>
+            <mat-label translate="Box.NAME"></mat-label>
             <input
                 matInput
                 [placeholder]="'Box.NAME' | translate"
@@ -59,12 +59,12 @@
 
         <app-box-breadcrumb [fullPath]="box.fullPath" />
 
-        <app-brand-select controlName="brandId" [label]="'Box.BRAND' | translate" [scope]="EntityScope.Box" friendlyErrorName="Box.BOX_BRAND" />
+        <app-brand-select controlName="brandId" label="Box.BRAND" [scope]="EntityScope.Box" friendlyErrorName="Box.BOX_BRAND" />
 
-        <app-category-select controlName="categoryId" [label]="'Box.CATEGORY' | translate" [scope]="EntityScope.Box" friendlyErrorName="Box.BOX_CATEGORY" />        
+        <app-category-select controlName="categoryId" label="Box.CATEGORY" [scope]="EntityScope.Box" friendlyErrorName="Box.BOX_CATEGORY" />        
 
         <mat-form-field>
-            <mat-label>{{ 'Box.NOTES' | translate }}</mat-label>
+            <mat-label translate="Box.NOTES"></mat-label>
             <textarea 
                 matInput
                 [placeholder]="'Box.NOTES' | translate"
@@ -81,7 +81,7 @@
         </mat-form-field>
 
         <mat-form-field floatLabel="always">
-            <mat-label>{{ 'Box.WIDTH' | translate }}</mat-label>
+            <mat-label translate="Box.WIDTH"></mat-label>
             <input 
                 matInput 
                 type="number" 
@@ -100,7 +100,7 @@
         </mat-form-field>
 
         <mat-form-field floatLabel="always">
-            <mat-label>{{ 'Box.HEIGHT' | translate }}</mat-label>
+            <mat-label translate="Box.HEIGHT"></mat-label>
             <input 
                 matInput 
                 type="number" 
@@ -119,7 +119,7 @@
         </mat-form-field>
 
         <mat-form-field floatLabel="always">
-            <mat-label>{{ 'Box.DEPTH' | translate }}</mat-label>
+            <mat-label translate="Box.DEPTH"></mat-label>
             <input 
                 matInput 
                 type="number" 

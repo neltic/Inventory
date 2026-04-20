@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { TranslateDirective } from '../../directives/translate-directive';
 
 export interface DialogData {
   type: 'success' | 'error' | 'info' | 'warning';
@@ -11,10 +12,10 @@ export interface DialogData {
   selector: 'app-confirm-dialog',
   imports: [
     MatButtonModule,
-    MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
+    TranslateDirective
   ],
   templateUrl: './confirm-dialog.html',
   styleUrl: './confirm-dialog.scss',

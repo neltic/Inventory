@@ -6,11 +6,12 @@ import { Router } from '@angular/router';
 import { IBox } from '@models';
 import { BrandService, CategoryService } from '@services';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from "../../../shared/directives/translate-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 
 @Component({
   selector: 'app-box-repeater',
-  imports: [ MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe ],
+  imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective],
   templateUrl: './box-repeater.html',
   styleUrl: './box-repeater.scss',
 })

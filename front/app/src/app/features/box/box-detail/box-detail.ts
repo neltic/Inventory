@@ -81,7 +81,7 @@ export class BoxDetail extends BaseComponent {
 
   async deleteBox(boxId: number): Promise<void> {  
 
-    const confirmed = await this.openWarning('Are you sure you want to delete this box?');
+    const confirmed = await this.openWarning('Message.CONFIRM_DELETE_BOX');
     if (!confirmed) {
       return;
     }
@@ -89,7 +89,7 @@ export class BoxDetail extends BaseComponent {
     this.isDeleting.set(true);
     this.boxService.deleteBox(boxId).subscribe({
       next: () => {   
-        const snackRef = this.openSnack('success', '¡Box deleted successfully!', 'Ok');
+        const snackRef = this.openSnack('success', 'Global.OK', 'Message.BOX_DELETED');
         snackRef.afterDismissed().subscribe(() => {
           this.goBack();
         });

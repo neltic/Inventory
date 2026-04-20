@@ -13,6 +13,7 @@ import { IBox } from '@models';
 import { BoxService, BrandService, CategoryService, StorageService } from '@services';
 import { BaseComponent } from '../../../shared/components/base/base';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 import { FindInListPipe } from '../../../shared/pipes/find-in-list-pipe';
 import { BoxRepeater } from '../box-repeater/box-repeater';
@@ -35,7 +36,8 @@ import { BoxRepeater } from '../box-repeater/box-repeater';
     MatBadgeModule,
     FindInListPipe, 
     AsPhotoPipe,
-    ImgFallbackDirective
+    ImgFallbackDirective,
+    TranslateDirective
 ],
   templateUrl: './box-list.html',
   styleUrl: './box-list.scss',

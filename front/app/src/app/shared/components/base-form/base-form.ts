@@ -71,7 +71,7 @@ export abstract class BaseFormComponent extends BaseComponent {
 
     async onCancel(): Promise<void> {
         if (this.mainForm.dirty) {
-            const confirmed = await this.openInfo('You have unsaved changes. Are you sure you want to exit?');
+            const confirmed = await this.openInfo('Message.PENDING_CHANGES');
             if (!confirmed) {
                 return;
             }

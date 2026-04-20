@@ -18,7 +18,7 @@
             <span matListItemAvatar class="list-item-image">
                 <img                 
                     [src]="item.itemId | asPhoto:'item':item.updatedAt:'icons'"
-                    alt="Exterior photo of {{ item.name }}"
+                    alt="{{ item.name }}"
                     appImgFallback
                     loading="lazy"
                     crossorigin
@@ -35,7 +35,7 @@
       } @empty {
         <div class="empty-drawer">
           <mat-icon>subtitles_off</mat-icon>
-          <p>There are no items in this box.</p>
+          <p translate="Box.NO_ITEMS_FOUND"></p>
         </div>
       }
     </mat-list>
@@ -45,7 +45,7 @@
 
     <section class="search-bar">
       <mat-form-field class="search-box">
-        <mat-label>Filter by box name</mat-label>
+        <mat-label translate="Box.FILTER_BY_NAME"></mat-label>
         <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
         @if (filterText()) {
           <button matSuffix matIcon-button aria-label="Clear" (click)="filterText.set('')">
@@ -64,9 +64,11 @@
         } @empty {
           <div class="empty-message">
             @if(filterText()) {
-            <p>There are no boxes with that description ("{{ filterText() }}")</p>
+            <p translate="Box.NO_BOXES_WITH_DESCRIPTION" [translateParams]="[filterText()]"></p>
             } @else {
-            <p>This box contains no other boxes.<br>You can create a new box within this one from the menu:<br>Boxes > New</p>
+            <p translate="Box.NO_SUB_BOXES"></p>
+            <p translate="Box.CREATE_NEW_INFO"></p>
+            <p><strong translate="Menu.BOX"></strong> &gt; <strong translate="Menu.NEW"></strong></p>
             }
           </div>
         }

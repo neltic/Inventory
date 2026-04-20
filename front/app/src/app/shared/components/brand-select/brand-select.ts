@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { IBrand } from '../../../models/i-brand';
 import { BrandService } from '../../../services/brand-service';
+import { TranslateDirective } from "../../directives/translate-directive";
 import { FindInListPipe } from '../../pipes/find-in-list-pipe';
 import { TranslateErrorPipe } from '../../pipes/translate-error-pipe';
 import { BaseSelectComponent } from '../base-select/base-select';
@@ -12,13 +13,14 @@ import { BaseSelectComponent } from '../base-select/base-select';
 @Component({
   selector: 'app-brand-select',
   imports: [
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule, 
-    MatIconModule,    
+    MatSelectModule,
+    MatIconModule,
     FindInListPipe,
-    TranslateErrorPipe
-  ],
+    TranslateErrorPipe,
+    TranslateDirective
+],
   viewProviders: [
     {
       provide: ControlContainer,

@@ -1,5 +1,6 @@
-import { Directive, effect, ElementRef, inject, Input, signal } from '@angular/core';
+import { Directive, effect, ElementRef, inject, Input, Renderer2, signal } from '@angular/core';
 import { GlobalizationService } from '@services';
+import { GlobalizationKey } from '../../core/types/globalization-keys';
 
 @Directive({
   selector: '[translate]',
@@ -9,11 +10,11 @@ export class TranslateDirective {
 
   private globalization = inject(GlobalizationService);
   private el = inject(ElementRef);
-  
-  private key = signal<string | null>(null);
+  private renderer = inject(Renderer2);  
+  private key = signal<GlobalizationKey | null>(null);
   private params = signal<any[]>([]);
-
-  @Input('translate') set translateKey(val: string) { this.key.set(val); }
+  
+  @Input('translate') set translateKey(val: GlobalizationKey) { this.key.set(val); }
   @Input('translateParams') set translateParams(val: any[]) { this.params.set(val || []); }
 
   constructor() {
@@ -22,13 +23,9 @@ export class TranslateDirective {
       const currentParams = this.params();      
       this.globalization.translations();
       if (currentKey) {
-        this.el.nativeElement.textContent = this.translate(currentKey, currentParams);
+        this.renderer.setProperty(this.el.nativeElement, 'textContent', this.globalization.translate(currentKey, currentParams));
       }
     });
   }
 
-  private translate(value: string, params: any[]): string {
-    const [context, key] = value.split('.');
-    return key ? this.globalization.translate(context, key, params) : value;
-  }
 }

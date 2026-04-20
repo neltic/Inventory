@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { ILanguage, ITranslationDictionary } from '@models';
 import { firstValueFrom, Observable, switchMap, tap } from 'rxjs';
+import { GlobalizationKey } from '../core/types/globalization-keys';
 
 @Injectable({
   providedIn: 'root'
@@ -37,15 +38,36 @@ export class GlobalizationService {
     return this.http.get<ILanguage[]>(`${this.apiUrl}languages`);
   }
 
-  translate(context: string, key: string, params: any[] = []): string {
+  translate(fullKey: GlobalizationKey | string, params?: any[]): string;
+  translate(context: string, key: string, params?: any[]): string;
+  // TODO: remove this signature
+  translate(key: string, ...args: any[]): string;
+
+  translate(arg1: string, arg2OrParams?: string | any[], params: any[] = []): string {
+    let context: string;
+    let key: string;
+    let actualParams: any[];
+
+    if (Array.isArray(arg2OrParams) || arg2OrParams === undefined) {
+      // translate('Context.Key', [params])
+      if(!arg1.includes('.')) return arg1;
+      [context, key] = arg1.split('.');
+      actualParams = arg2OrParams || [];
+    } else {
+      // translate('Context', 'Key', [params])
+      context = arg1;
+      key = arg2OrParams;
+      actualParams = params;
+    }
+
     const contextData = this.translations()[context];
     const translation = contextData ? contextData[key] : null;
 
     if (!translation) return `[${context}.${key}]`; 
-    if (params.length === 0) return translation;
+    if (actualParams.length === 0) return translation;
 
     return translation.replace(/{(\d+)}/g, (match, index) => {
-      const val = params[index];
+      const val = actualParams[index];
       return typeof val !== 'undefined' ? val : match;
     });
   }

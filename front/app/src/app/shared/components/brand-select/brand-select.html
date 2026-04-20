@@ -1,5 +1,5 @@
 <mat-form-field class="filter-brand">
-    <mat-label>{{ label }}</mat-label>
+    <mat-label [translate]="label"></mat-label>
     
     @let list = catalogList();
     @let selectedId = parentForm.get(controlName)?.value;

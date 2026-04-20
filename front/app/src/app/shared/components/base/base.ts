@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 import { GlobalizationService } from '@services';
 import { firstValueFrom } from 'rxjs';
+import { GlobalizationKey } from '../../../core/types/globalization-keys';
 import { EntityScope, SCOPE_NONE_OPTION, SCOPE_OPTIONS, SCOPE_SELECTABLE_OPTIONS, ScopeOption } from '../../../models/e-entity-scope';
 import { RouteParamsService } from '../../../services/route-params-service';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
@@ -20,36 +21,41 @@ export abstract class BaseComponent {
     protected readonly scopeSelectableOptions = SCOPE_SELECTABLE_OPTIONS;    
     public readonly EntityScope = EntityScope;    
 
-    openSnack(type: 'success' | 'error' | 'info' | 'warning', message: string, actionName: string) : MatSnackBarRef<TextOnlySnackBar> {
-        return this.snackBar.open(message, actionName, { 
+    openSnack(type: 'success' | 'error' | 'info' | 'warning', actionKey: GlobalizationKey, messageKey: GlobalizationKey | string): MatSnackBarRef<TextOnlySnackBar>;
+    openSnack(type: 'success' | 'error' | 'info' | 'warning', actionKey: GlobalizationKey, messageKey: GlobalizationKey | string, params: any[]): MatSnackBarRef<TextOnlySnackBar>;
+    openSnack(type: 'success' | 'error' | 'info' | 'warning', actionKey: GlobalizationKey, messageKey: GlobalizationKey | string, params?: any[]) : MatSnackBarRef<TextOnlySnackBar> {
+        const translatedAction = this.globalization.translate(actionKey);
+        const translatedMessage = this.globalization.translate(messageKey, params || []);
+        return this.snackBar.open(translatedMessage, translatedAction, { 
             duration: 3000, 
             panelClass: [type + '-snackbar'] 
         });
     }
 
-    async openConfirm(type: 'success' | 'error' | 'info' | 'warning', question: string): Promise<boolean> {
+    async openConfirm(type: 'success' | 'error' | 'info' | 'warning', questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> {
+        const translatedQuestion = this.globalization.translate(questionKey, params);
         const dialogRef = this.dialog.open(ConfirmDialog, {
-            data: { type: type, question: question },
+            data: { type: type, question: translatedQuestion },
         });
         const result = await firstValueFrom(dialogRef.afterClosed());
         return !!result;
     }
-    async openSuccess(question: string): Promise<boolean> { return this.openConfirm('success', question); }
-    async openError(question: string): Promise<boolean> { return this.openConfirm('error', question); }
-    async openWarning(question: string): Promise<boolean> { return this.openConfirm('warning', question); }
-    async openInfo(question: string): Promise<boolean> { return this.openConfirm('info', question); }
+    async openSuccess(questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> { return this.openConfirm('success', questionKey, params); }
+    async openError(questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> { return this.openConfirm('error', questionKey, params); }
+    async openWarning(questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> { return this.openConfirm('warning', questionKey, params); }
+    async openInfo(questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> { return this.openConfirm('info', questionKey, params); }
 
     goBack() : void {
         this.location.back();
     }    
 
-    handleError(error: any, customErrorMessage?: string) {
+    handleError(error: any, customErrorMessage?: GlobalizationKey) {
         const apiMessage = error.error?.message;
         const msg = (error.status >= 400 && error.status <= 500 && apiMessage)
                     ? apiMessage
-                    : (customErrorMessage || 'Error executing action');
+                    : (customErrorMessage || 'Error.EXECUTION_ERROR');
         
-        this.openSnack('error', msg, 'Close');
+        this.openSnack('error', 'Global.OK', msg);
 
         if (error.error?.detail) {
             console.error('Detail:', error.error.detail);

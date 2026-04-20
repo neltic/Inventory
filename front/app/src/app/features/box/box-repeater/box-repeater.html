@@ -20,16 +20,16 @@
        crossorigin>
     
   <mat-card-actions>
-    <button matButton (click)="goToEdit()"><mat-icon>edit_square</mat-icon><span>Edit</span></button>
-    <button matButton (click)="goToDetails()"><mat-icon>zoom_in</mat-icon><span>Details</span></button>
+    <button matButton (click)="goToEdit()"><mat-icon>edit_square</mat-icon><span translate="Global.EDIT"></span></button>
+    <button matButton (click)="goToDetails()"><mat-icon>zoom_in</mat-icon><span translate="Global.DETAILS"></span></button>
     <button matButton (click)="goToShowContent()">
       <mat-icon>
         @if( box().hasChildren ) { all_inbox }
         @else { check_box_outline_blank }
       </mat-icon>
-      <span>Open</span></button>
+      <span translate="Global.OPEN"></span></button>
     @if(box().hasItems) {
-      <button matButton (click)="showItems()"><mat-icon>art_track</mat-icon><span>Items</span></button>
+      <button matButton (click)="showItems()"><mat-icon>art_track</mat-icon><span translate="Menu.ITEM"></span></button>
     }
   </mat-card-actions>
 

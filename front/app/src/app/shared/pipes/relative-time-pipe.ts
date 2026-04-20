@@ -13,7 +13,7 @@ export class RelativeTimePipe implements PipeTransform {
     if (!value) return 'Undated';
 
     const date = new Date(value);
-    const now = new Date();
+    const now = new Date(Math.floor(Date.now() / 30000) * 30000);
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     
     if (isNaN(date.getTime())) return 'Invalid date';

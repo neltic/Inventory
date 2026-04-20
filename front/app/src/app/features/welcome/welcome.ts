@@ -4,19 +4,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '../../shared/pipes/translate-pipe';
+import { TranslateDirective } from "../../shared/directives/translate-directive";
 
 @Component({
   selector: 'app-welcome',
   standalone: true,
   imports: [
-    RouterLink,      
-    MatCardModule,   
-    MatButtonModule, 
-    MatIconModule,   
-    MatRippleModule,
-    TranslatePipe
-  ],  
+    RouterLink,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatRippleModule,    
+    TranslateDirective
+],  
   templateUrl: './welcome.html',
   styleUrl: './welcome.scss',
 })

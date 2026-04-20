@@ -94,7 +94,7 @@ export class BoxEdit extends BaseFormComponent implements OnInit {
     }
     if (this.isSaving()) return;
     if (this.isUploadingImage()) {
-      this.openSnack('warning', 'Please wait until the image upload finishes.', 'Ok');
+      this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
       return;
     }
     this.isSaving.set(true);
@@ -113,7 +113,7 @@ export class BoxEdit extends BaseFormComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.openSnack('success', '¡Box saved!', 'Ok');
+          this.openSnack('success', 'Global.OK', 'Message.BOX_SAVED');
           this.mainForm.markAsPristine();   
         },
         error: (error) => this.handleError(error)
@@ -147,9 +147,9 @@ export class BoxEdit extends BaseFormComponent implements OnInit {
                 updatedAt: newDate
             });
         }
-        this.openSnack('success', 'Image updated!', 'Ok');
+        this.openSnack('success', 'Global.OK', 'Message.IMAGE_UPDATED');
       },
-      error: (error) => this.handleError(error, 'Image processing error')
+      error: (error) => this.handleError(error, 'Error.IMAGE_PROCESSING')
     });
   }  
 

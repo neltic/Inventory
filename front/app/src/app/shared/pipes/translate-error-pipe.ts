@@ -16,16 +16,14 @@ export class TranslateErrorPipe implements PipeTransform {
     const [errorKeyPart, friendlyNamePart] = value.split('|');
     
     let translatedFriendlyName = '';
-    if (friendlyNamePart && friendlyNamePart.includes('.')) {
-      const [fContext, fKey] = friendlyNamePart.split('.');
-      translatedFriendlyName = this.globalization.translate(fContext, fKey);
+    if (friendlyNamePart && friendlyNamePart.includes('.')) {      
+      translatedFriendlyName = this.globalization.translate(friendlyNamePart);
     } else {
       translatedFriendlyName = friendlyNamePart || '';
     }
     
-    if (errorKeyPart && errorKeyPart.includes('.')) {
-      const [eContext, eKey] = errorKeyPart.split('.');
-      return this.globalization.translate(eContext, eKey, [translatedFriendlyName]);
+    if (errorKeyPart && errorKeyPart.includes('.')) {      
+      return this.globalization.translate(errorKeyPart, [translatedFriendlyName]);
     }
 
     return value;

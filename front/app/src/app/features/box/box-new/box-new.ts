@@ -90,7 +90,7 @@ export class BoxNew extends BaseFormComponent implements OnInit {
     }
     if (this.isSaving()) return;
     if (this.isUploadingImage()) {
-      this.openSnack('warning', 'Please wait until the image upload finishes.', 'Ok');
+      this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
       return;
     }
     this.isSaving.set(true);
@@ -111,7 +111,7 @@ export class BoxNew extends BaseFormComponent implements OnInit {
     )
     .subscribe({
       next: () => {
-        const snackRef = this.openSnack('success', '¡Box saved!', 'Ok');
+        const snackRef = this.openSnack('success', 'Global.OK', 'Message.BOX_SAVED');
         snackRef.afterDismissed().subscribe(() => {
           this.goBack();
         });
@@ -137,9 +137,9 @@ export class BoxNew extends BaseFormComponent implements OnInit {
     ).subscribe({
       next: (response: any) => {
         this.imageGuid.set(response.fileGuid);        
-        this.openSnack('success','Image uploaded, you can now save it!', 'Ok');
+        this.openSnack('success', 'Global.OK', 'Message.IMAGE_READY_TO_SAVE');
       },
-      error: (error) => this.handleError(error, 'Image uploading error')
+      error: (error) => this.handleError(error, 'Error.IMAGE_PROCESSING')
     });
   }
   

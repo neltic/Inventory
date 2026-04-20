@@ -1,5 +1,5 @@
 <div class="dialog dialog-form dialog-xx" [formGroup]="mainForm">
-<h2 mat-dialog-title>Move {{data.name}} To...</h2>
+<h2 mat-dialog-title translate="Box.MOVE_CONFIRMATION_TITLE" [translateParams]="[data.name]"></h2>
 <mat-dialog-content>
 
     <mat-selection-list 
@@ -26,7 +26,7 @@
         </mat-list-option>
         }        
         @if (errorMessages['newParentId']()) {
-            <mat-error>{{ errorMessages['newParentId']() }}</mat-error>
+            <mat-error>{{ errorMessages['newParentId']() | translateError }}</mat-error>
         }
     </mat-selection-list>   
 
@@ -34,14 +34,14 @@
 <mat-dialog-actions>    
     <div>
       <mat-checkbox formControlName="confirmMove" tabindex="0">
-        I understand that moving <strong>{{data.name}}</strong> will also move all its internal items and sub-boxes.
+        <span translate="Box.MOVE_CONFIRMATION_MSG" [translateParams]="[data.name]"></span>
       </mat-checkbox>      
       @if (errorMessages['confirmMove']()) {
-        <mat-error>{{ errorMessages['confirmMove']() }}</mat-error>
+        <mat-error>{{ errorMessages['confirmMove']() | translateError }}</mat-error>
       }
     </div>
     <span class="flex-spacer"></span>
-    <button mat-flat-button [disabled]="!canMove" (click)="move()">Move</button>
-    <button mat-button type="button" [mat-dialog-close]="false" cdkFocusInitial class="btn-cancel">Cancel</button>
+    <button mat-flat-button [disabled]="!canMove" (click)="move()" translate="Global.MOVE"></button>
+    <button mat-button type="button" [mat-dialog-close]="false" cdkFocusInitial class="btn-cancel" translate="Global.CANCEL"></button>
 </mat-dialog-actions>
 </div>

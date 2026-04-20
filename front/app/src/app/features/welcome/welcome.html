@@ -1,7 +1,7 @@
 <div class="welcome-layout">
   <header class="welcome-layout-header">
-    <h1>{{ 'Welcome.TITLE' | translate }}</h1>
-    <p>{{ 'Welcome.SUBTITLE' | translate }}</p>
+    <h1 translate="Welcome.TITLE"></h1>
+    <p translate="Welcome.SUBTITLE"></p>
   </header>
 
   <div class="welcome-layout-grid">    
@@ -9,26 +9,27 @@
     <mat-card class="welcome-layout-card primary" [routerLink]="['/storage']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>storage</mat-icon>
-        <mat-card-title>{{ 'Welcome.STORAGE_CARD_TITLE' | translate }}</mat-card-title>    
-        <mat-card-subtitle>{{ 'Welcome.STORAGE_CARD_SUBTITLE' | translate }}</mat-card-subtitle>   
+        <mat-card-title translate="Welcome.STORAGE_CARD_TITLE"></mat-card-title>    
+        <mat-card-subtitle translate="Welcome.STORAGE_CARD_SUBTITLE"></mat-card-subtitle>   
       </mat-card-header>
       <mat-card-content>
-        <p>{{ 'Welcome.STORAGE_CARD_CONTENT' | translate }}</p>
+        <p translate="Welcome.STORAGE_CARD_CONTENT"></p>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="welcome-layout-card" [routerLink]="['/box/list', null]" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>inventory</mat-icon>
-        <mat-card-title>{{ 'Welcome.BOX_CARD_TITLE' | translate }}</mat-card-title>
-        <mat-card-subtitle>{{ 'Welcome.BOX_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
+        <mat-card-title translate="Welcome.BOX_CARD_TITLE"></mat-card-title>
+        <mat-card-subtitle translate="Welcome.BOX_CARD_SUBTITLE"></mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>{{ 'Welcome.BOX_CARD_CONTENT' | translate }}</p>
+        <p translate="Welcome.BOX_CARD_CONTENT"></p>
       </mat-card-content>
       <mat-card-actions>
         <button mat-button [routerLink]="['/box/new', null]">
-          <mat-icon>add</mat-icon> {{ 'Menu.NEW' | translate }}
+          <mat-icon>add</mat-icon>
+          <span translate="Menu.NEW"></span>
         </button>
       </mat-card-actions>
     </mat-card>
@@ -36,15 +37,16 @@
     <mat-card class="welcome-layout-card" [routerLink]="['/item/list']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>art_track</mat-icon>
-        <mat-card-title>{{ 'Welcome.ITEM_CARD_TITLE' | translate }}</mat-card-title>
-        <mat-card-subtitle>{{ 'Welcome.ITEM_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
+        <mat-card-title translate="Welcome.ITEM_CARD_TITLE"></mat-card-title>
+        <mat-card-subtitle translate="Welcome.ITEM_CARD_SUBTITLE"></mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>{{ 'Welcome.ITEM_CARD_CONTENT' | translate }}</p>
+        <p translate="Welcome.ITEM_CARD_CONTENT"></p>
       </mat-card-content>
       <mat-card-actions>
         <button mat-button [routerLink]="['/item/new']">
-          <mat-icon>add</mat-icon> {{ 'Menu.NEW' | translate }}
+          <mat-icon>add</mat-icon>
+          <span translate="Menu.NEW"></span>
         </button>
       </mat-card-actions>
     </mat-card>
@@ -52,22 +54,22 @@
     <mat-card class="welcome-layout-card setup" [routerLink]="['/category/list']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>category</mat-icon>
-        <mat-card-title>{{ 'Welcome.CATEGORY_CARD_TITLE' | translate }}</mat-card-title>
-        <mat-card-subtitle>{{ 'Welcome.CATEGORY_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
+        <mat-card-title translate="Welcome.CATEGORY_CARD_TITLE"></mat-card-title>
+        <mat-card-subtitle translate="Welcome.CATEGORY_CARD_SUBTITLE"></mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>{{ 'Welcome.CATEGORY_CARD_CONTENT' | translate }}</p>
+        <p translate="Welcome.CATEGORY_CARD_CONTENT"></p>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="welcome-layout-card setup" [routerLink]="['/brand/list']" matRipple>
       <mat-card-header>
         <mat-icon mat-card-avatar>verified</mat-icon>
-        <mat-card-title>{{ 'Welcome.BRAND_CARD_TITLE' | translate }}</mat-card-title>
-        <mat-card-subtitle>{{ 'Welcome.BRAND_CARD_SUBTITLE' | translate }}</mat-card-subtitle>
+        <mat-card-title translate="Welcome.BRAND_CARD_TITLE"></mat-card-title>
+        <mat-card-subtitle translate="Welcome.BRAND_CARD_SUBTITLE"></mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p>{{ 'Welcome.BRAND_CARD_CONTENT' | translate }}</p>
+        <p translate="Welcome.BRAND_CARD_CONTENT"></p>
       </mat-card-content>
     </mat-card>
 

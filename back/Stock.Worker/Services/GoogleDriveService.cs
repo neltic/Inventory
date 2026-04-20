@@ -86,6 +86,11 @@ public class GoogleDriveService(GoogleDriveOptions options) : IGoogleDriveServic
 
     public async Task<IUploadProgress> UploadFileAsync(string fullPath, string fileName, string folderId, string? existingFileId = null)
     {
+        if (!await IsFileReadyAsync(fullPath))
+        {
+            throw new IOException($"The {fullPath} file remains locked after several attempts.");
+        }
+
         var mimeType = GetMimeType(fullPath);
         using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
@@ -113,6 +118,23 @@ public class GoogleDriveService(GoogleDriveOptions options) : IGoogleDriveServic
         if (driveFile?.ModifiedTimeDateTimeOffset == null) return false;
         var diff = Math.Abs((driveFile.ModifiedTimeDateTimeOffset.Value - File.GetLastWriteTimeUtc(localPath)).TotalSeconds);
         return diff <= TIME_PRECISION_TOLERANCE_SEC;
+    }
+
+    private static async Task<bool> IsFileReadyAsync(string path)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
+                return true;
+            }
+            catch (IOException)
+            {
+                await Task.Delay(1000);
+            }
+        }
+        return false;
     }
 
     private static DriveService InitializeService(GoogleDriveOptions options)

@@ -90,6 +90,8 @@ VALUES
   ('Global', 'NEXT'),
   ('Global', 'CONFIRM_SAVE'),
   ('Global', 'OK'),
+  ('Global', 'YES'),
+  ('Global', 'NO'),
   ('Global', 'NOT_SELECTED'),
 
   -- Menu
@@ -134,6 +136,7 @@ VALUES
   ('Message', 'ITEM_REMOVED_FROM_BOX'),
   ('Message', 'ITEM_SAVED'),
   ('Message', 'STORAGE_UPDATED'),
+  ('Message', 'PENDING_CHANGES'),
 
   -- Error
   ('Error', 'IMAGE_ASSIGN_FAILED'),
@@ -205,8 +208,8 @@ CASE
     WHEN Context = 'Box' AND LabelKey = 'BOX_HEIGHT' THEN 'Box height'
     WHEN Context = 'Box' AND LabelKey = 'DEPTH' THEN 'Depth'
     WHEN Context = 'Box' AND LabelKey = 'BOX_DEPTH' THEN 'Box depth'
-    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_TITLE' THEN 'Move {0} To...'
-    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_MSG' THEN 'I understand that moving {0} will also move all its internal items and sub-boxes.'
+    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_TITLE' THEN 'Move "{0}" To...'
+    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_MSG' THEN 'I understand that moving "{0}" will also move all its internal items and sub-boxes.'
     WHEN Context = 'Box' AND LabelKey = 'NAME' THEN 'Name'
     WHEN Context = 'Box' AND LabelKey = 'BRAND' THEN 'Brand'
     WHEN Context = 'Box' AND LabelKey = 'CATEGORY' THEN 'Category'
@@ -283,6 +286,8 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'ALL' THEN 'All'
     WHEN Context = 'Global' AND LabelKey = 'NEXT' THEN 'Next'
     WHEN Context = 'Global' AND LabelKey = 'CONFIRM_SAVE' THEN 'Confirm & Save'
+    WHEN Context = 'Global' AND LabelKey = 'YES' THEN 'Yes'
+    WHEN Context = 'Global' AND LabelKey = 'NO' THEN 'No'
     WHEN Context = 'Global' AND LabelKey = 'OK' THEN 'Ok'
     WHEN Context = 'Global' AND LabelKey = 'NOT_SELECTED' THEN 'Not selected'
 
@@ -340,6 +345,7 @@ CASE
     WHEN Context = 'Message' AND LabelKey = 'ITEM_REMOVED_FROM_BOX' THEN 'Item removed from the box successfully'
     WHEN Context = 'Message' AND LabelKey = 'ITEM_SAVED' THEN '¡Item saved!'
     WHEN Context = 'Message' AND LabelKey = 'STORAGE_UPDATED' THEN 'Storage updated successfully'
+    WHEN Context = 'Message' AND LabelKey = 'PENDING_CHANGES' THEN 'You have unsaved changes. Are you sure you want to exit?'
 
     -- Welcome
     WHEN Context = 'Welcome' AND LabelKey = 'TITLE' THEN 'Inventory Management'
@@ -390,8 +396,8 @@ CASE
     WHEN Context = 'Box' AND LabelKey = 'BOX_HEIGHT' THEN 'Alto de la caja'
     WHEN Context = 'Box' AND LabelKey = 'DEPTH' THEN 'Profundidad'
     WHEN Context = 'Box' AND LabelKey = 'BOX_DEPTH' THEN 'Profundidad de la caja'
-    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_TITLE' THEN 'Mover {0} a...'
-    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_MSG' THEN 'Entiendo que mover {0} también moverá todos sus artículos internos y sub-cajas.'
+    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_TITLE' THEN 'Mover "{0}" a...'
+    WHEN Context = 'Box' AND LabelKey = 'MOVE_CONFIRMATION_MSG' THEN 'Entiendo que mover "{0}" también moverá todos sus artículos internos y sub-cajas.'
     WHEN Context = 'Box' AND LabelKey = 'NAME' THEN 'Nombre'
     WHEN Context = 'Box' AND LabelKey = 'BRAND' THEN 'Marca'
     WHEN Context = 'Box' AND LabelKey = 'CATEGORY' THEN 'Categoría'
@@ -468,7 +474,9 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'ALL' THEN 'Todo'
     WHEN Context = 'Global' AND LabelKey = 'NEXT' THEN 'Siguiente'
     WHEN Context = 'Global' AND LabelKey = 'CONFIRM_SAVE' THEN 'Confirmar y Guardar'
-    WHEN Context = 'Global' AND LabelKey = 'OK' THEN 'Aceptar'
+    WHEN Context = 'Global' AND LabelKey = 'YES' THEN 'Sí'
+    WHEN Context = 'Global' AND LabelKey = 'NO' THEN 'No'
+    WHEN Context = 'Global' AND LabelKey = 'OK' THEN 'Aceptar'    
     WHEN Context = 'Global' AND LabelKey = 'NOT_SELECTED' THEN 'No seleccionado'
 
     -- Error
@@ -525,6 +533,7 @@ CASE
     WHEN Context = 'Message' AND LabelKey = 'ITEM_REMOVED_FROM_BOX' THEN 'Artículo quitado de la caja con éxito'
     WHEN Context = 'Message' AND LabelKey = 'ITEM_SAVED' THEN '¡Artículo guardado!'
     WHEN Context = 'Message' AND LabelKey = 'STORAGE_UPDATED' THEN 'Almacenamiento actualizado con éxito'
+    WHEN Context = 'Message' AND LabelKey = 'PENDING_CHANGES' THEN 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?'
 
     -- Welcome
     WHEN Context = 'Welcome' AND LabelKey = 'TITLE' THEN 'Gestión de Inventario'
