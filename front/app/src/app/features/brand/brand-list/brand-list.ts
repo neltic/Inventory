@@ -10,6 +10,7 @@ import { EMPTY_BRAND, IBrand } from '@models';
 import { BrandService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { BrandEditDialog } from '../brand-edit-dialog/brand-edit-dialog';
 
 @Component({
@@ -22,7 +23,8 @@ import { BrandEditDialog } from '../brand-edit-dialog/brand-edit-dialog';
     MatTableModule,
     MatInputModule,
     MatFormFieldModule,
-    FormsModule
+    FormsModule,
+    TranslateDirective
   ],
   templateUrl: './brand-list.html',
   styleUrl: './brand-list.scss',
@@ -63,11 +65,11 @@ export class BrandList extends BaseComponent {
   }
 
   async deleteBrand(brand: IBrand) {
-    const confirmed = await this.openWarning(`Are you sure you want to delete the brand "${brand.name}"?`);
+    const confirmed = await this.openWarning('Message.CONFIRM_DELETE_BRAND', [brand.name]);
     if (!confirmed) return;
 
     this.brandService.delete(brand.brandId).subscribe({
-      next: () => this.openSnack('success', 'Brand deleted successfully!', 'Ok'),
+      next: () => this.openSnack('success', 'Global.OK', 'Message.BRAND_DELETED'),
       error: (error) => this.handleError(error)
     });
   }

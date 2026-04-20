@@ -7,7 +7,7 @@
   
   <img mat-card-image 
        [src]="item.itemId | asPhoto:'item':item.updatedAt"
-       alt="Exterior photo of {{ item.name }}"
+       alt="{{ item.name }}"
        appImgFallback
        crossorigin>
     
@@ -29,7 +29,7 @@
             <button type="button" (click)="removeFromBox(loc, item.itemId, selectedBrand?.name??'')"></button>
             @if (!isLast) { <i class="separator">,</i> }
           } @empty {
-            <i class="unregistered-label">(Unregistered)</i>
+            <i class="unregistered-label" translate="Global.UNREGISTERED"></i>
           }
         </div>
       </div>
@@ -41,14 +41,14 @@
         <mat-icon>event</mat-icon>
         <span 
           [matTooltip]="(item.createdAt | date:'full')!"
-          matTooltipPosition="above">Created {{ item.createdAt | relativeTime }}
+          matTooltipPosition="above"><span translate="Global.CREATED"></span> {{ item.createdAt | relativeTime }}
         </span>
     </p>
     <p>
         <mat-icon>access_time</mat-icon>
         <span
           [matTooltip]="(item.updatedAt | date:'full')!"
-          matTooltipPosition="above">Updated {{ item.updatedAt | relativeTime }}
+          matTooltipPosition="above"><span translate="Global.UPDATED"></span> {{ item.updatedAt | relativeTime }}
         </span>
     </p>
   </mat-card-content>
@@ -60,13 +60,11 @@
       } @else {
         <mat-icon>delete_forever</mat-icon>
       }
-      <span>
-        @if(!isDeleting()) { Delete }
-        @else { Deleting... }
-      </span>
+      @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
+      @else { <span translate="Global.DELETING"></span> }
     </button>    
     <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
-      <mat-icon>navigate_before</mat-icon><span>Back</span></button>    
+      <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span></button>
   </mat-card-actions>
 
 </mat-card>

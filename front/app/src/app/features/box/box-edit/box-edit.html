@@ -15,7 +15,7 @@
             />
             <mat-hint align="end">{{ mainForm.get('name')?.value?.length || 0 }}/64</mat-hint>
             @if (errorMessages['name']()) {
-                <mat-error>{{ errorMessages['name']() | translateError }}</mat-error>
+                <mat-error [translateError]="errorMessages['name']()"></mat-error>
             }
         </mat-form-field>
     </mat-card-header>
@@ -70,7 +70,7 @@
             <span matTextPrefix><mat-icon>note</mat-icon></span>
             <mat-hint align="end">{{ mainForm.get('notes')?.value?.length || 0 }}/512</mat-hint>
             @if (errorMessages['notes']()) {
-                <mat-error>{{ errorMessages['notes']() | translateError }}</mat-error>
+                <mat-error [translateError]="errorMessages['notes']()"></mat-error>
             }
         </mat-form-field>
 
@@ -89,7 +89,7 @@
             <span matTextPrefix><mat-icon>straighten</mat-icon></span>
             <span matTextSuffix>cm</span>
             @if (errorMessages['width']()) {
-                <mat-error>{{ errorMessages['width']() | translateError }}</mat-error>
+                <mat-error [translateError]="errorMessages['width']()"></mat-error>
             }
         </mat-form-field>
 
@@ -108,7 +108,7 @@
             <span matTextPrefix><mat-icon>straighten</mat-icon></span>
             <span matTextSuffix>cm</span>
             @if (errorMessages['height']()) {
-                <mat-error>{{ errorMessages['height']() | translateError }}</mat-error>
+                <mat-error [translateError]="errorMessages['height']()"></mat-error>
             }
         </mat-form-field>
 
@@ -127,7 +127,7 @@
             <span matTextPrefix><mat-icon>straighten</mat-icon></span>
             <span matTextSuffix>cm</span>
             @if (errorMessages['depth']()) {
-                <mat-error>{{ errorMessages['depth']() | translateError }}</mat-error>
+                <mat-error [translateError]="errorMessages['depth']()"></mat-error>
             }
         </mat-form-field>
 

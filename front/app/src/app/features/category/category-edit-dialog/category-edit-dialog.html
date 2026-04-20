@@ -1,42 +1,42 @@
 <div class="dialog dialog-form">
-<h2 mat-dialog-title>{{ data.categoryId > 0 ? 'Edit' : 'New' }} Category</h2>
+<h2 mat-dialog-title [translate]="data.categoryId > 0 ? 'Global.EDIT' : 'Global.NEW'"></h2>
 <mat-dialog-content [formGroup]="mainForm">   
 
     <mat-form-field>
-        <mat-label>Name</mat-label>
+        <mat-label translate="Category.NAME"></mat-label>
         <input 
             matInput 
             formControlName="name" 
-            (blur)="updateErrorMessage('name', 'Category name')"
+            (blur)="updateErrorMessage('name', 'Category.CATEGORY_NAME')"
             required
             maxlength="64">
         <mat-hint align="end">{{ mainForm.get('name')?.value?.length || 0 }}/64</mat-hint>
         @if (errorMessages['name']()) {
-            <mat-error>{{ errorMessages['name']() }}</mat-error>
+            <mat-error [translateError]="errorMessages['name']()"></mat-error>
         }
     </mat-form-field>    
     
     <mat-form-field>
-        <mat-label>Icon</mat-label>
+        <mat-label translate="Category.ICON">Icon</mat-label>
         <input 
             matInput 
             formControlName="icon"
-            (blur)="updateErrorMessage('icon', 'Category icon')"
+            (blur)="updateErrorMessage('icon', 'Category.CATEGORY_ICON')"
             required
             maxlength="32">
         <mat-hint align="end">{{ mainForm.get('icon')?.value?.length || 0 }}/32</mat-hint>
         @if (errorMessages['icon']()) {
-            <mat-error>{{ errorMessages['icon']() }}</mat-error>
+            <mat-error [translateError]="errorMessages['icon']()"></mat-error>
         }        
     </mat-form-field>
 
     <mat-form-field class="edit-dialog-color">
-        <mat-label>Color</mat-label>
+        <mat-label translate="Category.COLOR"></mat-label>
         <input 
             matInput 
             type="color" 
             formControlName="color"
-            (blur)="updateErrorMessage('color', 'Category color')"
+            (blur)="updateErrorMessage('color', 'Category.CATEGORY_COLOR')"
             required
             maxlength="7">
         <span matTextSubfix>
@@ -47,22 +47,22 @@
             }
         </span>        
         @if (errorMessages['color']()) {
-            <mat-error>{{ errorMessages['color']() }}</mat-error>
+            <mat-error [translateError]="errorMessages['color']()"></mat-error>
         }
     </mat-form-field> 
     
     <mat-form-field>
-        <mat-label>Scope</mat-label>
+        <mat-label translate="Category.SCOPE"></mat-label>
         <mat-select 
             formControlName="includedIn" 
-            (blur)="updateErrorMessage('includedIn', 'Category scope')"
+            (blur)="updateErrorMessage('includedIn', 'Category.CATEGORY_SCOPE')"
             multiple>
             <mat-select-trigger>
                 <div class="scope-as-list-block">
                 @for (option of mainForm.get('includedIn')?.value; track option; let isLast = $last) {
                     @let scope = entityScope.getById(option);
-                    <mat-icon>{{ scope?.icon }}</mat-icon>
-                    <span>{{ scope?.label }}</span>  
+                    <mat-icon>{{ scope.icon }}</mat-icon>
+                    <span [translate]="scope.label"></span>  
                     @if (!isLast) { <i class="separator">,</i> }              
                 }
                 </div>
@@ -71,18 +71,18 @@
             @for (option of scopeSelectableOptions; track option.value) {
                 <mat-option [value]="option.value">
                     <mat-icon>{{option.icon}}</mat-icon>
-                    <span>{{option.label}}</span>
+                    <span [translate]="option.label"></span>
                 </mat-option>
             }
         </mat-select>
         @if (errorMessages['includedIn']()) {
-            <mat-error>{{ errorMessages['includedIn']() }}</mat-error>
+            <mat-error [translateError]="errorMessages['includedIn']()"></mat-error>
         }
     </mat-form-field>
 
 </mat-dialog-content>
 <mat-dialog-actions>    
-    <button mat-flat-button [disabled]="isBusy()" (click)="save()">Save</button>
-    <button mat-button type="button" [mat-dialog-close]="false" class="btn-cancel">Cancelar</button>
+    <button mat-flat-button [disabled]="isBusy()" (click)="save()" translate="Global.SAVE"></button>
+    <button mat-button type="button" [mat-dialog-close]="false" class="btn-cancel" translate="Global.CANCEL"></button>
 </mat-dialog-actions>
 </div>

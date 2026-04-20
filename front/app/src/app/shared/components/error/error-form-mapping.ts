@@ -1,4 +1,6 @@
-export const ERROR_FORM_MESSAGES: Record<string, string> = {
+import { GlobalizationKey } from "../../../core/types/globalization-keys";
+
+export const ERROR_FORM_MESSAGES: Record<string, GlobalizationKey> = {
     required: 'Error.REQUIRED',
     minlength: 'Error.MIN_LENGTH',
     maxlength: 'Error.MAX_LENGTH',

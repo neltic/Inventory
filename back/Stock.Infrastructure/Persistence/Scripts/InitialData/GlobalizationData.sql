@@ -34,18 +34,27 @@ VALUES
   ('Item', 'CAN_NOT_UPDATE'),
   ('Item', 'CAN_NOT_DELETE'),
   ('Item', 'ALREADY_EXISTS'),
+  ('Item', 'FILTER_BY_NAME'),
+  ('Item', 'FILTER_BY_CATEGORY'),
+  ('Item', 'NO_ITEMS_WITH_DESCRIPTION_OR_CATEGORY'),
+  ('Item', 'CREATE_NEW_INFO'),
   ('Item', 'NAME'),
   ('Item', 'ITEM_NAME'),
   ('Item', 'NOTES'),
   ('Item', 'ITEM_NOTES'),
   ('Item', 'CATEGORY'),
   ('Item', 'ITEM_CATEGORY'),
+  ('Item', 'BRAND'),
+  ('Item', 'ITEM_BRAND'),
 
   -- Brand
   ('Brand', 'NOT_FOUND'),
   ('Brand', 'CAN_NOT_UPDATE'),
   ('Brand', 'CAN_NOT_DELETE'),
   ('Brand', 'ALREADY_EXISTS'),
+  ('Brand', 'FILTER_BY_NAME'),
+  ('Brand', 'NAME'),
+  ('Brand', 'BRAND_NAME'),
   ('Brand', 'COLOR'),
   ('Brand', 'BRAND_COLOR'),
   ('Brand', 'BACKGROUND'),
@@ -59,6 +68,9 @@ VALUES
   ('Category', 'CAN_NOT_UPDATE'),
   ('Category', 'CAN_NOT_DELETE'),
   ('Category', 'ALREADY_EXISTS'),
+  ('Category', 'FILTER_BY_NAME'),
+  ('Category', 'NAME'),
+  ('Category', 'CATEGORY_NAME'),
   ('Category', 'ICON'),
   ('Category', 'CATEGORY_ICON'),
   ('Category', 'COLOR'),
@@ -83,6 +95,7 @@ VALUES
   ('Global', 'CANCEL'),
   ('Global', 'MOVE'),
   ('Global', 'EDIT'),
+  ('Global', 'NEW'),
   ('Global', 'DETAILS'),
   ('Global', 'OPEN'),
   ('Global', 'UNREGISTERED'),
@@ -93,6 +106,7 @@ VALUES
   ('Global', 'YES'),
   ('Global', 'NO'),
   ('Global', 'NOT_SELECTED'),
+  ('Global', 'STOCK'),
 
   -- Menu
   ('Menu', 'BOX'),
@@ -112,11 +126,14 @@ VALUES
   ('Storage', 'SELECT_BOX'),
   ('Storage', 'SELECT_ITEM'),
   ('Storage', 'QUANTITY'),
+  ('Storage', 'QUANTITY_ABBREVIATION'),
   ('Storage', 'STORAGE_QUANTITY'),
   ('Storage', 'EXPIRES'),
+  ('Storage', 'EXPIRES_ON'),
   ('Storage', 'EXPIRATION_DATE'),
   ('Storage', 'REVIEW_CONFIRM'),
   ('Storage', 'FILL_DETAILS'),
+  ('Storage', 'SUMMARY'),
 
   -- Message
   ('Message', 'CONFIRM_DELETE_BOX'),
@@ -161,6 +178,7 @@ VALUES
   ('Scope', 'ALL'),
   ('Scope', 'ITEM'),
   ('Scope', 'BOX'),
+  ('Scope', 'NONE'),
 
   -- Welcome
   ('Welcome', 'TITLE'),
@@ -219,18 +237,27 @@ CASE
     WHEN Context = 'Item' AND LabelKey = 'CAN_NOT_UPDATE' THEN 'Can not update Item with ID {0}.'
     WHEN Context = 'Item' AND LabelKey = 'CAN_NOT_DELETE' THEN 'Can not delete Item with ID {0}.'
     WHEN Context = 'Item' AND LabelKey = 'ALREADY_EXISTS' THEN 'An item with this name already exists.'
+    WHEN Context = 'Item' AND LabelKey = 'FILTER_BY_NAME' THEN 'Filter by item name'
+    WHEN Context = 'Item' AND LabelKey = 'FILTER_BY_CATEGORY' THEN 'Filter by item category'
+    WHEN Context = 'Item' AND LabelKey = 'NO_ITEMS_WITH_DESCRIPTION_OR_CATEGORY' THEN 'There are no items with that description or category.'
+    WHEN Context = 'Item' AND LabelKey = 'CREATE_NEW_INFO' THEN 'You can create a new item from the menu:'
     WHEN Context = 'Item' AND LabelKey = 'NAME' THEN 'Name'
     WHEN Context = 'Item' AND LabelKey = 'ITEM_NAME' THEN 'Item name'
     WHEN Context = 'Item' AND LabelKey = 'NOTES' THEN 'Notes'
     WHEN Context = 'Item' AND LabelKey = 'ITEM_NOTES' THEN 'Item notes'
     WHEN Context = 'Item' AND LabelKey = 'CATEGORY' THEN 'Category'
     WHEN Context = 'Item' AND LabelKey = 'ITEM_CATEGORY' THEN 'Item category'
+    WHEN Context = 'Item' AND LabelKey = 'BRAND' THEN 'Brand'
+    WHEN Context = 'Item' AND LabelKey = 'ITEM_BRAND' THEN 'Item brand'
 
     -- Brand
     WHEN Context = 'Brand' AND LabelKey = 'NOT_FOUND' THEN 'Brand with ID {0} was not found.'
     WHEN Context = 'Brand' AND LabelKey = 'CAN_NOT_UPDATE' THEN 'Can not update Brand with ID {0}.'
     WHEN Context = 'Brand' AND LabelKey = 'CAN_NOT_DELETE' THEN 'Can not delete Brand with ID {0}.'
     WHEN Context = 'Brand' AND LabelKey = 'ALREADY_EXISTS' THEN 'A Brand with this name already exists.'
+    WHEN Context = 'Brand' AND LabelKey = 'FILTER_BY_NAME' THEN 'Filter by brand name'
+    WHEN Context = 'Brand' AND LabelKey = 'NAME' THEN 'Name'
+    WHEN Context = 'Brand' AND LabelKey = 'BRAND_NAME' THEN 'Brand name'
     WHEN Context = 'Brand' AND LabelKey = 'COLOR' THEN 'Color'
     WHEN Context = 'Brand' AND LabelKey = 'BRAND_COLOR' THEN 'Brand color'
     WHEN Context = 'Brand' AND LabelKey = 'BACKGROUND' THEN 'Background'
@@ -244,6 +271,9 @@ CASE
     WHEN Context = 'Category' AND LabelKey = 'CAN_NOT_UPDATE' THEN 'Can not update Category with ID {0}.'
     WHEN Context = 'Category' AND LabelKey = 'CAN_NOT_DELETE' THEN 'Can not delete Category with ID {0}.'
     WHEN Context = 'Category' AND LabelKey = 'ALREADY_EXISTS' THEN 'A category with this name already exists.'
+    WHEN Context = 'Category' AND LabelKey = 'FILTER_BY_NAME' THEN 'Filter by category name'
+    WHEN Context = 'Category' AND LabelKey = 'NAME' THEN 'Name'
+    WHEN Context = 'Category' AND LabelKey = 'CATEGORY_NAME' THEN 'Category name'
     WHEN Context = 'Category' AND LabelKey = 'ICON' THEN 'Icon'
     WHEN Context = 'Category' AND LabelKey = 'CATEGORY_ICON' THEN 'Category icon'
     WHEN Context = 'Category' AND LabelKey = 'COLOR' THEN 'Color'
@@ -280,6 +310,7 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'CANCEL' THEN 'Cancel'
     WHEN Context = 'Global' AND LabelKey = 'MOVE' THEN 'Move'
     WHEN Context = 'Global' AND LabelKey = 'EDIT' THEN 'Edit'
+    WHEN Context = 'Global' AND LabelKey = 'NEW' THEN 'New'
     WHEN Context = 'Global' AND LabelKey = 'DETAILS' THEN 'Details'
     WHEN Context = 'Global' AND LabelKey = 'OPEN' THEN 'Open'
     WHEN Context = 'Global' AND LabelKey = 'UNREGISTERED' THEN 'Unregistered'
@@ -290,6 +321,7 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'NO' THEN 'No'
     WHEN Context = 'Global' AND LabelKey = 'OK' THEN 'Ok'
     WHEN Context = 'Global' AND LabelKey = 'NOT_SELECTED' THEN 'Not selected'
+    WHEN Context = 'Global' AND LabelKey = 'STOCK' THEN 'Stock'
 
     -- Error
     WHEN Context = 'Error' AND LabelKey = 'IMAGE_ASSIGN_FAILED' THEN 'Failed to assign the image.'
@@ -316,16 +348,20 @@ CASE
     WHEN Context = 'Storage' AND LabelKey = 'SELECT_BOX' THEN 'Select a Box'
     WHEN Context = 'Storage' AND LabelKey = 'SELECT_ITEM' THEN 'Select an Item'
     WHEN Context = 'Storage' AND LabelKey = 'QUANTITY' THEN 'Quantity'
+    WHEN Context = 'Storage' AND LabelKey = 'QUANTITY_ABBREVIATION' THEN 'Qty'
     WHEN Context = 'Storage' AND LabelKey = 'STORAGE_QUANTITY' THEN 'Storage quantity'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRES' THEN 'Expires?'
+    WHEN Context = 'Storage' AND LabelKey = 'EXPIRES_ON' THEN 'Expires on'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRATION_DATE' THEN 'Expiration Date'
     WHEN Context = 'Storage' AND LabelKey = 'REVIEW_CONFIRM' THEN 'Review & Confirm'
     WHEN Context = 'Storage' AND LabelKey = 'FILL_DETAILS' THEN 'Fill out details'
+    WHEN Context = 'Storage' AND LabelKey = 'SUMMARY' THEN 'Summary'
 
     -- Scope
     WHEN Context = 'Scope' AND LabelKey = 'ALL' THEN 'All'
     WHEN Context = 'Scope' AND LabelKey = 'ITEM' THEN 'Item'
     WHEN Context = 'Scope' AND LabelKey = 'BOX' THEN 'Box'
+    WHEN Context = 'Scope' AND LabelKey = 'NONE' THEN 'None'
 
     -- Message
     WHEN Context = 'Message' AND LabelKey = 'CONFIRM_DELETE_BOX' THEN 'Are you sure you want to delete this box?'
@@ -407,18 +443,27 @@ CASE
     WHEN Context = 'Item' AND LabelKey = 'CAN_NOT_UPDATE' THEN 'No se pudo actualizar el artículo con el ID {0}.'
     WHEN Context = 'Item' AND LabelKey = 'CAN_NOT_DELETE' THEN 'No se pudo eliminar el artículo con el ID {0}.'
     WHEN Context = 'Item' AND LabelKey = 'ALREADY_EXISTS' THEN 'Ya existe un artículo con este nombre.'
+    WHEN Context = 'Item' AND LabelKey = 'FILTER_BY_NAME' THEN 'Filtrar por nombre del artículo'
+    WHEN Context = 'Item' AND LabelKey = 'FILTER_BY_CATEGORY' THEN 'Filtrar por categoría del artículo'
+    WHEN Context = 'Item' AND LabelKey = 'NO_ITEMS_WITH_DESCRIPTION_OR_CATEGORY' THEN 'No hay artículos con esa descripción o categoría.'
+    WHEN Context = 'Item' AND LabelKey = 'CREATE_NEW_INFO' THEN 'Puedes crear un nuevo artículo desde el menú:'
     WHEN Context = 'Item' AND LabelKey = 'NAME' THEN 'Nombre'
     WHEN Context = 'Item' AND LabelKey = 'ITEM_NAME' THEN 'Nombre del artículo'
     WHEN Context = 'Item' AND LabelKey = 'NOTES' THEN 'Notas'
     WHEN Context = 'Item' AND LabelKey = 'ITEM_NOTES' THEN 'Notas del artículo'
     WHEN Context = 'Item' AND LabelKey = 'CATEGORY' THEN 'Categoría'
     WHEN Context = 'Item' AND LabelKey = 'ITEM_CATEGORY' THEN 'Categoría del artículo'
+    WHEN Context = 'Item' AND LabelKey = 'BRAND' THEN 'Marca'
+    WHEN Context = 'Item' AND LabelKey = 'ITEM_BRAND' THEN 'Marca del artículo'
 
     -- Brand
     WHEN Context = 'Brand' AND LabelKey = 'NOT_FOUND' THEN 'No se encontró la marca con el ID {0}.'
     WHEN Context = 'Brand' AND LabelKey = 'CAN_NOT_UPDATE' THEN 'No se pudo actualizar la marca con el ID {0}.'
     WHEN Context = 'Brand' AND LabelKey = 'CAN_NOT_DELETE' THEN 'No se pudo eliminar la marca con el ID {0}.'
     WHEN Context = 'Brand' AND LabelKey = 'ALREADY_EXISTS' THEN 'Ya existe una marca con este nombre.'
+    WHEN Context = 'Brand' AND LabelKey = 'FILTER_BY_NAME' THEN 'Filtrar por nombre de marca'
+    WHEN Context = 'Brand' AND LabelKey = 'NAME' THEN 'Nombre'
+    WHEN Context = 'Brand' AND LabelKey = 'BRAND_NAME' THEN 'Nombre de la marca'
     WHEN Context = 'Brand' AND LabelKey = 'COLOR' THEN 'Color'
     WHEN Context = 'Brand' AND LabelKey = 'BRAND_COLOR' THEN 'Color de la marca'
     WHEN Context = 'Brand' AND LabelKey = 'BACKGROUND' THEN 'Fondo'
@@ -432,6 +477,9 @@ CASE
     WHEN Context = 'Category' AND LabelKey = 'CAN_NOT_UPDATE' THEN 'No se pudo actualizar la categoría con el ID {0}.'
     WHEN Context = 'Category' AND LabelKey = 'CAN_NOT_DELETE' THEN 'No se pudo eliminar la categoría con el ID {0}.'
     WHEN Context = 'Category' AND LabelKey = 'ALREADY_EXISTS' THEN 'Ya existe una categoría con este nombre.'
+    WHEN Context = 'Category' AND LabelKey = 'FILTER_BY_NAME' THEN 'Filtrar por nombre de categoría'
+    WHEN Context = 'Category' AND LabelKey = 'NAME' THEN 'Nombre'
+    WHEN Context = 'Category' AND LabelKey = 'CATEGORY_NAME' THEN 'Nombre de la categoría'
     WHEN Context = 'Category' AND LabelKey = 'ICON' THEN 'Icono'
     WHEN Context = 'Category' AND LabelKey = 'CATEGORY_ICON' THEN 'Icono de la categoría'
     WHEN Context = 'Category' AND LabelKey = 'COLOR' THEN 'Color'
@@ -468,6 +516,7 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'CANCEL' THEN 'Cancelar'
     WHEN Context = 'Global' AND LabelKey = 'MOVE' THEN 'Mover'
     WHEN Context = 'Global' AND LabelKey = 'EDIT' THEN 'Editar'
+    WHEN Context = 'Global' AND LabelKey = 'NEW' THEN 'Nuevo'
     WHEN Context = 'Global' AND LabelKey = 'DETAILS' THEN 'Detalles'
     WHEN Context = 'Global' AND LabelKey = 'OPEN' THEN 'Abrir'
     WHEN Context = 'Global' AND LabelKey = 'UNREGISTERED' THEN 'Sin registrar'
@@ -478,6 +527,7 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'NO' THEN 'No'
     WHEN Context = 'Global' AND LabelKey = 'OK' THEN 'Aceptar'    
     WHEN Context = 'Global' AND LabelKey = 'NOT_SELECTED' THEN 'No seleccionado'
+    WHEN Context = 'Global' AND LabelKey = 'STOCK' THEN 'Inventario'
 
     -- Error
     WHEN Context = 'Error' AND LabelKey = 'IMAGE_ASSIGN_FAILED' THEN 'Error al asignar la imagen.'
@@ -490,7 +540,7 @@ CASE
     WHEN Context = 'Error' AND LabelKey = 'MIN' THEN 'El valor debe ser mayor a 0'
     WHEN Context = 'Error' AND LabelKey = 'BRAND_NOT_FOUND' THEN 'La {0} seleccionada no es válida'
     WHEN Context = 'Error' AND LabelKey = 'CATEGORY_NOT_FOUND' THEN 'La {0} seleccionada no es válida'
-    WHEN Context = 'Error' AND LabelKey = 'ENTITY_NOT_FOUND' THEN 'El valor seleccionado no es válido ({0})'
+    WHEN Context = 'Error' AND LabelKey = 'ENTITY_NOT_FOUND' THEN 'El valor seleccionado no es válido para: {0}'
     WHEN Context = 'Error' AND LabelKey = 'INVALID_DESTINATION' THEN 'Por favor selecciona un destino válido'
     WHEN Context = 'Error' AND LabelKey = 'REQUIRED_TRUE' THEN 'Debes aceptar el cambio para continuar'
     WHEN Context = 'Error' AND LabelKey = 'IMAGE_PROCESSING' THEN 'Error al procesar la imagen'
@@ -504,16 +554,20 @@ CASE
     WHEN Context = 'Storage' AND LabelKey = 'SELECT_BOX' THEN 'Selecciona una Caja'
     WHEN Context = 'Storage' AND LabelKey = 'SELECT_ITEM' THEN 'Selecciona un Artículo'
     WHEN Context = 'Storage' AND LabelKey = 'QUANTITY' THEN 'Cantidad'
+    WHEN Context = 'Storage' AND LabelKey = 'QUANTITY_ABBREVIATION' THEN 'Cant'
     WHEN Context = 'Storage' AND LabelKey = 'STORAGE_QUANTITY' THEN 'Cantidad de almacenamiento'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRES' THEN '¿Expira?'
+    WHEN Context = 'Storage' AND LabelKey = 'EXPIRES_ON' THEN 'Expira el'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRATION_DATE' THEN 'Fecha de expiración'
     WHEN Context = 'Storage' AND LabelKey = 'REVIEW_CONFIRM' THEN 'Revisar y Confirmar'
     WHEN Context = 'Storage' AND LabelKey = 'FILL_DETAILS' THEN 'Completa los detalles'
+    WHEN Context = 'Storage' AND LabelKey = 'SUMMARY' THEN 'Resumen'
 
     -- Scope
     WHEN Context = 'Scope' AND LabelKey = 'ALL' THEN 'Todo'
     WHEN Context = 'Scope' AND LabelKey = 'ITEM' THEN 'Artículo'
     WHEN Context = 'Scope' AND LabelKey = 'BOX' THEN 'Caja'
+    WHEN Context = 'Scope' AND LabelKey = 'NONE' THEN 'Ninguno'
 
     -- Message
     WHEN Context = 'Message' AND LabelKey = 'CONFIRM_DELETE_BOX' THEN '¿Estás seguro de que quieres eliminar esta caja?'

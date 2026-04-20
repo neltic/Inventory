@@ -19,9 +19,9 @@ export class GlobalizationService {
   public currentLanguage = this._currentLanguage.asReadonly();
   public languages = this._languages.asReadonly();
 
-  public getLanguageLabelKey(languageCode: string): string {
+  public getLanguageLabelKey(languageCode: string): GlobalizationKey {
     const formattedCode = languageCode.toUpperCase().replace('-', '_');
-    return `Menu.LANG_${formattedCode}`;
+    return `Menu.LANG_${formattedCode}` as GlobalizationKey;
   }
 
   public currentLanguageLabelKey = computed(() => {
@@ -39,11 +39,8 @@ export class GlobalizationService {
   }
 
   translate(fullKey: GlobalizationKey | string, params?: any[]): string;
-  translate(context: string, key: string, params?: any[]): string;
-  // TODO: remove this signature
-  translate(key: string, ...args: any[]): string;
-
-  translate(arg1: string, arg2OrParams?: string | any[], params: any[] = []): string {
+  translate(context: string, key: string, params?: any[]): string;  
+  translate(arg1: GlobalizationKey | string, arg2OrParams?: string | any[], params: any[] = []): string {
     let context: string;
     let key: string;
     let actualParams: any[];
@@ -53,6 +50,7 @@ export class GlobalizationService {
       if(!arg1.includes('.')) return arg1;
       [context, key] = arg1.split('.');
       actualParams = arg2OrParams || [];
+      if(key.length == 0) return arg1;
     } else {
       // translate('Context', 'Key', [params])
       context = arg1;

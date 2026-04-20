@@ -10,6 +10,8 @@ import { MatOption, MatSelectModule, MatSelectTrigger } from '@angular/material/
 import { CategoryForm, ICategory } from '@models';
 import { CategoryService } from '@services';
 import { BaseFormComponent } from '../../../shared/components/base-form/base-form';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
+import { TranslateErrorDirective } from '../../../shared/directives/translate-error-directive';
 
 @Component({
   selector: 'app-category-edit-dialog',
@@ -31,7 +33,9 @@ import { BaseFormComponent } from '../../../shared/components/base-form/base-for
     MatOption,
     ReactiveFormsModule,    
     MatIconModule,
-    FormsModule
+    FormsModule,
+    TranslateDirective,
+    TranslateErrorDirective
   ],
   templateUrl: './category-edit-dialog.html',
   styleUrl: './category-edit-dialog.scss',  

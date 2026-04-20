@@ -35,6 +35,6 @@
     </span>
 
     @if (parentErrorSignal && parentErrorSignal()) {
-        <mat-error>{{ parentErrorSignal() | translateError }}</mat-error>
+        <mat-error [translateError]="parentErrorSignal()"></mat-error>
     }
 </mat-form-field>

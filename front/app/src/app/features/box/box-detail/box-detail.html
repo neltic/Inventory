@@ -67,7 +67,7 @@
         <mat-icon>delete_forever</mat-icon>
       }      
       @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
-      @else { <span translate="Global.DELETING"></span> }      
+      @else { <span translate="Global.DELETING"></span> }
     </button>    
     <button type="button" matButton (click)="openBoxParentSelectDialog(box)" [disabled]="isDeleting()">
       <mat-icon>move_to_inbox</mat-icon><span translate="Box.MOVE_TO"></span>

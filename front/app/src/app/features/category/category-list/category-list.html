@@ -1,6 +1,6 @@
 <section class="search-bar">
     <mat-form-field class="search-box">
-        <mat-label>Filter by category name</mat-label>
+        <mat-label translate="Category.FILTER_BY_NAME"></mat-label>
         <input matInput [ngModel]="filterText()" (ngModelChange)="filterText.set($event)">        
         @if (filterText()) {
             <button matSuffix mat-icon-button aria-label="Clear" (click)="filterText.set('')">
@@ -34,34 +34,34 @@
     </ng-container>
 
     <ng-container matColumnDef="order">
-        <th mat-header-cell *matHeaderCellDef class="data-table-order">Order</th>
+        <th mat-header-cell *matHeaderCellDef class="data-table-order" translate="Category.ORDER"></th>
         <td mat-cell *matCellDef="let c" class="data-table-order">
             {{c.order}}
         </td>
     </ng-container>
     
     <ng-container matColumnDef="icon">
-        <th mat-header-cell *matHeaderCellDef class="data-table-icons">Icon</th>
+        <th mat-header-cell *matHeaderCellDef class="data-table-icons" translate="Category.ICON"></th>
         <td mat-cell *matCellDef="let c" class="data-table-icons">
             <mat-icon [style.color]="c.color">{{c.icon}}</mat-icon>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <th mat-header-cell *matHeaderCellDef translate="Category.NAME"></th>
         <td mat-cell *matCellDef="let c">
             {{c.name}}
         </td>
     </ng-container>
 
     <ng-container matColumnDef="scopes">
-        <th mat-header-cell *matHeaderCellDef>Scope</th>
+        <th mat-header-cell *matHeaderCellDef translate="Category.SCOPE"></th>
         <td mat-cell *matCellDef="let c">
             <mat-chip-set class="inline-chips">
             @for (scope of entityScope.toCompactScopeArray(c.includedIn); track scope.value) {            
                 <mat-chip>
                     <mat-icon matChipAvatar>{{scope.icon}}</mat-icon>
-                    {{scope.label}}
+                    <span [translate]="scope.label"></span>
                 </mat-chip>            
             }
             </mat-chip-set>
@@ -85,5 +85,5 @@
 </table>
 
 @if (filteredCategories().length === 0) {
-    <p>No categories found matching your search.</p>
+    <p translate="Category.NO_CATEGORIES_FOUND"></p>
 }

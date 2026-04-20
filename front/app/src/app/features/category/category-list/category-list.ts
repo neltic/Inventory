@@ -11,6 +11,7 @@ import { EMPTY_CATEGORY, ICategory } from '@models';
 import { CategoryService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { CategoryEditDialog } from '../category-edit-dialog/category-edit-dialog';
 
 @Component({
@@ -28,7 +29,8 @@ import { CategoryEditDialog } from '../category-edit-dialog/category-edit-dialog
     MatTableModule,
     MatInputModule,
     MatFormFieldModule,
-    FormsModule
+    FormsModule,
+    TranslateDirective
   ],
   templateUrl: './category-list.html',
   styleUrl: './category-list.scss',
@@ -75,13 +77,13 @@ export class CategoryList extends BaseComponent {
   }
 
   async deleteCategory(category: ICategory) {
-    const confirmed = await this.openWarning('Are you sure you want to delete this Category (' + category.name + ')?');
+    const confirmed = await this.openWarning('Message.CONFIRM_DELETE_CATEGORY', [category.name]);
     if (!confirmed) {
       return;
     }
     this.categoryService.delete(category.categoryId).subscribe({
       next: () => {   
-        this.openSnack('success', 'Category deleted successfully!', 'Ok');
+        this.openSnack('success', 'Global.OK', 'Message.CATEGORY_DELETED');
       },
       error: (error) => this.handleError(error)
     });
@@ -104,7 +106,7 @@ export class CategoryList extends BaseComponent {
     const newOrder = event.currentIndex + 1;
 
     this.categoryService.reorder(movedItem.categoryId, newOrder).subscribe({
-      next: () => this.openSnack('success', `Moved to position ${newOrder}`, 'Ok'),
+      next: () => this.openSnack('success', 'Global.OK', 'Message.MOVED_TO_POSITION', [newOrder]),
       error: (err) => {
         this.categoryService.updateLocalCategories(originalList);
         this.handleError(err);

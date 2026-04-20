@@ -4,20 +4,20 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from "@angular/material/icon";
 import { Router } from '@angular/router';
 import { IItem } from '@models';
-import { CategoryService, ItemService } from '@services';
+import { CategoryService } from '@services';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from "../../../shared/directives/translate-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 
 @Component({
   selector: 'app-item-repeater',
-  imports: [ MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe ],
+  imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective],
   templateUrl: './item-repeater.html',
   styleUrl: './item-repeater.scss',
 })
 export class ItemRepeater {
   private router: Router = inject(Router);
-  private categoryService: CategoryService = inject(CategoryService);
-  private itemService: ItemService = inject(ItemService);
+  private categoryService: CategoryService = inject(CategoryService);  
   public item = input.required<IItem>();
   public viewStorageEvent = output<any>();
 

@@ -2,6 +2,7 @@ import { Directive, Injector, Signal, WritableSignal, computed, inject, signal }
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormControlStatus, FormGroup } from '@angular/forms';
 import { startWith } from 'rxjs';
+import { GlobalizationKey } from '../../../core/types/globalization-keys';
 import { BaseComponent } from '../base/base';
 import { ERROR_FORM_MESSAGES } from '../error/error-form-mapping';
 
@@ -40,7 +41,7 @@ export abstract class BaseFormComponent extends BaseComponent {
         return this.isSaving() || this.isUploadingImage() || this.formStatus() === 'INVALID';
     });   
   
-    updateErrorMessage(fieldName: string, friendlyErrorName: string) {        
+    updateErrorMessage(fieldName: string, friendlyErrorName: GlobalizationKey) {        
         const control = this.findControlRecursive(this.mainForm, fieldName);
         const errorSignal = this.errorMessages[fieldName];               
         if (!control || !errorSignal) return; 

@@ -12,6 +12,8 @@ import { MatOption, MatSelectModule, MatSelectTrigger } from '@angular/material/
 import { BrandForm, IBrand } from '@models';
 import { BrandService } from '@services';
 import { BaseFormComponent } from '../../../shared/components/base-form/base-form';
+import { TranslateDirective } from '../../../shared/directives/translate-directive';
+import { TranslateErrorDirective } from "../../../shared/directives/translate-error-directive";
 
 @Component({
   selector: 'app-brand-edit-dialog',
@@ -31,12 +33,14 @@ import { BaseFormComponent } from '../../../shared/components/base-form/base-for
     MatSelectModule,
     MatSelectTrigger,
     MatOption,
-    ReactiveFormsModule,    
-    MatAutocompleteModule, 
-    MatChipsModule, 
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatChipsModule,
     MatIconModule,
-    FormsModule
-  ],
+    FormsModule,
+    TranslateDirective,
+    TranslateErrorDirective
+],
   templateUrl: './brand-edit-dialog.html',
   styleUrl: './brand-edit-dialog.scss',
 })

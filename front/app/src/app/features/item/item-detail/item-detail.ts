@@ -11,6 +11,7 @@ import { IItem, IItemLocation } from '@models';
 import { BrandService, CategoryService, ItemService, StorageService } from '@services';
 import { BaseComponent } from '../../../shared/components/base/base';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from "../../../shared/directives/translate-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
 
@@ -18,17 +19,18 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
   selector: 'app-item-detail',
   standalone: true,
   imports: [
-    MatIcon, 
-    MatCardModule, 
-    MatButtonModule, 
-    RelativeTimePipe, 
-    DatePipe, 
-    MatTooltipModule, 
-    MatProgressSpinnerModule, 
+    MatIcon,
+    MatCardModule,
+    MatButtonModule,
+    RelativeTimePipe,
+    DatePipe,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
     ImgFallbackDirective,
     RouterLink,
-    AsPhotoPipe
-  ],
+    AsPhotoPipe,
+    TranslateDirective
+],
   templateUrl: './item-detail.html',
   styleUrl: './item-detail.scss',
 })
@@ -62,7 +64,7 @@ export class ItemDetail extends BaseComponent {
 
   async deleteItem(itemId: number): Promise<void> {
   
-    const confirmed = await this.openWarning('Are you sure you want to delete this Item?');
+    const confirmed = await this.openWarning('Message.CONFIRM_DELETE_ITEM');
     if (!confirmed) {
       return;
     }
@@ -70,7 +72,7 @@ export class ItemDetail extends BaseComponent {
     this.isDeleting.set(true);
     this.itemService.deleteItem(itemId).subscribe({
       next: () => {   
-        const snackRef = this.openSnack('success', 'Item deleted successfully!', 'Ok');
+        const snackRef = this.openSnack('success', 'Global.OK', 'Message.ITEM_DELETED');
         snackRef.afterDismissed().subscribe(() => {
           this.goBack();
         });
@@ -84,7 +86,7 @@ export class ItemDetail extends BaseComponent {
 
   async removeFromBox(location: IItemLocation, itemId: number, brandName: string) {
 
-    const confirmed = await this.openWarning('Are you sure you want to remove this "'+ brandName +'" branded item from the box "' + location.name + '"?');
+    const confirmed = await this.openWarning('Message.CONFIRM_REMOVE_ITEM_FROM_BOX', [brandName, location.name]);
     if (!confirmed) {
       return;
     }
@@ -96,7 +98,7 @@ export class ItemDetail extends BaseComponent {
           next: (locations) => {
             this.itemLocations.set(locations);
             this.isDeleting.set(false); 
-            this.openSnack('success', 'Item removed from the box successfully', 'Ok');
+            this.openSnack('success', 'Global.OK', 'Message.ITEM_REMOVED_FROM_BOX');
           },
           error: (error) => {
             this.handleError(error);
@@ -105,7 +107,7 @@ export class ItemDetail extends BaseComponent {
         });        
       },
       error: (error) => {
-        this.handleError(error, 'An error occurred while trying to remove item relashionsip')
+        this.handleError(error, 'Error.REMOVE_RELATIONSHIP_ERROR')
         this.isDeleting.set(false);
       }
     });

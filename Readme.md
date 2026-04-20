@@ -2,10 +2,11 @@
 Technical guide for the Inventory Control Application
 
 ![.NET 9](https://img.shields.io/badge/.NET-9.0-512bd4?logo=dotnet)
-![Angular 21](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
 ![Microsoft SQL Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-006dc1?logo=microsoft%20sql%20server&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-%23ff4438.svg?logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Angular 21](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
+![Languages](https://img.shields.io/badge/Languages-en%20%7C%20es--MX-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 🎯 Overview
@@ -19,6 +20,7 @@ Inventory App is a comprehensive stock control system designed under **Clean Arc
 - [🐳 Container Infrastructure](#-container-infrastructure)
 - [🛡️ Resilience Strategy (DRP)](#️-resilience-strategy-drp)
 - [🛠️ Development & Migrations](#️-development--migrations)
+- [🌍 Globalization and Translation System](#-globalization-and-translation-system)
 - [📝 Key Features](#-key-features)
 
 
@@ -97,10 +99,10 @@ The `/setup/` folder contains PowerShell scripts to streamline the environment f
 - `.\setup\start-all.ps1`: Starts the entire ecosystem.
 - `.\setup\start-cdn.ps1`: Only starts the image server (useful for local API debugging).
 
-### Migrations
-The following details the commands needed to manage data persistence (If you want to return to the initial state and add something different from the beginning).
+### Database Schema Evolution
+The project follows a Code-First approach. The following migrations establish the core structure, stored procedures (SPs), and seed data:
 
-```bash
+```powershell
 dotnet ef migrations add InitialCreate --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddInitialData --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddInitialBoxesSPs --project Stock.Infrastructure --startup-project Stock.Api
@@ -108,26 +110,64 @@ dotnet ef migrations add AddInitialItemsSPs --project Stock.Infrastructure --sta
 dotnet ef migrations add AddInitialStorageSPs --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddInitialCategoriesSPs --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddFeatBoxTransferSPs --project Stock.Infrastructure --startup-project Stock.Api
-```
-
-### Restore to initial migration
-To revert the database to its initial state:
-```bash
-dotnet ef database update 0 --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef database remove --project Stock.Infrastructure --startup-project Stock.Api
+dotnet ef migrations add AddGlobalizationTables --project Stock.Infrastructure --startup-project Stock.Api
+dotnet ef migrations add AddGlobalizationData --project Stock.Infrastructure --startup-project Stock.Api
+dotnet ef migrations add AddInitialGlobalizationSPs --project Stock.Infrastructure --startup-project Stock.Api
 ```
 
 ### Database Management
-```bash
+```powershell
 # Add new migration
 dotnet ef migrations add <Name> --project Stock.Infrastructure --startup-project Stock.Api
 # Update database
 dotnet ef database update --project Stock.Infrastructure --startup-project Stock.Api
+# Revert the database to its initial state
+dotnet ef database update 0 --project Stock.Infrastructure --startup-project Stock.Api
 ```
 
+## 🌍 Globalization and Translation System
+
+To maintain translation integrity in the frontend, we use a Strong Typing system. This prevents typos when calling translation labels from HTML or components.
+
+### Key Synchronization (Database to TypeScript)
+
+When new labels are added to the database (Label table), the Angular type contract must be updated.
+
+#### 1. Union Type Generation (SQL Server)
+Run the following script in your database environment to get the updated type string:
+
+```sql
+SELECT 
+    'export type GlobalizationKey = ' + 
+    STRING_AGG(CAST('''' + Context + '.' + LabelKey + '''' AS VARCHAR(MAX)), ' | ') + ';' 
+    AS TypeScriptType
+FROM Label;
+```
+
+#### 2. Update in the Angular Project
+Once you have the script result (the TypeScriptType column):
+
+1. Open the type definition file: `src/app/core/types/globalization-keys.ts`
+2. Replace the existing content with the new result.
+3. The Angular compiler will automatically detect the new keys and validate their use in the TranslateDirective.
+
+Note: By using Clean Architecture, we ensure the presentation layer does not rely on `magic strings`, but on a defined contract that guarantees each requested label actually exists in the database.
+
+### Template Implementation Example
+
+Thanks to this synchronization, usage in components is completely type-safe:
+
+```html
+<span translate="Storage.SELECT_BOX"></span>
+
+<span [translate]="'Storage.WRONG_KEY'"></span>
+```
 
 ## 📝 Key Features
 - **Hybrid Storage:** Files are served locally for speed (CDN) but backed up in the cloud for security.
 - **Audit Interceptors:** Automatic management of `CreatedAt` and `UpdatedAt` in EF Core.
 - **Reactive State:** Powered by **Angular Signals** for a fluid UI experience without unnecessary refreshes.
 - **Soft Delete Sync:** Support for cloud file removal via temporary markers.
+- **Type-Safe Globalization:** Automated synchronization between SQL Server labels and TypeScript Union Types to eliminate magic strings.
+- **Lazy-Loaded Architecture:** Highly optimized bundle sizes with specific chunking for Material components and feature modules.
+- **Clean Architecture Principles:** Strict separation of concerns between Domain, Infrastructure, and Presentation layers.

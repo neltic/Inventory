@@ -27,7 +27,7 @@
                 </span> 
 
                 <span matListItemIcon class="list-item-quantity">
-                    <i>Qty</i>
+                    <i translate="Storage.QUANTITY_ABBREVIATION"></i>
                     <strong>{{ storage.quantity }}</strong>
                 </span>
                 
@@ -36,15 +36,13 @@
                 </span>
                 @if (storage.expires) {
                 <span matListItemLine class="list-item-line">
-                    Expires on {{ storage.expiresOn }}
+                    <span translate="Storage.EXPIRES_ON"></span> {{ storage.expiresOn }}
                 </span>
                 }
                 <strong class="list-item-tag-v" [class.is-dark]="isDarkColor(brand?.background)" [style.color]="brand?.background" [style.borderColor]="brand?.background">{{brand?.name}}</strong>
             </mat-list-item>        
         } @empty {
-            <i class="unregistered-label">
-                (Unregistered)
-            </i>
+            <i class="unregistered-label" translate="Global.UNREGISTERED"></i>
         }
     </mat-list>    
     
@@ -54,7 +52,7 @@
 
     <section class="search-bar">
         <mat-form-field class="search-Item">
-        <mat-label>Filter by Item name</mat-label>
+        <mat-label translate="Item.FILTER_BY_NAME"></mat-label>
         <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
         @if (filterText()) {
             <button matSuffix matIconButton aria-label="Clear" (click)="filterText.set('')">
@@ -63,7 +61,7 @@
         }
         </mat-form-field>
         <mat-form-field class="filter-category">
-            <mat-label>Filter by category</mat-label>
+            <mat-label translate="Item.FILTER_BY_CATEGORY"></mat-label>
             <mat-select [value]="filterCategory()" (selectionChange)="onCategoryChange($event.value)">
 
                 <mat-select-trigger>
@@ -74,7 +72,7 @@
                     <span>{{ selectedCategory?.name }}</span>                
                 } @else {
                     <mat-icon>all_inclusive</mat-icon>
-                    <span>[All]</span>
+                    <span translate="Global.ALL"></span>
                 }
                 </div>
                 </mat-select-trigger>
@@ -82,7 +80,7 @@
                 <mat-option [value]="null">
                     <div class="category-option">
                         <mat-icon>all_inclusive</mat-icon>
-                        <span>[All]</span>
+                        <span translate="Global.ALL"></span>
                     </div>
                 </mat-option>
                 @for (category of categoryService.itemCategories(); track category.categoryId) {
@@ -105,9 +103,10 @@
             } @empty {
                 <div class="empty-message">
                     @if(filterText() || filterCategory()) {
-                        <p>There are no items with that description or category.</p>                    
+                        <p translate="Item.NO_ITEMS_WITH_DESCRIPTION_OR_CATEGORY"></p>                    
                     }  @else {
-                        <p>You can create a new item from the menu:<br>Items > New</p>
+                        <p translate="Item.CREATE_NEW_INFO"></p>
+                        <p><strong translate="Menu.ITEM"></strong> &gt; <strong translate="Menu.NEW"></strong></p>
                     }
                 </div>                
             }

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Signal, WritableSignal, inject, signal } from '@angular/core';
 import { ControlContainer, FormGroup } from '@angular/forms';
+import { GlobalizationKey } from '../../../core/types/globalization-keys';
 import { EntityScope } from '../../../models/e-entity-scope';
 import { BaseFormComponent } from '../base-form/base-form';
 
@@ -7,8 +8,8 @@ import { BaseFormComponent } from '../base-form/base-form';
 export abstract class BaseSelectComponent<T> implements OnInit {
   
   @Input({ required: true }) controlName!: string;
-  @Input({ required: true }) label!: string;
-  @Input({ required: true }) friendlyErrorName!: string;
+  @Input({ required: true }) label!: GlobalizationKey;
+  @Input({ required: true }) friendlyErrorName!: GlobalizationKey;
   @Input() scope: EntityScope = EntityScope.None;  
   
   private parentComponent = inject(BaseFormComponent, { optional: true });  

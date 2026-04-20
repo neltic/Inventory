@@ -12,8 +12,8 @@ import { BoxTransferForm, IBox, IBoxTransfer } from '@models';
 import { BoxService } from '@services';
 import { BaseFormComponent } from '../../../shared/components/base-form/base-form';
 import { TranslateDirective } from '../../../shared/directives/translate-directive';
+import { TranslateErrorDirective } from '../../../shared/directives/translate-error-directive';
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
-import { TranslateErrorPipe } from '../../../shared/pipes/translate-error-pipe';
 
 @Component({
   selector: 'app-box-parent-select-dialog',
@@ -33,7 +33,7 @@ import { TranslateErrorPipe } from '../../../shared/pipes/translate-error-pipe';
     FormsModule,
     AsPhotoPipe,
     TranslateDirective,
-    TranslateErrorPipe
+    TranslateErrorDirective
   ],
   templateUrl: './box-parent-select-dialog.html',
   styleUrl: './box-parent-select-dialog.scss',

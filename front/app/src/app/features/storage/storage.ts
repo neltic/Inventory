@@ -18,6 +18,8 @@ import { BoxStep, DetailsStep, IBoxLookup, IItem, IStorage, ItemStep } from '@mo
 import { BoxService, BrandService, CategoryService, ItemService, StorageService } from '@services';
 import { BaseFormComponent } from '../../shared/components/base-form/base-form';
 import { BrandSelect } from '../../shared/components/brand-select/brand-select';
+import { TranslateDirective } from "../../shared/directives/translate-directive";
+import { TranslateErrorDirective } from "../../shared/directives/translate-error-directive";
 import { AsPhotoPipe } from '../../shared/pipes/as-photo-pipe';
 
 @Component({
@@ -40,14 +42,16 @@ import { AsPhotoPipe } from '../../shared/pipes/as-photo-pipe';
     MatList,
     MatListItem,
     MatDivider,
-    ReactiveFormsModule,    
+    ReactiveFormsModule,
     MatSelect,
     MatSelectTrigger,
     MatOption,
     AsPhotoPipe,
     BrandSelect,
-    DatePipe
-  ],
+    DatePipe,
+    TranslateDirective,
+    TranslateErrorDirective
+],
   providers: [
     provideNativeDateAdapter(),
     {
@@ -145,7 +149,7 @@ export class Storage extends BaseFormComponent implements OnInit {
       control?.setValue(null);
     }
     control?.updateValueAndValidity();
-    this.updateErrorMessage('expiresOn', 'Expiration Date');
+    this.updateErrorMessage('expiresOn', 'Storage.EXPIRATION_DATE');
   }
 
   private loadStorageData(callback: () => void) {    
@@ -205,13 +209,13 @@ export class Storage extends BaseFormComponent implements OnInit {
       .subscribe({
         next: (response) => {     
           if(response.updated) {
-            this.openSnack('success', 'Storage updated successfully', 'Ok');          
+            this.openSnack('success', 'Global.OK', 'Message.STORAGE_UPDATED');
             this.mainForm.reset();
             this.mainForm.markAsPristine();
             this.stepper.reset();
             this.reviewSummary.set(null);
           } else {
-            this.openSnack('error', 'Error updating storage', 'Close');          
+            this.openSnack('error', 'Global.OK', 'Error.STORAGE_UPDATE_ERROR');
           }
         },
         error: (error) => this.handleError(error)

@@ -12,8 +12,11 @@ import { finalize, switchMap } from 'rxjs';
 import { BaseFormComponent } from '../../../shared/components/base-form/base-form';
 import { CategorySelect } from '../../../shared/components/category-select/category-select';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from "../../../shared/directives/translate-directive";
+import { TranslateErrorDirective } from "../../../shared/directives/translate-error-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
+import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 
 @Component({
   selector: 'app-item-edit',
@@ -28,14 +31,17 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
     MatHint,
     MatProgressSpinnerModule,
     MatInputModule,
-    MatIconModule, 
+    MatIconModule,
     ReactiveFormsModule,
     ɵInternalFormsSharedModule,
     ImgFallbackDirective,
     RelativeTimePipe,
     CategorySelect,
-    AsPhotoPipe
-  ],
+    AsPhotoPipe,
+    TranslateDirective,
+    TranslateErrorDirective,
+    TranslatePipe
+],
   providers: [{ provide: BaseFormComponent, useExisting: ItemEdit }],
   templateUrl: './item-edit.html',
   styleUrl: './item-edit.scss',
@@ -80,7 +86,7 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
     }
     if (this.isSaving()) return;
     if (this.isUploadingImage()) {
-      this.openSnack('warning','Please wait until the image upload finishes.', 'Ok');
+      this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
       return;
     }
     this.isSaving.set(true);
@@ -99,7 +105,7 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.openSnack('success', '¡Item saved!', 'Ok');
+          this.openSnack('success', 'Global.OK', 'Message.ITEM_SAVED');
           this.mainForm.markAsPristine();   
         },
         error: (error) => { this.handleError(error); }
@@ -133,9 +139,9 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
                 updatedAt: newDate
             });
         }
-        this.openSnack('success', 'Image updated!', 'Ok');
+        this.openSnack('success', 'Global.OK', 'Message.IMAGE_UPDATED');
       },
-      error: (error) => this.handleError(error, 'Image processing error')
+      error: (error) => this.handleError(error, 'Error.IMAGE_PROCESSING')
     });
   }
 

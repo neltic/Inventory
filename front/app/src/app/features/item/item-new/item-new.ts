@@ -12,6 +12,9 @@ import { finalize, switchMap } from 'rxjs';
 import { BaseFormComponent } from '../../../shared/components/base-form/base-form';
 import { CategorySelect } from '../../../shared/components/category-select/category-select';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
+import { TranslateDirective } from "../../../shared/directives/translate-directive";
+import { TranslateErrorDirective } from '../../../shared/directives/translate-error-directive';
+import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 
 @Component({
   selector: 'app-item-new',
@@ -26,12 +29,15 @@ import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
     MatHint,
     MatProgressSpinnerModule,
     MatInputModule,
-    MatIconModule,     
+    MatIconModule,
     ReactiveFormsModule,
     ɵInternalFormsSharedModule,
     ImgFallbackDirective,
-    CategorySelect
-  ],
+    CategorySelect,
+    TranslateDirective,
+    TranslateErrorDirective,
+    TranslatePipe
+],
   providers: [{ provide: BaseFormComponent, useExisting: ItemNew }],
   templateUrl: './item-new.html',
   styleUrl: './item-new.scss',
@@ -79,7 +85,7 @@ export class ItemNew extends BaseFormComponent implements OnInit {
     }
     if (this.isSaving()) return;
     if (this.isUploadingImage()) {
-      this.openSnack('warning','Please wait until the image upload finishes.', 'Ok');
+      this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
       return;
     }
     this.isSaving.set(true);
@@ -100,7 +106,7 @@ export class ItemNew extends BaseFormComponent implements OnInit {
     )
     .subscribe({
       next: () => {        
-        const snackRef = this.openSnack('success','¡Item saved!', 'Ok');
+        const snackRef = this.openSnack('success', 'Global.OK', 'Message.ITEM_SAVED');
         snackRef.afterDismissed().subscribe(() => {
           this.goBack();
         });
@@ -126,7 +132,7 @@ export class ItemNew extends BaseFormComponent implements OnInit {
     ).subscribe({
       next: (response: any) => {
         this.imageGuid.set(response.fileGuid);        
-        this.openSnack('success','Image uploaded, you can now save it!', 'Ok');
+        this.openSnack('success', 'Global.OK', 'Message.IMAGE_READY_TO_SAVE');
       },
       error: (error) => this.handleError(error)
     });

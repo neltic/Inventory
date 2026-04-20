@@ -26,7 +26,7 @@
         </mat-list-option>
         }        
         @if (errorMessages['newParentId']()) {
-            <mat-error>{{ errorMessages['newParentId']() | translateError }}</mat-error>
+            <mat-error [translateError]="errorMessages['newParentId']()"></mat-error>
         }
     </mat-selection-list>   
 
@@ -37,7 +37,7 @@
         <span translate="Box.MOVE_CONFIRMATION_MSG" [translateParams]="[data.name]"></span>
       </mat-checkbox>      
       @if (errorMessages['confirmMove']()) {
-        <mat-error>{{ errorMessages['confirmMove']() | translateError }}</mat-error>
+        <mat-error [translateError]="errorMessages['confirmMove']()"></mat-error>
       }
     </div>
     <span class="flex-spacer"></span>

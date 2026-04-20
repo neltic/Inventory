@@ -13,6 +13,7 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { IItem } from '@models';
 import { BrandService, CategoryService, ItemService, StorageService } from '@services';
 import { BaseComponent } from '../../../shared/components/base/base';
+import { TranslateDirective } from "../../../shared/directives/translate-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 import { FindInListPipe } from '../../../shared/pipes/find-in-list-pipe';
 import { ItemRepeater } from '../item-repeater/item-repeater';
@@ -21,14 +22,14 @@ import { ItemRepeater } from '../item-repeater/item-repeater';
   selector: 'app-item',
   providers: [provideNativeDateAdapter()],
   imports: [
-    ItemRepeater, 
-    MatFormFieldModule, 
-    MatInputModule, 
-    FormsModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatOption, 
-    MatSelect, 
+    ItemRepeater,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatOption,
+    MatSelect,
     MatSelectTrigger,
     MatDivider,
     MatList,
@@ -37,8 +38,9 @@ import { ItemRepeater } from '../item-repeater/item-repeater';
     MatDrawerContent,
     MatDrawerContainer,
     AsPhotoPipe,
-    FindInListPipe
-  ],
+    FindInListPipe,
+    TranslateDirective
+],
   templateUrl: './item-list.html',
   styleUrl: './item-list.scss',
 })

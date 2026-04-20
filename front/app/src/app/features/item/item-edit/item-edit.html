@@ -4,18 +4,18 @@
 <mat-card class="custom-card" appearance="outlined">
     <mat-card-header>    
         <mat-form-field>
-            <mat-label>Item name</mat-label>
+            <mat-label translate="Item.NAME"></mat-label>
             <input
                 matInput
-                placeholder="Item name"
+                [placeholder]="'Item.NAME' | translate"
                 formControlName="name"
-                (blur)="updateErrorMessage('name', 'Item name')"
+                (blur)="updateErrorMessage('name', 'Item.ITEM_NAME')"
                 required
                 maxlength="64"
             />
             <mat-hint align="end">{{ mainForm.get('name')?.value?.length || 0 }}/64</mat-hint>
             @if (errorMessages['name']()) {
-                <mat-error>{{ errorMessages['name']() }}</mat-error>
+                <mat-error [translateError]="errorMessages['name']()"></mat-error>
             }
         </mat-form-field>
     </mat-card-header>
@@ -29,7 +29,7 @@
             [class.image-container-loaded]="!isUploadingImage()"
             (load)="onImageLoad()"
             (error)="onImageLoad()"
-            alt="Exterior photo of {{ item.name }}"
+            alt="{{ item.name }}"
             class="image-container-photo"
             appImgFallback
             crossorigin>
@@ -37,7 +37,7 @@
         @if (!isUploadingImage()) {
             <div class="image-container-overlay" [class.image-container-disabled]="isBusy()">
                 <mat-icon>photo_camera</mat-icon>
-                <span>Change Photo</span>
+                <span translate="Global.CHANGE_PHOTO"></span>
             </div>
         }
         <input 
@@ -51,28 +51,28 @@
     
     <mat-card-content>
 
-        <app-category-select controlName="categoryId" label="Category" [scope]="EntityScope.Item" friendlyErrorName="Item category" />
+        <app-category-select controlName="categoryId" label="Item.CATEGORY" [scope]="EntityScope.Item" friendlyErrorName="Item.ITEM_CATEGORY" />
     
         <mat-form-field>
-            <mat-label>Notes</mat-label>
+            <mat-label translate="Item.NOTES"></mat-label>
             <textarea 
                 matInput
-                placeholder="Notes"
+                [placeholder]="'Item.NOTES' | translate"
                 formControlName="notes"
-                (blur)="updateErrorMessage('notes', 'Item notes')"
+                (blur)="updateErrorMessage('notes', 'Item.ITEM_NOTES')"
                 required
                 maxlength="512">
             </textarea>
             <span matTextPrefix><mat-icon>description</mat-icon></span>
             <mat-hint align="end">{{ mainForm.get('notes')?.value?.length || 0 }}/512</mat-hint>
             @if (errorMessages['notes']()) {
-                <mat-error>{{ errorMessages['notes']() }}</mat-error>
+                <mat-error [translateError]="errorMessages['notes']()"></mat-error>
             }
         </mat-form-field>
 
         <p>
             <mat-icon>access_time</mat-icon>
-            <span>Updated {{ item.updatedAt | relativeTime }}</span>
+            <span><span translate="Global.UPDATED"></span> {{ item.updatedAt | relativeTime }}</span>
         </p>
 
     </mat-card-content>
@@ -84,21 +84,17 @@
             } @else {
                 <mat-icon>save</mat-icon>
             }
-            <span>
-                @if (isSaving()) { Saving... }
-                @else if (isUploadingImage()) { Uploading image... }
-                @else { Save }
-            </span>
+            @if (isSaving()) { <span translate="Global.SAVING"></span> }
+            @else if (isUploadingImage()) { <span translate="Global.UPLOADING_IMAGE"></span> }
+            @else { <span translate="Global.SAVE"></span> }
         </button>
         <button type="button" matButton (click)="onCancel()" class="btn-cancel">
             <mat-icon>
                 @if (mainForm.dirty) { cancel }            
                 @else { navigate_before }        
             </mat-icon>
-            <span>
-                @if (mainForm.dirty) { Cancel }
-                @else { Back }
-            </span>
+            @if (mainForm.dirty) { <span translate="Global.CANCEL"></span> }
+            @else { <span translate="Global.BACK"></span> }
         </button> 
     </mat-card-actions>
 

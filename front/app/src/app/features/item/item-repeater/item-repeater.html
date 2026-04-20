@@ -14,15 +14,15 @@
   
   <img mat-card-image 
        [src]="item().itemId | asPhoto:'item':item().updatedAt:'thumbnails'"
-       alt="Exterior photo of {{ item().name }}"
+       alt="{{ item().name }}"
        appImgFallback
        crossorigin>
     
   <mat-card-actions>
-    <button matButton (click)="goToEdit()"><mat-icon>edit_square</mat-icon><span>Edit</span></button>
-    <button matButton (click)="goToDetails()"><mat-icon>zoom_in</mat-icon><span>Details</span></button>
+    <button matButton (click)="goToEdit()"><mat-icon>edit_square</mat-icon><span translate="Global.EDIT"></span></button>
+    <button matButton (click)="goToDetails()"><mat-icon>zoom_in</mat-icon><span translate="Global.DETAILS"></span></button>    
     @if( item().hasStock ) {
-      <button matButton (click)="viewStorage()"><mat-icon>inventory</mat-icon><span>Stock</span></button>
+      <button matButton (click)="viewStorage()"><mat-icon>inventory</mat-icon><span translate="Global.STOCK">Stock</span></button>
     }    
   </mat-card-actions>
 

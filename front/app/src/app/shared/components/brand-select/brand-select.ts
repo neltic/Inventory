@@ -6,8 +6,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { IBrand } from '../../../models/i-brand';
 import { BrandService } from '../../../services/brand-service';
 import { TranslateDirective } from "../../directives/translate-directive";
+import { TranslateErrorDirective } from '../../directives/translate-error-directive';
 import { FindInListPipe } from '../../pipes/find-in-list-pipe';
-import { TranslateErrorPipe } from '../../pipes/translate-error-pipe';
 import { BaseSelectComponent } from '../base-select/base-select';
 
 @Component({
@@ -18,7 +18,7 @@ import { BaseSelectComponent } from '../base-select/base-select';
     MatSelectModule,
     MatIconModule,
     FindInListPipe,
-    TranslateErrorPipe,
+    TranslateErrorDirective,
     TranslateDirective
 ],
   viewProviders: [
