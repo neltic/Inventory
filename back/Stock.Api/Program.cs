@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Stock.Api.Utils;
 using Stock.Application.Common;
 using Stock.Infrastructure.Persistence;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,31 @@ builder.Services.AddProjectDependencies();
 // Register singleton services
 builder.Services.AddSingletonDependencies();
 
+// Register TokenOptions configuration 
+builder.Services.Configure<TokenOptions>(
+    builder.Configuration.GetSection(TokenOptions.SectionName));
+
+var tokenOptions = builder.Configuration
+    .GetSection(TokenOptions.SectionName)
+    .Get<TokenOptions>();
+
+// Configure JWT authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions!.SecretKey)),
+            ValidateIssuer = true,
+            ValidIssuer = tokenOptions.Issuer,
+            ValidateAudience = true,
+            ValidAudience = tokenOptions.Audience,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
 // Register FileStorageOptions configuration
 builder.Services.Configure<FileStorageOptions>(
     builder.Configuration.GetSection(FileStorageOptions.SectionName));
@@ -42,6 +70,8 @@ builder.Services.AddHealthChecks()
     .AddSqlServer(connectionString: connectionString,
         name: "sql-check",
         tags: ["db", "sql"]);
+
+builder.Services.AddAuthorization();
 
 // Build application
 var app = builder.Build();
@@ -60,6 +90,7 @@ await app.Services.InitializeCacheAsync();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<LanguageDetectionMiddleware>();
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");

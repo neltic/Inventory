@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 
@@ -46,6 +47,7 @@ public class GlobalizationController(IGlobalizationService globalization) : Cont
     /// </remarks>
     /// <returns>A confirmation message indicating the cache has been refreshed.</returns>
     /// <response code="200">Cache successfully refreshed.</response>
+    [Authorize]
     [HttpPost("refresh")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

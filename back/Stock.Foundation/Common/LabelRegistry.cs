@@ -10,6 +10,7 @@ public static class LabelRegistry
         public const string Item = "Item";
         public const string Error = "Error";
         public const string Storage = "Storage";
+        public const string Auth = "Auth";
     }
 
     public static class Key
