@@ -197,7 +197,18 @@ VALUES
   ('Welcome', 'CATEGORY_CARD_CONTENT'),
   ('Welcome', 'BRAND_CARD_TITLE'),
   ('Welcome', 'BRAND_CARD_SUBTITLE'),
-  ('Welcome', 'BRAND_CARD_CONTENT');
+  ('Welcome', 'BRAND_CARD_CONTENT'),
+
+  -- Session
+  ('Session', 'GREETING'),
+  ('Session', 'LOGOUT'),
+
+  -- Unauthorized
+  ('Unauthorized', 'TITLE'),  
+  ('Unauthorized', 'MESSAGE_PERMISSIONS'),
+  ('Unauthorized', 'MESSAGE_ROLE_REQUIRED'),
+  ('Unauthorized', 'GO_HOME'),
+  ('Unauthorized', 'CHANGE_ACCOUNT');
 
 
 INSERT INTO [dbo].[Translation] (LabelId, LanguageCode, [Text], CreatedAt, UpdatedAt)
@@ -401,6 +412,17 @@ CASE
     WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_TITLE' THEN 'Brands'
     WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_SUBTITLE' THEN 'Manufacturers'
     WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_CONTENT' THEN 'Manage item and brands suppliers in your system.'
+
+    -- Session
+    WHEN Context = 'Session' AND LabelKey = 'GREETING' THEN 'Hi, '
+    WHEN Context = 'Session' AND LabelKey = 'LOGOUT' THEN 'Logout'
+
+    -- Unauthorized
+    WHEN Context = 'Unauthorized' AND LabelKey = 'TITLE' THEN 'Access denied'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'MESSAGE_PERMISSIONS' THEN 'Sorry, you don''t have the necessary permissions to access this page.'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'MESSAGE_ROLE_REQUIRED' THEN 'Your account may not have the required role, or your session may have expired.'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'GO_HOME' THEN 'Return to Home'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'CHANGE_ACCOUNT' THEN 'Change Account'
 
 END, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET()
 FROM [Label];
@@ -607,6 +629,17 @@ CASE
     WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_TITLE' THEN 'Marcas'
     WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_SUBTITLE' THEN 'Fabricantes'
     WHEN Context = 'Welcome' AND LabelKey = 'BRAND_CARD_CONTENT' THEN 'Gestiona marcas y proveedores en tu sistema.'
+
+    -- Session
+    WHEN Context = 'Session' AND LabelKey = 'GREETING' THEN 'Hola, '
+    WHEN Context = 'Session' AND LabelKey = 'LOGOUT' THEN 'Cerrar sesión'
+
+    -- Unauthorized
+    WHEN Context = 'Unauthorized' AND LabelKey = 'TITLE' THEN 'Acceso denegado'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'MESSAGE_PERMISSIONS' THEN 'Lo sentimos, no tienes los permisos necesarios para acceder a esta página.'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'MESSAGE_ROLE_REQUIRED' THEN 'Es posible que tu cuenta no tenga el rol requerido o que tu sesión haya expirado.'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'GO_HOME' THEN 'Volver al inicio'
+    WHEN Context = 'Unauthorized' AND LabelKey = 'CHANGE_ACCOUNT' THEN 'Cambiar cuenta'
 
 END, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET()
 FROM [Label];

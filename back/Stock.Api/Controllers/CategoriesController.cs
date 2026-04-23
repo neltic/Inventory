@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using Stock.Foundation.Common;
 using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
@@ -19,6 +21,7 @@ public class CategoriesController(
     /// <returns>A collection of categories.</returns>
     /// <response code="200">Returns the list of categories.</response>
     [HttpGet]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
     {
@@ -34,6 +37,7 @@ public class CategoriesController(
     /// <response code="200">Returns the requested category.</response>
     /// <response code="404">If the category was not found.</response>
     [HttpGet("{id}")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CategoryDto>> GetById(int id)
@@ -57,6 +61,7 @@ public class CategoriesController(
     /// <response code="404">If the category does not exist.</response>
     /// <response code="409">If the update creates a conflict (e.g., duplicate name).</response>
     [HttpPut("{id}")]
+    [Authorize(Roles = RoleRealm.Editor)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,6 +94,7 @@ public class CategoriesController(
     /// <response code="400">If the model data is invalid.</response>
     /// <response code="409">If a category with the same name already exists.</response>
     [HttpPost]
+    [Authorize(Roles = RoleRealm.Editor)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -118,6 +124,7 @@ public class CategoriesController(
     /// <response code="204">Category deleted successfully.</response>
     /// <response code="409">If the category cannot be deleted due to existing dependencies.</response>
     [HttpDelete("{id}")]
+    [Authorize(Roles = RoleRealm.Editor)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id)
@@ -144,6 +151,7 @@ public class CategoriesController(
     /// <response code="400">If the request parameters are invalid.</response>
     /// <response code="409">If the reordering logic fails due to business constraints.</response>
     [HttpPatch("{id}/reorder/{newOrder}")]
+    [Authorize(Roles = RoleRealm.Editor)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]

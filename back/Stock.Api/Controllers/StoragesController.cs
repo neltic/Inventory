@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using Stock.Foundation.Common;
 using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
@@ -20,6 +22,7 @@ public class StoragesController(
     /// <returns>The storage details associated with the item.</returns>
     /// <response code="200">Returns the item's storage data.</response>
     [HttpGet("items/{itemId}")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetStorageByItem(int itemId)
     {
@@ -36,6 +39,7 @@ public class StoragesController(
     /// <response code="200">Returns the list of items in the box.</response>
     /// <response code="404">If the box is empty or not found.</response>
     [HttpGet("boxes/{boxId}")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(IEnumerable<ItemInBoxListDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ItemInBoxListDto>>> GetItemsByBoxId(int boxId)
@@ -60,6 +64,7 @@ public class StoragesController(
     /// <returns>Storage details including quantity and expiration info.</returns>
     /// <response code="200">Returns the specific storage record.</response>
     [HttpGet("boxes/{boxId}/items/{itemId}/brands/{brandId}")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetStorage(int boxId, int itemId, int brandId)
     {
@@ -81,6 +86,7 @@ public class StoragesController(
     /// <response code="400">If the model state is invalid.</response>
     /// <response code="404">If the storage record could not be found or updated.</response>
     [HttpPut]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -108,6 +114,7 @@ public class StoragesController(
     /// <returns>The result of the unbinding operation.</returns>
     /// <response code="200">The association was successfully removed.</response>
     [HttpDelete("boxes/{boxId}/items/{itemId}/brands/{brandId}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Remove(int boxId, int itemId, int brandId)
     {

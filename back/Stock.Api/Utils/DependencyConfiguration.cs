@@ -1,14 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Stock.Application.Common;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities;
 using Stock.Infrastructure.Persistence;
 using Stock.Infrastructure.Services;
 using System.Reflection;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace Stock.Api.Utils;
 
-public static class DependencyInjection
+public static class DependencyConfiguration
 {
     private enum MessageSource
     {
@@ -19,7 +24,7 @@ public static class DependencyInjection
         None
     }
 
-    public static void AddProjectDependencies(this IServiceCollection services)
+    public static void AddScopedDependencies(this IServiceCollection services)
     {
         var assemblies = new[] { "Stock.Application", "Stock.Infrastructure" };
 
@@ -81,6 +86,70 @@ public static class DependencyInjection
         {
             Console.ResetColor();
         }
+    }
+
+    public static void ConfigureAuth(this IServiceCollection services, KeycloakOptions keycloakOptions)
+    {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.Authority = keycloakOptions.Authority;
+            options.Audience = keycloakOptions.Audience;            
+            options.MetadataAddress = keycloakOptions.MetadataAddress;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,                
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromSeconds(keycloakOptions.ClockSkewSeconds),
+                RoleClaimType = ClaimTypes.Role
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = context =>
+                {
+                    var principal = context.Principal;
+                    if (principal == null)
+                    {
+                        return Task.CompletedTask;
+                    }
+                    var rAccess = principal.FindFirst("realm_access");
+                    if (rAccess != null && !string.IsNullOrEmpty(rAccess.Value))
+                    {
+                        try
+                        {
+                            using var payload = JsonDocument.Parse(rAccess.Value);
+                            if (payload.RootElement.TryGetProperty("roles", out var roles))
+                            {
+                                if (principal.Identity is ClaimsIdentity claimsIdentity)
+                                {
+                                    foreach (var role in roles.EnumerateArray())
+                                    {
+                                        var roleString = role.GetString();
+                                        if (!string.IsNullOrEmpty(roleString))
+                                        {
+                                            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, roleString));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch (JsonException)
+                        {
+                            // Invalid JSON in realm_access; ignore roles extraction
+                        }
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+        services.AddAuthorization();
     }
 
     public static async Task InitializeCacheAsync(this IServiceProvider appServices)
@@ -300,17 +369,14 @@ public static class DependencyInjection
         Console.ForegroundColor = color;
         Console.WriteLine(message);
     }
-
     private static void OkMessage(MessageSource source, string message)
     {
         WriteMessage(ConsoleColor.Green, source, message);
     }
-
     private static void InfoMessage(MessageSource source, string message)
     {
         WriteMessage(ConsoleColor.Cyan, source, message);
     }
-
     private static void ErrorMessage(MessageSource source, string message)
     {
         WriteMessage(ConsoleColor.Red, source, message);

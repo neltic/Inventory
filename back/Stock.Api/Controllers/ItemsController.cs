@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
+using Stock.Foundation.Common;
 using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
@@ -21,6 +23,7 @@ public class ItemsController(
     /// <returns>A collection of items with basic information.</returns>
     /// <response code="200">Returns the list of items.</response>
     [HttpGet]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(IEnumerable<ItemListDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ItemListDto>>> GetItems()
     {
@@ -36,6 +39,7 @@ public class ItemsController(
     /// <response code="200">Returns the requested item details.</response>
     /// <response code="404">If the item ID does not exist.</response>
     [HttpGet("{id}")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(ItemDetailedDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ItemDetailedDto>> GetById(int id)
@@ -50,6 +54,7 @@ public class ItemsController(
     /// <returns>Information about an empty item.</returns>
     /// <response code="200">Returns the empty item data.</response>
     [HttpGet("empty")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(typeof(BoxDetailedDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<BoxDetailedDto>> GetEmptyItem()
     {
@@ -68,6 +73,7 @@ public class ItemsController(
     /// </returns>
     /// <response code="200">Returns the list of locations (can be empty).</response>
     [HttpGet("{itemId}/locations")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(typeof(IEnumerable<ItemLocationListDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetItemLocations(int itemId)
     {
@@ -85,6 +91,7 @@ public class ItemsController(
     /// <response code="400">If the provided data is invalid.</response>
     /// <response code="409">If a business conflict occurs (e.g., item already exists).</response>
     [HttpPost]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -114,6 +121,7 @@ public class ItemsController(
     /// <response code="404">If the item to update was not found.</response>
     /// <response code="409">If the update violates system constraints.</response>
     [HttpPut("{id}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -148,6 +156,7 @@ public class ItemsController(
     /// <response code="204">Item deleted successfully.</response>
     /// <response code="409">If the item cannot be deleted due to dependencies.</response>
     [HttpDelete("{id}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id)
@@ -175,6 +184,7 @@ public class ItemsController(
     /// <response code="200">Image successfully linked to the item.</response>
     /// <response code="500">Internal error during file processing or assignment.</response>
     [HttpPost("{id}/assign-image/{fileGuid}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AssignImage(int id, string fileGuid)

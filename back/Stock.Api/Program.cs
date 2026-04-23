@@ -1,62 +1,32 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Stock.Api.Utils;
 using Stock.Application.Common;
 using Stock.Infrastructure.Persistence;
-using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
-}
-
-var redisConnectionHost = builder.Configuration.GetValue<string>("RedisConfig:ConnectionHost");
-
-if (string.IsNullOrWhiteSpace(redisConnectionHost))
-{
-    throw new InvalidOperationException("Connection 'RedisConfig:ConnectionHost' is not configured.");
-}
+var redisConnectionHost = builder.Configuration.GetValue<string>("RedisConfig:ConnectionHost") ?? throw new InvalidOperationException("Connection 'RedisConfig:ConnectionHost' is not configured.");
 
 builder.Services.AddDbContext<StockDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// IoC registration
-builder.Services.AddProjectDependencies();
+// Register scoped services
+builder.Services.AddScopedDependencies();
 
 // Register singleton services
 builder.Services.AddSingletonDependencies();
 
-// Register TokenOptions configuration 
-builder.Services.Configure<TokenOptions>(
-    builder.Configuration.GetSection(TokenOptions.SectionName));
+var keycloakOptions = builder.Configuration
+    .GetSection(KeycloakOptions.SectionName)
+    .Get<KeycloakOptions>() ?? throw new InvalidOperationException($"Configuration section '{KeycloakOptions.SectionName}' is not properly configured.");
 
-var tokenOptions = builder.Configuration
-    .GetSection(TokenOptions.SectionName)
-    .Get<TokenOptions>();
-
-// Configure JWT authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions!.SecretKey)),
-            ValidateIssuer = true,
-            ValidIssuer = tokenOptions.Issuer,
-            ValidateAudience = true,
-            ValidAudience = tokenOptions.Audience,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+// Configure authentication
+builder.Services.ConfigureAuth(keycloakOptions);
 
 // Register FileStorageOptions configuration
 builder.Services.Configure<FileStorageOptions>(
@@ -67,11 +37,10 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 // Add health checks
 builder.Services.AddHealthChecks()
-    .AddSqlServer(connectionString: connectionString,
+    .AddSqlServer(
+        connectionString: connectionString,
         name: "sql-check",
         tags: ["db", "sql"]);
-
-builder.Services.AddAuthorization();
 
 // Build application
 var app = builder.Build();

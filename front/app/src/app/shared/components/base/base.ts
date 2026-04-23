@@ -2,11 +2,10 @@ import { Location } from '@angular/common';
 import { Directive, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
-import { GlobalizationService } from '@services';
+import { EntityScope, Role, SCOPE_NONE_OPTION, SCOPE_OPTIONS, SCOPE_SELECTABLE_OPTIONS, ScopeOption } from '@models';
+import { GlobalizationService, RouteParamsService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { GlobalizationKey } from '../../../core/types/globalization-keys';
-import { EntityScope, SCOPE_NONE_OPTION, SCOPE_OPTIONS, SCOPE_SELECTABLE_OPTIONS, ScopeOption } from '../../../models/e-entity-scope';
-import { RouteParamsService } from '../../../services/route-params-service';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Directive()
@@ -19,7 +18,8 @@ export abstract class BaseComponent {
     protected globalization: GlobalizationService = inject(GlobalizationService);
     protected readonly scopeOptions = SCOPE_OPTIONS;
     protected readonly scopeSelectableOptions = SCOPE_SELECTABLE_OPTIONS;    
-    public readonly EntityScope = EntityScope;    
+    public readonly EntityScope = EntityScope;
+    public readonly Role = Role;
 
     openSnack(type: 'success' | 'error' | 'info' | 'warning', actionKey: GlobalizationKey, messageKey: GlobalizationKey | string): MatSnackBarRef<TextOnlySnackBar>;
     openSnack(type: 'success' | 'error' | 'info' | 'warning', actionKey: GlobalizationKey, messageKey: GlobalizationKey | string, params: any[]): MatSnackBarRef<TextOnlySnackBar>;

@@ -55,6 +55,30 @@ services:
     restart: always
     networks:
       - app-network
+      
+  stock-auth:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: stock-auth
+    environment:      
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KC_HOSTNAME_STRICT=false
+      - KC_HTTP_ENABLED=true      
+      - KC_DB=mssql
+      - KC_DB_URL=jdbc:sqlserver://host.docker.internal:1433;databaseName=KeycloakDB;encrypt=false;trustServerCertificate=true
+      - KC_DB_USERNAME=${KC_DB_USERNAME}
+      - KC_DB_PASSWORD=${KC_DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    volumes:      
+      - ./infra/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    command:
+      - start-dev 
+      - --import-realm
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
 
   stock-back:
     container_name: stock-back

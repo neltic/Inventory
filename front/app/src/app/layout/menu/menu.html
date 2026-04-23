@@ -9,7 +9,7 @@
         <span translate="Menu.BOX"></span>
     </button>
     <mat-menu #boxMenu="matMenu">
-        <button mat-menu-item [routerLink]="['/box/new', this.params.parentBoxId()]">
+        <button mat-menu-item *hasRole="Role.Operator" [routerLink]="['/box/new', this.params.parentBoxId()]">
             <mat-icon>add</mat-icon>
             <span translate="Menu.NEW"></span>
         </button>
@@ -69,7 +69,9 @@
         </button>
     </mat-menu>   
 
-    <button mat-button [matMenuTriggerFor]="langMenu" class="main-menu-right">
+    <span class="spacer"></span>
+
+    <button mat-button [matMenuTriggerFor]="langMenu">
         <mat-icon>language</mat-icon>
         <span [translate]="globalization.currentLanguageLabelKey()"></span>
     </button>
@@ -83,6 +85,18 @@
                 <span [translate]="globalization.getLanguageLabelKey(lang.languageCode)"></span>
             </button>
         }
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="sessionMenu">
+        <mat-icon>star</mat-icon>
+        <span translate="Session.GREETING"></span><span>{{ securityService.givenName() }}</span>
+    </button>
+
+    <mat-menu #sessionMenu="matMenu">        
+        <button mat-menu-item (click)="securityService.logout()">
+            <mat-icon>logout</mat-icon>
+            <span translate="Session.LOGOUT"></span>
+        </button>    
     </mat-menu>
 
 </div>

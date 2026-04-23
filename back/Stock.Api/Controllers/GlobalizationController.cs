@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using Stock.Foundation.Common;
 
 namespace Stock.Api.Controllers;
 
 /// <summary>
 /// Handles globalization and localization operations, providing translation resources to the client applications.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class GlobalizationController(IGlobalizationService globalization) : ControllerBase
@@ -17,7 +19,8 @@ public class GlobalizationController(IGlobalizationService globalization) : Cont
     /// </summary>
     /// <returns>A list of languages including their codes and names.</returns>
     /// <response code="200">Returns the list of supported languages.</response>
-    [HttpGet("languages")]
+    [AllowAnonymous]
+    [HttpGet("languages")]    
     [ProducesResponseType(typeof(IEnumerable<LanguageDto>), 200)]
     public async Task<ActionResult<IEnumerable<LanguageDto>>> GetAllLanguages()
     {
@@ -30,6 +33,7 @@ public class GlobalizationController(IGlobalizationService globalization) : Cont
     /// </summary>
     /// <returns>A JSON object containing translations grouped by context and keys.</returns>
     /// <response code="200">Returns the translation dictionary. If the requested language is missing, the default language is returned.</response>
+    [AllowAnonymous]
     [HttpGet("locales")]
     [ProducesResponseType(typeof(IDictionary<string, IDictionary<string, string>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLocales()
@@ -47,8 +51,8 @@ public class GlobalizationController(IGlobalizationService globalization) : Cont
     /// </remarks>
     /// <returns>A confirmation message indicating the cache has been refreshed.</returns>
     /// <response code="200">Cache successfully refreshed.</response>
-    [Authorize]
     [HttpPost("refresh")]
+    [Authorize(Roles = RoleRealm.Admin)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Refresh()

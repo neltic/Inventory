@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
 using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities.Views;
+using Stock.Foundation.Common;
 using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
@@ -23,6 +25,7 @@ public class BoxesController(
     /// <returns>A collection of boxes found within the specified level.</returns>
     /// <response code="200">Returns the list of boxes.</response>
     [HttpGet]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(IEnumerable<BoxListDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BoxListDto>>> GetByParent([FromQuery] int? parentBoxId)
     {
@@ -38,6 +41,7 @@ public class BoxesController(
     /// </remarks>
     /// <returns>A list of boxes containing basic info.</returns>
     [HttpGet("lookup")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(IEnumerable<BoxLookupListDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BoxLookupListDto>>> GetBoxesLookup()
     {
@@ -53,6 +57,7 @@ public class BoxesController(
     /// <response code="200">Returns the requested box.</response>
     /// <response code="404">If a box with the provided ID was not found.</response>
     [HttpGet("{id}")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(BoxDetailedDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BoxDetailedDto>> GetById(int id)
@@ -71,6 +76,7 @@ public class BoxesController(
     /// <param name="parentBoxId">The ID of the parent box to search within.</param>
     /// <returns>Details of the empty box.</returns>
     [HttpGet("empty")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(typeof(BoxDetailedDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<BoxDetailedDto>> GetEmptyByParentBoxId([FromQuery] int? parentBoxId)
     {
@@ -87,6 +93,7 @@ public class BoxesController(
     /// <response code="200">Returns the JSON path string.</response>
     /// <response code="404">If the path cannot be found or the box is at the Root level.</response>
     [HttpGet("{id}/path")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetBoxFullPath(int id)
@@ -105,12 +112,13 @@ public class BoxesController(
     /// Retrieves a hierarchical list of potential parent boxes.
     /// Use without an ID for new box creation, or with an ID to move an existing box.
     /// </summary>
-    /// <param name="targetBoxId">The optional ID of the box to be moved.</param>
-    [HttpGet("available-parents/{targetBoxId?}")]
+    /// <param name="id">The optional ID of the box to be moved.</param>
+    [HttpGet("available-parents/{id?}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(typeof(IEnumerable<BoxTransferList>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<BoxTransferList>>> GetAvailableParents(int? targetBoxId)
+    public async Task<ActionResult<IEnumerable<BoxTransferList>>> GetAvailableParents(int? id)
     {
-        var availableParents = await boxService.GetAvailableParentBoxesByAsync(targetBoxId);
+        var availableParents = await boxService.GetAvailableParentBoxesByAsync(id);
 
         return Ok(availableParents);
     }
@@ -124,6 +132,7 @@ public class BoxesController(
     /// <response code="400">If the model data is invalid.</response>
     /// <response code="409">If a business logic conflict occurs (e.g., duplicate name at the same hierarchy level).</response>
     [HttpPost]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -152,6 +161,7 @@ public class BoxesController(
     /// <response code="404">If the box was not found or could not be updated.</response>
     /// <response code="409">If the update creates a conflict with existing records.</response>
     [HttpPut("{id}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -185,6 +195,7 @@ public class BoxesController(
     /// <response code="204">Box deleted successfully.</response>
     /// <response code="409">If the box cannot be deleted due to existing dependencies.</response>
     [HttpDelete("{id}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id)
@@ -212,6 +223,7 @@ public class BoxesController(
     /// <response code="200">Image assigned successfully.</response>
     /// <response code="500">Internal error while processing file assignment.</response>
     [HttpPost("{id}/assign-image/{fileGuid}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AssignImage(int id, string fileGuid)
@@ -243,6 +255,7 @@ public class BoxesController(
     /// <response code="204">The box was successfully moved to its new location.</response>
     /// <response code="400">If the move is invalid (e.g., circular reference or illegal parent).</response>
     [HttpPatch("{id}/move-to/{newParentId?}")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> MoveBox(int id, int? newParentId)

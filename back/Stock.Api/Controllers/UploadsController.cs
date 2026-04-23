@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stock.Application.Interfaces.Common;
+using Stock.Foundation.Common;
 
 namespace Stock.Api.Controllers;
 
 /// <summary>
 /// Controller for handling temporary file and image uploads.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UploadsController(IFileStorageService fileService) : ControllerBase
@@ -23,6 +26,7 @@ public class UploadsController(IFileStorageService fileService) : ControllerBase
     /// <response code="200">Returns the GUID of the uploaded image.</response>
     /// <response code="400">If the file is null or the request is invalid.</response>
     [HttpPost("image")]
+    [Authorize(Roles = RoleRealm.Operator)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Upload(IFormFile file)

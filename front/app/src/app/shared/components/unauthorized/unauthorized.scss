@@ -1,0 +1,86 @@
+.unauthorized-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; 
+    background-color: #f9fafb; 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px;
+} 
+    
+.unauthorized-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.icon-container {
+    margin-bottom: 20px;
+    color: #dc2626; 
+}
+
+.lock-icon {
+    width: 64px;
+    height: 64px;
+}
+
+.error-code {
+    font-size: 72px;
+    font-weight: 800;
+    color: #1f2937; 
+    margin: 0;
+    line-height: 1;
+}
+
+.error-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.error-message {
+    font-size: 16px;
+    color: #6b7280; 
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap; 
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-secondary {
+    background-color: #f3f4f6; 
+    color: #374151;
+}
+
+.btn-secondary:hover {
+    background-color: #e5e7eb;
+}

@@ -1,0 +1,90 @@
+{
+  "realm": "StockRealm",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "viewer",
+        "description": "Basic read-only role"
+      },
+      {
+        "name": "operator",
+        "description": "Warehouse movement manager",
+        "composite": true,
+        "composites": {
+          "realm": [ "viewer" ]
+        }
+      },
+      {
+        "name": "editor",
+        "description": "Catalog manager (brands and categories)",
+        "composite": true,
+        "composites": {
+          "realm": [ "viewer" ]
+        }
+      },
+      {
+        "name": "admin",
+        "description": "Full system administrator",
+        "composite": true,
+        "composites": {
+          "realm": [ "operator", "editor", "viewer" ]
+        }
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "stock-frontend",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "redirectUris": ["http://localhost:4200/*"],
+      "webOrigins": ["http://localhost:4200"],
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "email": "admin@storage-app.com",
+	  "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "System",
+      "credentials": [{ "type": "password", "value": "admin123", "temporary": false }],
+      "realmRoles": ["admin"]
+    },
+    {
+      "username": "operator",
+      "enabled": true,
+      "email": "operator@storage-app.com",
+	  "emailVerified": true,
+      "firstName": "Operator",
+      "lastName": "Warehouse",
+      "credentials": [{ "type": "password", "value": "operator123", "temporary": false }],
+      "realmRoles": ["operator"]
+    },
+    {
+      "username": "editor",
+      "enabled": true,
+      "email": "editor@storage-app.com",
+	  "emailVerified": true,
+      "firstName": "Editor",
+      "lastName": "Catalog",
+      "credentials": [{ "type": "password", "value": "editor123", "temporary": false }],
+      "realmRoles": ["editor"]
+    },
+    {
+      "username": "viewer",
+      "enabled": true,
+      "email": "viewer@storage-app.com",
+	  "emailVerified": true,
+      "firstName": "Viewer",
+      "lastName": "Guest",
+      "credentials": [{ "type": "password", "value": "viewer123", "temporary": false }],
+      "realmRoles": ["viewer"]
+    }
+  ]
+}

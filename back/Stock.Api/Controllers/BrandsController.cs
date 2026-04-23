@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stock.Application.DTOs;
 using Stock.Application.Interfaces;
+using Stock.Foundation.Common;
 using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Api.Controllers;
@@ -20,6 +22,7 @@ public class BrandsController(
     /// <returns>A collection of all available brands.</returns>
     /// <response code="200">Returns the list of brands.</response>
     [HttpGet]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(IEnumerable<BrandDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BrandDto>>> GetBrands()
     {
@@ -35,6 +38,7 @@ public class BrandsController(
     /// <response code="200">Returns the requested brand.</response>
     /// <response code="404">If a brand with the provided ID was not found.</response>
     [HttpGet("{id}")]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(BrandDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BrandDto>> GetById(int id)
@@ -58,6 +62,7 @@ public class BrandsController(
     /// <response code="404">If the brand was not found.</response>
     /// <response code="409">If the update creates a conflict (e.g., duplicate brand name).</response>
     [HttpPut("{id}")]
+    [Authorize(Roles = RoleRealm.Editor)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -90,6 +95,7 @@ public class BrandsController(
     /// <response code="400">If the model data is invalid.</response>
     /// <response code="409">If a brand with the same name already exists.</response>
     [HttpPost]
+    [Authorize(Roles = RoleRealm.Editor)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -119,6 +125,7 @@ public class BrandsController(
     /// <response code="204">Brand deleted successfully.</response>
     /// <response code="409">If the brand cannot be deleted due to existing dependencies.</response>
     [HttpDelete("{id}")]
+    [Authorize(Roles = RoleRealm.Editor)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Delete(int id)

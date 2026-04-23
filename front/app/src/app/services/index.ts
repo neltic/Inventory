@@ -5,5 +5,6 @@ export * from './file-service';
 export * from './globalization-service';
 export * from './item-service';
 export * from './route-params-service';
+export * from './security-service';
 export * from './storage-service';
 

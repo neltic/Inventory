@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     { 
@@ -10,6 +11,7 @@ export const routes: Routes = [
         path: 'welcome',
         loadComponent: () => import('./features/welcome/welcome').then(m => m.Welcome),
         title: 'Home',
+        canActivate: [authGuard],
     },
     {
         path: 'storage',
@@ -33,7 +35,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/brand/brand.routes').then(m => m.BRAND_ROUTES)
     },
     {
+        path: 'unauthorized',
+        loadComponent: () => import('./shared/components/unauthorized/unauthorized').then(m => m.Unauthorized)
+    },
+    {
         path: '**',
-        redirectTo: ''
+        redirectTo: 'unauthorized'
     }
 ];
