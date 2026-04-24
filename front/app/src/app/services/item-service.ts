@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { environment } from '@core';
 import { Observable } from 'rxjs';
 import { IItem, IItemLocation } from '../models/i-item';
 
@@ -9,7 +10,7 @@ import { IItem, IItemLocation } from '../models/i-item';
 export class ItemService {
   
   private http = inject(HttpClient);
-  readonly apiUrl = '/api/items/';
+  private readonly apiUrl = environment.endpoint.item;
 
   getItems(): Observable<IItem[]> {      
     return this.http.get<IItem[]>(this.apiUrl) ?? [];

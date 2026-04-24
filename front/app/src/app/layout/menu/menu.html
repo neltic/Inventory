@@ -24,7 +24,7 @@
         <span translate="Menu.ITEM"></span>
     </button>
     <mat-menu #itemMenu="matMenu">
-        <button mat-menu-item [routerLink]="['/item/new']">
+        <button mat-menu-item *hasRole="Role.Operator" [routerLink]="['/item/new']">
             <mat-icon>add</mat-icon>
             <span translate="Menu.NEW"></span>
         </button>
@@ -34,7 +34,7 @@
         </button>
     </mat-menu>   
     
-    <button matButton [routerLink]="['/storage']">
+    <button matButton *hasRole="Role.Operator" [routerLink]="['/storage']">
         <mat-icon>storage</mat-icon>
         <span translate="Menu.STORAGE"></span>
     </button>
@@ -44,13 +44,17 @@
         <span translate="Menu.CATEGORY"></span>
     </button>
     <mat-menu #categoryMenu="matMenu">        
-        <button mat-menu-item [routerLink]="['/category/list']" [queryParams]="{ action: 'add' }">
+        <button mat-menu-item *hasRole="Role.Editor" [routerLink]="['/category/list']" [queryParams]="{ action: 'add' }">
             <mat-icon>add</mat-icon>
             <span translate="Menu.NEW"></span>
         </button>        
         <button mat-menu-item [routerLink]="['/category/list']">
-            <mat-icon>dashboard_customize</mat-icon>
-            <span translate="Menu.SETUP"></span>
+            <mat-icon>{{ securityService.hasRole(Role.Editor) ? 'dashboard_customize' : 'search' }} </mat-icon>
+            @if(securityService.hasRole(Role.Editor)) {
+                <span translate="Menu.SETUP"></span>
+            } @else {
+                <span translate="Menu.SEARCH"></span>
+            }            
         </button>
     </mat-menu>
 
@@ -59,13 +63,17 @@
         <span translate="Menu.BRAND"></span>
     </button>
     <mat-menu #brandMenu="matMenu">        
-        <button mat-menu-item [routerLink]="['/brand/list']" [queryParams]="{ action: 'add' }">
+        <button mat-menu-item *hasRole="Role.Editor" [routerLink]="['/brand/list']" [queryParams]="{ action: 'add' }">
             <mat-icon>add</mat-icon>
             <span translate="Menu.NEW"></span>
         </button>        
         <button mat-menu-item [routerLink]="['/brand/list']">
-            <mat-icon>dashboard_customize</mat-icon>
-            <span translate="Menu.SETUP"></span>
+            <mat-icon>{{ securityService.hasRole(Role.Editor) ? 'dashboard_customize' : 'search' }} </mat-icon>
+            @if(securityService.hasRole(Role.Editor)) {                
+                <span translate="Menu.SETUP"></span>
+            } @else {
+                <span translate="Menu.SEARCH"></span>
+            }
         </button>
     </mat-menu>   
 

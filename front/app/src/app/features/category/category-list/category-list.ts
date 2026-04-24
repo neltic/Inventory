@@ -11,6 +11,7 @@ import { EMPTY_CATEGORY, ICategory } from '@models';
 import { CategoryService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
+import { HasRoleDirective } from "../../../shared/directives/has-role-directive";
 import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { CategoryEditDialog } from '../category-edit-dialog/category-edit-dialog';
 
@@ -18,20 +19,21 @@ import { CategoryEditDialog } from '../category-edit-dialog/category-edit-dialog
   selector: 'app-category-list',
   standalone: true,
   imports: [
-    MatButtonModule, 
-    MatIconModule, 
+    MatButtonModule,
+    MatIconModule,
     MatButtonModule,
     MatChip,
     MatChipSet,
     MatChipsModule,
     MatChipAvatar,
-    DragDropModule, 
+    DragDropModule,
     MatTableModule,
     MatInputModule,
     MatFormFieldModule,
     FormsModule,
-    TranslateDirective
-  ],
+    TranslateDirective,
+    HasRoleDirective
+],
   templateUrl: './category-list.html',
   styleUrl: './category-list.scss',
 })
@@ -46,7 +48,20 @@ export class CategoryList extends BaseComponent {
     return all.filter(c => c.name.toLowerCase().includes(text));
   });
   
-  isDragDisabled = computed(() => this.filterText().length > 0);
+  isDragDisabled = computed(() => this.filterText().length > 0 || !this.securityService.hasRole(this.Role.Editor));
+
+  readonly displayedColumns = computed(() => {
+    const isEditor = this.securityService.hasRole(this.Role.Editor);    
+    return [
+      ...(isEditor ? ['reorder'] : []),
+      'id', 
+      'order', 
+      'icon', 
+      'name', 
+      'scopes', 
+      ...(isEditor ? ['actions'] : []) 
+    ];
+  });
 
   constructor() {
     super();    

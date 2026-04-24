@@ -428,9 +428,23 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
 }
 
 /* DRAWER */
+mat-drawer-container {
+  height: calc(100vh - 84px);
+  width: 100%;
+  overflow: hidden;
+}
+
+mat-drawer-content {
+  height: 100%;
+  overflow-y: auto; 
+}
+
 mat-drawer {
   background-color: #101414 !important;
-  .drawer-header {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .drawer-header {    
     padding: 10pt;
     display: flex;
     justify-content: space-between;
@@ -447,6 +461,8 @@ mat-drawer {
     }
   }
   mat-list {
+    flex: 1; 
+    overflow-y: auto;
     padding: 5pt !important;
     mat-list-item {
       display: block;

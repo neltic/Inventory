@@ -1,5 +1,7 @@
 {
   "realm": "StockRealm",
+  "displayName": "Inventory App",
+  "displayNameHtml": "<strong>Inventory</strong> App",
   "enabled": true,
   "roles": {
     "realm": [
@@ -42,7 +44,20 @@
       "redirectUris": ["http://localhost:4200/*"],
       "webOrigins": ["http://localhost:4200"],
       "directAccessGrantsEnabled": true,
-      "standardFlowEnabled": true
+      "standardFlowEnabled": true,
+	  "protocolMappers": [
+        {
+          "name": "audience-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "stock-frontend",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "stock-frontend"
+          }
+        }
+      ]
     }
   ],
   "users": [

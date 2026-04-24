@@ -59,7 +59,8 @@ services:
   stock-auth:
     image: quay.io/keycloak/keycloak:latest
     container_name: stock-auth
-    environment:      
+    environment:
+      - KC_HEALTH_ENABLED=true    
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
       - KC_HOSTNAME_STRICT=false
@@ -77,6 +78,12 @@ services:
       - --import-realm
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 5s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s    
     networks:
       - app-network
 
@@ -94,6 +101,9 @@ services:
       - FileStorage__TempPath=/app/storage/temp/
       - FileStorage__BoxPath=/app/storage/img/box/
       - FileStorage__ItemPath=/app/storage/img/item/
+      - Keycloak__Authority=http://stock-auth:8080/realms/StockRealm      
+      - Keycloak__MetadataAddress=http://stock-auth:8080/realms/StockRealm/.well-known/openid-configuration      
+      - Keycloak__Issuer=http://localhost:8080/realms/StockRealm
       - ASPNETCORE_HTTP_MAXREQUESTBODYSIZE=20971520
     volumes:
       - "${STATIC_STORAGE_PATH}/temp:/app/storage/temp"
@@ -102,6 +112,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
+      stock-auth:
+        condition: service_healthy
       stock-cache:
         condition: service_healthy
       stock-cdn:
@@ -123,6 +135,8 @@ services:
     ports:
       - "4200:80"
     depends_on:
+      stock-auth:
+        condition: service_healthy
       stock-back:
         condition: service_healthy
       stock-cdn:

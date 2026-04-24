@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Signal, WritableSignal, inject, signal } from '@angular/core';
 import { ControlContainer, FormGroup } from '@angular/forms';
+import { GlobalizationKey } from '@core';
 import { EntityScope } from '@models';
-import { GlobalizationKey } from '../../../core/types/globalization-keys';
 import { BaseFormComponent } from '../base-form/base-form';
 
 @Component({ template: '' })

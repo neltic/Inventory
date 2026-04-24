@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, Signal } from '@angular/core';
+import { environment } from '@core';
 import { Observable, tap } from 'rxjs';
 import { EntityScope } from '../models/e-entity-scope';
 import { ICategory } from '../models/i-category';
@@ -10,7 +11,7 @@ import { InListValidator } from '../shared/validators/in-list-validator';
 })
 export class CategoryService {
   private http = inject(HttpClient);
-  private readonly apiUrl = 'api/categories/'; 
+  private readonly apiUrl = environment.endpoint.category;
   
   private _categories = signal<ICategory[]>([]);
   public categories = this._categories.asReadonly();

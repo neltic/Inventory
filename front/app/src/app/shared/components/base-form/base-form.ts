@@ -1,8 +1,8 @@
 import { Directive, Injector, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormControlStatus, FormGroup } from '@angular/forms';
+import { GlobalizationKey } from '@core';
 import { startWith } from 'rxjs';
-import { GlobalizationKey } from '../../../core/types/globalization-keys';
 import { BaseComponent } from '../base/base';
 import { ERROR_FORM_MESSAGES } from '../error/error-form-mapping';
 

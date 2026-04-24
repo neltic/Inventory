@@ -54,6 +54,9 @@ export class CategoryEditDialog extends BaseFormComponent implements OnInit {
 
   constructor() {
     super();
+    if(!this.securityService.hasRole(this.Role.Editor)) {      
+      this.dialogRef.close();      
+    }
   }
 
   ngOnInit() {

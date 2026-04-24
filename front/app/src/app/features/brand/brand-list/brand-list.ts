@@ -10,6 +10,7 @@ import { EMPTY_BRAND, IBrand } from '@models';
 import { BrandService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
+import { HasRoleDirective } from '../../../shared/directives/has-role-directive';
 import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { BrandEditDialog } from '../brand-edit-dialog/brand-edit-dialog';
 
@@ -24,7 +25,8 @@ import { BrandEditDialog } from '../brand-edit-dialog/brand-edit-dialog';
     MatInputModule,
     MatFormFieldModule,
     FormsModule,
-    TranslateDirective
+    TranslateDirective,
+    HasRoleDirective
   ],
   templateUrl: './brand-list.html',
   styleUrl: './brand-list.scss',
@@ -38,6 +40,18 @@ export class BrandList extends BaseComponent {
     const all = this.brandService.brands();
     if (!text) return all;
     return all.filter(b => b.name.toLowerCase().includes(text));
+  });
+
+  readonly displayedColumns = computed(() => {
+    const isEditor = this.securityService.hasRole(this.Role.Editor);    
+    return [      
+      'id', 
+      'brand', 
+      'brand-alt', 
+      'name', 
+      'scopes',
+      ...(isEditor ? ['actions'] : []) 
+    ];
   });
 
   constructor() {

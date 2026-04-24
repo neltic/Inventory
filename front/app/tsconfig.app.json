@@ -8,7 +8,8 @@
     "types": [],
     "paths": {
       "@models": ["./src/app/models/index.ts"],
-      "@services": ["./src/app/services/index.ts"]
+      "@services": ["./src/app/services/index.ts"],
+      "@core":  ["./src/app/core/index.ts"]
     }
   },
   "include": [

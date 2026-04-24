@@ -5,6 +5,7 @@ Technical guide for the Inventory Control Application
 ![Microsoft SQL Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-006dc1?logo=microsoft%20sql%20server&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-%23ff4438.svg?logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Keycloak](https://img.shields.io/badge/Auth-Keycloak-008aaa?logo=keycloak&logoColor=white)
 ![Angular 21](https://img.shields.io/badge/Angular-21-dd0031?logo=angular)
 ![Languages](https://img.shields.io/badge/Languages-en%20%7C%20es--MX-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -19,8 +20,9 @@ Inventory App is a comprehensive stock control system designed under **Clean Arc
 - [⚙️ Setup & Configuration](#️-setup--configuration)
 - [🐳 Container Infrastructure](#-container-infrastructure)
 - [🛡️ Resilience Strategy (DRP)](#️-resilience-strategy-drp)
-- [🛠️ Development & Migrations](#️-development--migrations)
-- [🌍 Globalization and Translation System](#-globalization-and-translation-system)
+- [🛠️ Start & Migrations](#️-start--migrations)
+- [🌍 Globalization](#-globalization)
+- [🔐 Security](#-security)
 - [📝 Key Features](#-key-features)
 
 
@@ -60,9 +62,21 @@ GOOGLE_CLIENT_SECRET=YourGoogleDriveSecret
 GOOGLE_REFRESH_TOKEN=YourGoogleDriveRefreshToken
 WORKER_USER_ID=Storage OAuth
 WORKER_APP_NAME=Storage-Data-Backup
+KEYCLOAK_ADMIN_PASSWORD=YourAdminPassword
+KC_DB_USERNAME=YourUser
+KC_DB_PASSWORD=YourPassword
 ```
 This ensures your private configuration and connection strings are decoupled from the code.
 
+### 3. Database Configuration
+You need to manually create two databases: one for the inventory application and one for user administration.
+The recommendations are:
+- `StockDb`
+- `KeycloakDb`
+For the last one, don't forget to check the [security](#-security) section to see the special features it requires.
+
+### 4. Users (Keycloak)
+When the container is created, it reads the file `infra\keycloak realm-export.json`, which contains the configuration for creating the realm, roles, and users needed to get started.
 
 ## 🐳 Container Infrastructure
 The system orchestrates 6 specialized services:
@@ -92,7 +106,7 @@ Every **12 hours**, the Worker instructs SQL Server to generate a Full Backup (`
 - **Self-Healing:** On startup, the Worker verifies the last existing backup to decide whether to execute a new one, avoiding unnecessary duplication.
 
 
-## 🛠️ Development & Migrations
+## 🛠️ Start & Migrations
 
 ### Execution Scripts
 The `/setup/` folder contains PowerShell scripts to streamline the environment for example:
@@ -125,7 +139,7 @@ dotnet ef database update --project Stock.Infrastructure --startup-project Stock
 dotnet ef database update 0 --project Stock.Infrastructure --startup-project Stock.Api
 ```
 
-## 🌍 Globalization and Translation System
+## 🌍 Globalization
 
 To maintain translation integrity in the frontend, we use a Strong Typing system. This prevents typos when calling translation labels from HTML or components.
 
@@ -163,6 +177,42 @@ Thanks to this synchronization, usage in components is completely type-safe:
 <span [translate]="'Storage.WRONG_KEY'"></span>
 ```
 
+## 🔐 Security
+
+### Identity and Access Management (IAM)
+This project implements a layered security architecture, delegating identity management to Keycloak. 
+This approach provides:
+- Single Sign-On (SSO): Centralized authentication.
+- Role-Based Access Control (RBAC): Permissions managed via specific roles.
+- JWT Tokens: Secure and standardized communication between the Frontend and the Backend API.
+
+### Database Configuration (Keycloak)
+If you need to recreate the database instance for the identity server, follow these requirements:
+1. Create a database named KeycloakDB.
+2. Use a UTF8 compatible collation (e.g., Modern_Spanish_100_CI_AS_SC_UTF8 or any other compatible with your specific language).
+3. Mandatory: Set READ_COMMITTED_SNAPSHOT to ON to prevent transaction locking within Keycloak's internal operations.
+```sql
+USE master;
+GO
+
+CREATE DATABASE [KeycloakDb] COLLATE Modern_Spanish_100_CI_AS_SC_UTF8;
+GO
+
+ALTER DATABASE [KeycloakDb] SET READ_COMMITTED_SNAPSHOT ON;
+GO
+```
+
+### Users and Roles
+The system defines the following profiles to ensure users only access the data and actions they are authorized to perform:
+| Role | Descripción | Capabilities |
+| :--- | :--- | :--- |
+| **viewer** | General inquiry user | Read-only access. Cannot perform any action. |
+| **editor** | Catalog manager | Authorized to edit brands and categories. Access to administrative forms and catalogs. |
+| **operator** | Inventory manager | Authorized to move stock and handle inventory actions. |
+| **admin** | Full system access | Can manage both inventory, catalogs, and system configurations. |
+
+Note. Users with the same role name were created during the initial load to facilitate testing.
+
 ## 📝 Key Features
 - **Hybrid Storage:** Files are served locally for speed (CDN) but backed up in the cloud for security.
 - **Audit Interceptors:** Automatic management of `CreatedAt` and `UpdatedAt` in EF Core.
@@ -171,3 +221,4 @@ Thanks to this synchronization, usage in components is completely type-safe:
 - **Type-Safe Globalization:** Automated synchronization between SQL Server labels and TypeScript Union Types to eliminate magic strings.
 - **Lazy-Loaded Architecture:** Highly optimized bundle sizes with specific chunking for Material components and feature modules.
 - **Clean Architecture Principles:** Strict separation of concerns between Domain, Infrastructure, and Presentation layers.
+- **Robust Role-Based Security:** Fully integrated Keycloak-Angular implementation with functional providers and granular UI visibility through custom directives and computed signals.

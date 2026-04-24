@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { environment, GlobalizationKey } from '@core';
 import { ILanguage, ITranslationDictionary } from '@models';
 import { firstValueFrom, Observable, switchMap, tap } from 'rxjs';
-import { GlobalizationKey } from '../core/types/globalization-keys';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class GlobalizationService {
   private http: HttpClient = inject(HttpClient);
-  private readonly apiUrl = 'api/globalization/'; 
+  private readonly apiUrl = environment.endpoint.globalization; 
 
   private _translations = signal<ITranslationDictionary>({});
   private _currentLanguage = signal<string>(localStorage.getItem('language') || 'en');

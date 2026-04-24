@@ -1,10 +1,10 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { PreloadAllModules, provideRouter, withComponentInputBinding, withPreloading, withRouterConfig } from '@angular/router';
+import { languageInterceptor } from '@core';
 import { GlobalizationService } from '@services';
 import { INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, includeBearerTokenInterceptor, provideKeycloak } from 'keycloak-angular';
 import { routes } from './app.routes';
-import { languageInterceptor } from './core/interceptors/language.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,8 +22,8 @@ export const appConfig: ApplicationConfig = {
       provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
       useValue: [
         {
-          urlPattern: /http:\/\/localhost:5000\/.*/i,
-          httpMethods: ['GET', 'POST', 'PUT', 'DELETE']
+          urlPattern: /.*\/api\/.*/i,
+          httpMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
         }
       ]
     },

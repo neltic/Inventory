@@ -1,20 +1,18 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 
 interface RouteParams {
   parentBoxId?: string;
   boxId?: string;
   itemId?: string;
-  // queryParams
   action?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class RouteParamsService {
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
  
   private params$ = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),

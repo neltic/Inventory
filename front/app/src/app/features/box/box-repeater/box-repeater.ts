@@ -3,15 +3,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from "@angular/material/icon";
 import { Router } from '@angular/router';
-import { IBox } from '@models';
+import { IBox, Role } from '@models';
 import { BrandService, CategoryService } from '@services';
+import { HasRoleDirective } from "../../../shared/directives/has-role-directive";
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
 import { TranslateDirective } from "../../../shared/directives/translate-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 
 @Component({
   selector: 'app-box-repeater',
-  imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective],
+  imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective, HasRoleDirective],
   templateUrl: './box-repeater.html',
   styleUrl: './box-repeater.scss',
 })
@@ -21,6 +22,7 @@ export class BoxRepeater {
   private categoryService: CategoryService = inject(CategoryService);
   public box = input.required<IBox>();
   public showItemsEvent = output<any>();
+  public readonly Role = Role;
   
   category = computed(() => 
     this.categoryService.getCategoryById(this.box().categoryId)

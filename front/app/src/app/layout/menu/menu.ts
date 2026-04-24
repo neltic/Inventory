@@ -1,10 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { ILanguage } from '@models';
-import { SecurityService } from '@services';
 import { BaseComponent } from '../../shared/components/base/base';
 import { HasRoleDirective } from '../../shared/directives/has-role-directive';
 import { TranslateDirective } from '../../shared/directives/translate-directive';
@@ -17,8 +16,6 @@ import { TranslateDirective } from '../../shared/directives/translate-directive'
 })
 export class Menu extends BaseComponent {
   
-  public securityService: SecurityService = inject(SecurityService);
-
   onLanguageChange(lang: ILanguage) {
     if (this.isCurrentLang(lang.languageCode)) {
       return;

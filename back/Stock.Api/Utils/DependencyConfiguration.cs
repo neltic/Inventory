@@ -98,14 +98,15 @@ public static class DependencyConfiguration
         .AddJwtBearer(options =>
         {
             options.Authority = keycloakOptions.Authority;
-            options.Audience = keycloakOptions.Audience;            
+            options.Audience = keycloakOptions.Audience;
             options.MetadataAddress = keycloakOptions.MetadataAddress;
             options.RequireHttpsMetadata = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,                
+                ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
+                ValidIssuer = keycloakOptions.Issuer,
                 ClockSkew = TimeSpan.FromSeconds(keycloakOptions.ClockSkewSeconds),
                 RoleClaimType = ClaimTypes.Role
             };
@@ -114,35 +115,30 @@ public static class DependencyConfiguration
                 OnTokenValidated = context =>
                 {
                     var principal = context.Principal;
-                    if (principal == null)
-                    {
-                        return Task.CompletedTask;
-                    }
+                    if (principal == null) return Task.CompletedTask;
                     var rAccess = principal.FindFirst("realm_access");
-                    if (rAccess != null && !string.IsNullOrEmpty(rAccess.Value))
+                    if (rAccess == null || string.IsNullOrEmpty(rAccess.Value)) return Task.CompletedTask;
+                    try
                     {
-                        try
+                        using var payload = JsonDocument.Parse(rAccess.Value);
+                        if (payload.RootElement.TryGetProperty("roles", out var roles))
                         {
-                            using var payload = JsonDocument.Parse(rAccess.Value);
-                            if (payload.RootElement.TryGetProperty("roles", out var roles))
+                            if (principal.Identity is ClaimsIdentity claimsIdentity)
                             {
-                                if (principal.Identity is ClaimsIdentity claimsIdentity)
+                                foreach (var role in roles.EnumerateArray())
                                 {
-                                    foreach (var role in roles.EnumerateArray())
+                                    var roleString = role.GetString();
+                                    if (!string.IsNullOrEmpty(roleString))
                                     {
-                                        var roleString = role.GetString();
-                                        if (!string.IsNullOrEmpty(roleString))
-                                        {
-                                            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, roleString));
-                                        }
+                                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, roleString));
                                     }
                                 }
                             }
                         }
-                        catch (JsonException)
-                        {
-                            // Invalid JSON in realm_access; ignore roles extraction
-                        }
+                    }
+                    catch (JsonException)
+                    {
+                        // Invalid JSON in realm_access; ignore roles extraction
                     }
                     return Task.CompletedTask;
                 }

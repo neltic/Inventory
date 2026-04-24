@@ -17,11 +17,11 @@
     }
 
     .icon {
-        margin-bottom: 20px;
+        margin-bottom: 20pt;
         color: #dc2626; 
         .lock-icon {
-            width: 64px;
-            height: 64px;
+            width: 64pt;
+            height: 64pt;
         }
     }    
 
@@ -42,7 +42,7 @@
     }
 
     .error-message {
-        font-size: 16px;
+        font-size: 16pt;
         color: #6b7280; 
         margin: 10pt;
         line-height: 1.6;        
@@ -50,7 +50,7 @@
 
     .action-buttons {
         display: flex;
-        gap: 15px;
+        gap: 15pt;
         justify-content: center;
         flex-wrap: wrap; 
         margin-top: 20pt;

@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '@core';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,12 +8,12 @@ import { Observable } from 'rxjs';
 })
 export class FileService {
 
-  private http = inject(HttpClient);
-  private apiUrl = '/api/uploads';
+  private http = inject(HttpClient);  
+  private readonly apiUrl = environment.endpoint.upload;
 
   uploadTempImage(file: File): Observable<{ fileGuid: string }> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<{ fileGuid: string }>(`${this.apiUrl}/image`, formData);
+    return this.http.post<{ fileGuid: string }>(`${this.apiUrl}image`, formData);
   }
 }

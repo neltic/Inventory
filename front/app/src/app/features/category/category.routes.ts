@@ -4,6 +4,6 @@ export const CATEGORY_ROUTES: Routes = [
     {
         path: 'list',
         loadComponent: () => import('./category-list/category-list').then(m => m.CategoryList),
-        title: 'Category - Setup',
+        title: 'Category - List',
     }
 ];

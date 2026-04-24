@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { environment } from '@core';
 import { Observable } from 'rxjs';
 import { IBox, IBoxFullPath, IBoxLookup, IBoxTransfer } from '../models/i-box';
 
@@ -10,7 +11,7 @@ import { IBox, IBoxFullPath, IBoxLookup, IBoxTransfer } from '../models/i-box';
 export class BoxService {
   
   private http = inject(HttpClient);
-  readonly apiUrl = '/api/boxes/';
+  private readonly apiUrl = environment.endpoint.box;
 
   getBoxesBy(parentBoxId: number | null): Observable<IBox[]> {
     let params = new HttpParams();  

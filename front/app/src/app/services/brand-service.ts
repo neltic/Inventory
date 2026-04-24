@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, Signal } from '@angular/core';
+import { environment } from '@core';
 import { Observable, tap } from 'rxjs';
 import { EntityScope } from '../models/e-entity-scope';
 import { IBrand } from '../models/i-brand';
@@ -10,7 +11,7 @@ import { InListValidator } from '../shared/validators/in-list-validator';
 })
 export class BrandService {
   private http = inject(HttpClient);
-  private readonly apiUrl = 'api/brands/'; 
+  private readonly apiUrl = environment.endpoint.brand;
 
   private _brands = signal<IBrand[]>([]);
   public brands = this._brands.asReadonly();

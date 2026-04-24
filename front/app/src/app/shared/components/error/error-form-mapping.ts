@@ -1,4 +1,4 @@
-import { GlobalizationKey } from "../../../core/types/globalization-keys";
+import { GlobalizationKey } from "@core";
 
 export const ERROR_FORM_MESSAGES: Record<string, GlobalizationKey> = {
     required: 'Error.REQUIRED',

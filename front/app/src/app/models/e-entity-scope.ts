@@ -1,4 +1,4 @@
-import { GlobalizationKey } from "../core/types/globalization-keys";
+import { GlobalizationKey } from "@core";
 
 export enum EntityScope {
   None = 0,

@@ -73,7 +73,7 @@ public class ItemsController(
     /// </returns>
     /// <response code="200">Returns the list of locations (can be empty).</response>
     [HttpGet("{itemId}/locations")]
-    [Authorize(Roles = RoleRealm.Operator)]
+    [Authorize(Roles = RoleRealm.Viewer)]
     [ProducesResponseType(typeof(IEnumerable<ItemLocationListDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetItemLocations(int itemId)
     {

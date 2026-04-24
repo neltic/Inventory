@@ -1,6 +1,6 @@
 import { Directive, effect, ElementRef, inject, Input, Renderer2, signal } from '@angular/core';
+import { GlobalizationKey } from '@core';
 import { GlobalizationService } from '@services';
-import { GlobalizationKey } from '../../core/types/globalization-keys';
 
 @Directive({
   selector: '[translate]',
