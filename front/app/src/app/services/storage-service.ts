@@ -16,19 +16,19 @@ export class StorageService {
   itemStorage = signal<IItemStorage[]>([]);
 
   getItemsByBox(boxId: number): Observable<IItemInBox[]> {
-    return this.http.get<IItemInBox[]>(`${this.apiUrl}boxes/${boxId}`);
+    return this.http.get<IItemInBox[]>(`${this.apiUrl}/boxes/${boxId}`);
   }
 
   remove(boxId: number, itemId: number, brandId: number): Observable<boolean> {    
-    return this.http.delete<boolean>(`${this.apiUrl}boxes/${boxId}/items/${itemId}/brands/${brandId}`);
+    return this.http.delete<boolean>(`${this.apiUrl}/boxes/${boxId}/items/${itemId}/brands/${brandId}`);
   }
 
   getStorageByItem(itemId: number): Observable<IItemStorage[]> {
-    return this.http.get<IItemStorage[]>(`${this.apiUrl}items/${itemId}`);
+    return this.http.get<IItemStorage[]>(`${this.apiUrl}/items/${itemId}`);
   }
 
   getStorage(boxId: number, itemId: number, brandId: number): Observable<IStorage> {
-    return this.http.get<IStorage>(`${this.apiUrl}boxes/${boxId}/items/${itemId}/brands/${brandId}`);
+    return this.http.get<IStorage>(`${this.apiUrl}/boxes/${boxId}/items/${itemId}/brands/${brandId}`);
   }
 
   saveStorage(storage: IStorage): Observable<any> {    

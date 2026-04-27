@@ -36,13 +36,13 @@ export class BrandService {
 
   save(brand: Partial<IBrand>): Observable<IBrand> {
     const obs = (brand.brandId ?? -1) > -1
-      ? this.http.put<IBrand>(`${this.apiUrl}${brand.brandId}`, brand)
+      ? this.http.put<IBrand>(`${this.apiUrl}/${brand.brandId}`, brand)
       : this.http.post<IBrand>(this.apiUrl, brand);    
     return obs.pipe(tap(() => this.refresh()));
   }
 
-  delete(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}${id}`)
+  delete(brandId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${brandId}`)
       .pipe(tap(() => this.refresh()));
   }
 

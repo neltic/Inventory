@@ -4,29 +4,33 @@
     <mat-step formGroupName="0" [stepControl]="getStep(0)" state="box">
 
         <ng-template matStepLabel><span translate="Storage.SELECT_BOX"></span></ng-template>
+
+        <div class="step-content">
       
-        <mat-selection-list 
-            formControlName="boxId" 
-            [multiple]="false"            
-            class="selection-list">
-            @for (box of boxResourceList.value(); track box.boxId) {
-            <mat-list-option 
-                [value]="box.boxId"
-                togglePosition="after">
-                <span matListItemAvatar class="selection-list-image">
-                    <img [src]="box.boxId | asPhoto:'box':box.updatedAt:'icons'"
-                        appImgFallback crossorigin>
-                </span>
-                <div matListItemTitle [style.margin-left.px]="box.indent * 32" >
-                    <mat-icon class="selection-list-connector">
-                    @if (box.indent > 0) { subdirectory_arrow_right } 
-                    @else { folder }
-                    </mat-icon>
-                    <span>{{ box.name }}</span>
-                </div>
-            </mat-list-option>
-            }
-        </mat-selection-list>
+            <mat-selection-list 
+                formControlName="boxId" 
+                [multiple]="false"            
+                class="selection-list">
+                @for (box of boxResourceList.value(); track box.boxId) {
+                <mat-list-option 
+                    [value]="box.boxId"
+                    togglePosition="after">
+                    <span matListItemAvatar class="selection-list-image">
+                        <img [src]="box.boxId | asPhoto:'box':box.updatedAt:'icons'"
+                            appImgFallback crossorigin>
+                    </span>
+                    <div matListItemTitle [style.margin-left.px]="box.indent * 32" >
+                        <mat-icon class="selection-list-connector">
+                        @if (box.indent > 0) { subdirectory_arrow_right } 
+                        @else { folder }
+                        </mat-icon>
+                        <span>{{ box.name }}</span>
+                    </div>
+                </mat-list-option>
+                }
+            </mat-selection-list>
+
+        </div>
       
         <div class="stepper-actions">
             <button mat-button matStepperNext type="button">
@@ -41,7 +45,7 @@
       
         <ng-template matStepLabel><span translate="Storage.SELECT_ITEM"></span></ng-template>
 
-        <div class="item-layout">            
+        <div class="step-content item-layout">            
 
             <div class="item-layout-items">
 
@@ -133,7 +137,7 @@
 
         <ng-template matStepLabel><span translate="Storage.FILL_DETAILS"></span></ng-template>
 
-        <div class="detail-layout">
+        <div class="step-content detail-layout">
         
             <mat-form-field class="detail-layout-quantity">
                 <mat-label translate="Storage.QUANTITY"></mat-label>
@@ -181,7 +185,7 @@
     <ng-template matStepLabel><span translate="Storage.REVIEW_CONFIRM"></span></ng-template>
 
     @if (reviewSummary()) {    
-    <div class="review-layout">
+    <div class="step-content review-layout">
         <h3 class="review-layout-title" translate="Storage.SUMMARY"></h3>
         <mat-card appearance="outlined" class="review-layout-card">
         <mat-list>

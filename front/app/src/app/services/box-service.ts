@@ -22,16 +22,16 @@ export class BoxService {
   }
 
   getBoxesLookup(): Observable<IBoxLookup[]> {    
-    return this.http.get<IBoxLookup[]>(`${this.apiUrl}lookup`) ?? [];
+    return this.http.get<IBoxLookup[]>(`${this.apiUrl}/lookup`) ?? [];
   }
 
   getAvailableParentBoxesBy(targetBoxId: number | null): Observable<IBoxTransfer[]> {    
-    const url = `${this.apiUrl}available-parents/${targetBoxId ?? ''}`;
+    const url = `${this.apiUrl}/available-parents/${targetBoxId ?? ''}`;
     return this.http.get<IBoxTransfer[]>(url);
   }
 
   getBoxBy(boxId: number): Observable<IBox> {
-    return this.http.get<IBox>(this.apiUrl + boxId);
+    return this.http.get<IBox>(`${this.apiUrl}/${boxId}`);
   }
 
   getEmptyBoxBy(parentBoxId: number | null): Observable<IBox> {
@@ -39,26 +39,26 @@ export class BoxService {
     if (parentBoxId !== null && parentBoxId !== undefined) {
       params = params.set('parentBoxId', parentBoxId.toString());
     }
-    return this.http.get<IBox>(`${this.apiUrl}empty`, { params });
+    return this.http.get<IBox>(`${this.apiUrl}/empty`, { params });
   }
 
-  getBoxFullPath(id: number): Observable<IBoxFullPath[]> {
-      return this.http.get<IBoxFullPath[]>(`${this.apiUrl}${id}/path`);
+  getBoxFullPath(boxId: number): Observable<IBoxFullPath[]> {
+      return this.http.get<IBoxFullPath[]>(`${this.apiUrl}/${boxId}/path`);
   }
 
   saveBox(box: IBox): Observable<any> {
     if (box.boxId > 0) {
-      return this.http.put<any>(`${this.apiUrl}${box.boxId}`, box);
+      return this.http.put<any>(`${this.apiUrl}/${box.boxId}`, box);
     }
     return this.http.post<any>(`${this.apiUrl}`, box);
   }
 
   deleteBox(boxId: number): Observable<void> {    
-    return this.http.delete<void>(`${this.apiUrl}${boxId}`);
+    return this.http.delete<void>(`${this.apiUrl}/${boxId}`);
   }
 
   moveBox(boxId: number, newParentId: number | null): Observable<void> {
-    const url = `${this.apiUrl}${boxId}/move-to/${newParentId ?? ''}`;
+    const url = `${this.apiUrl}/${boxId}/move-to/${newParentId ?? ''}`;
     return this.http.patch<void>(url, {});
   }
 
@@ -74,7 +74,7 @@ export class BoxService {
   }
 
   assignImage(boxId: number, fileGuid: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}${boxId}/assign-image/${fileGuid}`, {});
+    return this.http.post<void>(`${this.apiUrl}/${boxId}/assign-image/${fileGuid}`, {});
   }
 
   parseBoxFullPath(jsonString: IBoxFullPath[] | string | null | undefined): IBoxFullPath[] {

@@ -36,7 +36,7 @@ export class GlobalizationService {
   }
 
   getLanguages(): Observable<ILanguage[]> {
-    return this.http.get<ILanguage[]>(`${this.apiUrl}languages`);
+    return this.http.get<ILanguage[]>(`${this.apiUrl}/languages`);
   }
 
   translate(fullKey: GlobalizationKey | string, params?: any[]): string;
@@ -72,7 +72,7 @@ export class GlobalizationService {
   }
 
   refreshServerCache(): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.apiUrl}refresh`, {});
+    return this.http.post<{ message: string }>(`${this.apiUrl}/refresh`, {});
   }
   
   public async initializeApp(): Promise<void> {
@@ -100,7 +100,7 @@ export class GlobalizationService {
   }  
 
   private loadLocales(): Observable<ITranslationDictionary> {
-    return this.http.get<ITranslationDictionary>(`${this.apiUrl}locales`).pipe(
+    return this.http.get<ITranslationDictionary>(`${this.apiUrl}/locales`).pipe(
       tap(data => this._translations.set(data))
     );
   }

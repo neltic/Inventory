@@ -14,6 +14,6 @@ export class FileService {
   uploadTempImage(file: File): Observable<{ fileGuid: string }> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<{ fileGuid: string }>(`${this.apiUrl}image`, formData);
+    return this.http.post<{ fileGuid: string }>(`${this.apiUrl}/image`, formData);
   }
 }

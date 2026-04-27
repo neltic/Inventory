@@ -17,26 +17,26 @@ export class ItemService {
   }
 
   getItemBy(itemId: number): Observable<IItem> {
-    return this.http.get<IItem>(this.apiUrl + itemId);
+    return this.http.get<IItem>(`${this.apiUrl}/${itemId}`);
   }
 
   getItemLocations(itemId: number): Observable<IItemLocation[]> {
-    return this.http.get<IItemLocation[]>(this.apiUrl + itemId + '/locations');
+    return this.http.get<IItemLocation[]>(`${this.apiUrl}/${itemId}/locations`);
   }
 
   getEmptyItem(): Observable<IItem> {      
-    return this.http.get<IItem>(`${this.apiUrl}empty`);
+    return this.http.get<IItem>(`${this.apiUrl}/empty`);
   }
 
   saveItem(item: IItem): Observable<IItem> {
     if (item.itemId > 0) {
-      return this.http.put<IItem>(`${this.apiUrl}${item.itemId}`, item);
+      return this.http.put<IItem>(`${this.apiUrl}/${item.itemId}`, item);
     }
     return this.http.post<IItem>(`${this.apiUrl}`, item);
   }
 
   deleteItem(itemId: number): Observable<void> {    
-    return this.http.delete<void>(`${this.apiUrl}${itemId}`);
+    return this.http.delete<void>(`${this.apiUrl}/${itemId}`);
   }
 
   getTempPhotoBy(fileGuid: string): string {
@@ -45,6 +45,6 @@ export class ItemService {
   }
 
   assignImage(itemId: number, fileGuid: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}${itemId}/assign-image/${fileGuid}`, {});
+    return this.http.post<void>(`${this.apiUrl}/${itemId}/assign-image/${fileGuid}`, {});
   }
 }

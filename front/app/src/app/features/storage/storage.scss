@@ -1,7 +1,11 @@
+.step-content {
+  min-height: 400px;
+  height: calc(100vh - 160pt);
+}
 .stepper-actions {
-  margin-top: 20pt;
+  margin-top: 10pt;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 10pt;
 }
 .search-bar {
@@ -35,8 +39,7 @@
 .item-layout {
   display: flex;
   gap: 0;
-  align-items: flex-start;
-  height: 400px;
+  align-items: flex-start;  
   &-items {
     flex: 0 0 65%;
     height: 100%;
@@ -55,7 +58,7 @@
 .detail-layout {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items:start;
   gap: 0;
   width: 100%;
   
@@ -112,9 +115,13 @@
 
 }
 
-.selection-list-with-scroll {
-  height: 100%;
-  overflow: scroll;
+.selection-list {  
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.selection-list-with-scroll {  
+  overflow: scroll;  
   overflow-x: hidden;
 }
 

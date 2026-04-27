@@ -31,7 +31,7 @@ export class CategoryService {
   }
 
   reorder(categoryId: number, newOrder: number): Observable<boolean> {
-    return this.http.patch<boolean>(`${this.apiUrl}${categoryId}/reorder/${newOrder}`, {});    
+    return this.http.patch<boolean>(`${this.apiUrl}/${categoryId}/reorder/${newOrder}`, {});    
   }
 
   public itemCategories = computed(() => 
@@ -44,13 +44,13 @@ export class CategoryService {
 
   save(category: Partial<ICategory>) {
     const obs = category.categoryId 
-      ? this.http.put<ICategory>(`${this.apiUrl}${category.categoryId}`, category)
+      ? this.http.put<ICategory>(`${this.apiUrl}/${category.categoryId}`, category)
       : this.http.post<ICategory>(this.apiUrl, category);    
     return obs.pipe(tap(() => this.refresh()));
   }
 
-  delete(id: number) {
-    return this.http.delete(`${this.apiUrl}${id}`)
+  delete(categoryId: number) {
+    return this.http.delete(`${this.apiUrl}/${categoryId}`)
       .pipe(tap(() => this.refresh()));
   }
 
