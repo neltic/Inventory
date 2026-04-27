@@ -2,7 +2,8 @@
   "name": "inventory",
   "version": "1.7.0",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+	"deploy:main": "git checkout main && git pull origin main && git merge develop && git push origin main && git checkout develop"
   },
   "author": "@neltic",
   "license": "MIT",
