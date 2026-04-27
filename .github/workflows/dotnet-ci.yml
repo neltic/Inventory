@@ -3,8 +3,12 @@ name: .NET Core CI
 on:
   push:
     branches: [ "main", "develop" ] 
+    paths:
+      - 'back/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'back/**'
 
 jobs:
   build-and-test:
