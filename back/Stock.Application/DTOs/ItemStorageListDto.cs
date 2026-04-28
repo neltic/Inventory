@@ -11,6 +11,7 @@
 /// <param name="Quantity">The current number of units available in this specific box.</param>
 /// <param name="Expires">A flag indicating if this specific batch of items is subject to an expiration date.</param>
 /// <param name="ExpiresOn">The specific expiration date. Null if 'Expires' is false.</param>
+/// <param name="Notes">Any additional notes or comments about this storage entry (e.g., "Handle with care", "Fragile").</param>
 public record ItemStorageListDto(
     int BoxId,
     string Name,
@@ -18,5 +19,6 @@ public record ItemStorageListDto(
     DateTimeOffset UpdatedAt,
     int Quantity,
     bool Expires,
-    DateOnly? ExpiresOn
+    DateOnly? ExpiresOn,
+    string? Notes
 );

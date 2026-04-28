@@ -14,7 +14,8 @@ public static class StorageMappingExtensions
             i.BrandId,
             i.CategoryId,
             i.Quantity,
-            i.UpdatedAt
+            i.UpdatedAt,
+            i.Notes
             ));
     }
 
@@ -27,7 +28,8 @@ public static class StorageMappingExtensions
             i.UpdatedAt,
             i.Quantity,
             i.Expires,
-            i.ExpiresOn
+            i.ExpiresOn,
+            i.Notes
             ));
     }
 

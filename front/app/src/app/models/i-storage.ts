@@ -7,6 +7,7 @@ export interface IItemInBox {
   categoryId: number;
   quantity: number;
   updatedAt?: string | Date;
+  notes: string | null;
 }
 
 export interface IItemStorage {
@@ -17,6 +18,7 @@ export interface IItemStorage {
   quantity: number;
   expires: boolean;
   expiresOn: string | Date;
+  notes: string | null;
 }
 
 export interface IStorage {
@@ -27,15 +29,6 @@ export interface IStorage {
   expires: boolean;
   expiresOn?: string | Date;
   notes: string | null;
-}
-
-export interface StorageForm {
-  boxId: FormControl<number>;  
-  itemId: FormControl<number>;
-  brandId: FormControl<number>;  
-  quantity: FormControl<number>;
-  expires: FormControl<boolean>;
-  expiresOn: FormControl<string | Date | null>;
 }
 
 export interface BoxStep {

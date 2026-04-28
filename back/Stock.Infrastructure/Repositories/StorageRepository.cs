@@ -22,7 +22,8 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
                 s.BrandId,
                 s.Item.CategoryId,
                 s.Quantity,
-                s.Item.UpdatedAt
+                s.Item.UpdatedAt,
+                s.Notes
             ))
             .ToListAsync();
     }

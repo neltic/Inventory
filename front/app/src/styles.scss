@@ -502,9 +502,12 @@ mat-drawer {
         max-width: 140px;
       }
       .list-item-text {
-        display: inline-block;
+        display: block;
         text-wrap: wrap;
-        padding: 5pt;        
+        padding: 5pt;
+        font-size: 8pt;
+        line-height: 10pt;
+        max-width: 125pt;
       }
       .list-item-icon {
         padding-left: 5pt;
@@ -528,8 +531,9 @@ mat-drawer {
       }
       .list-item-line {
         display: block;
-        font-size: 10pt;
-        padding: 0 5pt;
+        font-size: 9pt;
+        line-height: 10pt;
+        padding: 5pt;
       }
       .list-item-tag {
         position: absolute;

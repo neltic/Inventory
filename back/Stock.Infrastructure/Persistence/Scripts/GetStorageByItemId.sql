@@ -1,5 +1,4 @@
-﻿
-CREATE OR ALTER PROCEDURE [dbo].[GetStorageByItemId]
+﻿CREATE OR ALTER PROCEDURE [dbo].[GetStorageByItemId]
    @ItemId INT
 AS 
 BEGIN
@@ -12,6 +11,7 @@ BEGIN
        , ISNULL(s.[Quantity], 0) AS [Quantity]
        , ISNULL(s.[Expires], 0) AS [Expires]
        , s.[ExpiresOn]
+       , s.[Notes]
     FROM 
        dbo.[Box] AS b
        INNER JOIN dbo.[Storage] AS s

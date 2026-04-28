@@ -30,6 +30,11 @@
             <span matListItemTitle class="list-item-title" matBadge="{{item.quantity}}" matBadgePosition="after">
                 {{ item.name }}
             </span>
+            @if(item.notes && item.notes.trim().length > 0) {
+            <span class="list-item-text">
+                {{ item.notes }}
+            </span>
+            }
             <strong class="list-item-tag-v" [class.is-dark]="isDarkColor(brand?.background)" [style.color]="brand?.background" [style.borderColor]="brand?.background">{{brand?.name}}</strong>
         </mat-list-item>
       } @empty {

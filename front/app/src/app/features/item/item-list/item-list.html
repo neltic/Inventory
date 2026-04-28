@@ -35,8 +35,13 @@
                     {{ storage.name }}
                 </span>
                 @if (storage.expires) {
-                <span matListItemLine class="list-item-line">
+                <span class="list-item-line">
                     <span translate="Storage.EXPIRES_ON"></span> {{ storage.expiresOn }}
+                </span>
+                }
+                @if(storage.notes && storage.notes.trim().length > 0) {
+                <span class="list-item-text">
+                    {{ storage.notes }}
                 </span>
                 }
                 <strong class="list-item-tag-v" [class.is-dark]="isDarkColor(brand?.background)" [style.color]="brand?.background" [style.borderColor]="brand?.background">{{brand?.name}}</strong>

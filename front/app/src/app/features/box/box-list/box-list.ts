@@ -34,7 +34,7 @@ import { BoxRepeater } from '../box-repeater/box-repeater';
     MatDrawerContent,
     MatDrawerContainer,
     MatBadgeModule,
-    FindInListPipe, 
+    FindInListPipe,
     AsPhotoPipe,
     ImgFallbackDirective,
     TranslateDirective

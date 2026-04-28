@@ -7,5 +7,6 @@ public record ItemStorageList(
     DateTimeOffset UpdatedAt,
     int Quantity,
     bool Expires,
-    DateOnly? ExpiresOn
+    DateOnly? ExpiresOn,
+    string? Notes
     );

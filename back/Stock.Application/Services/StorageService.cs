@@ -11,7 +11,6 @@ public class StorageService(IStorageRepository storageRepository) : IStorageServ
     public async Task<IEnumerable<ItemInBoxListDto>> GetItemsByBoxIdAsync(int boxId)
     {
         var results = await storageRepository.GetItemsByBoxIdAsync(boxId);
-
         return results.ToDtoList();
     }
 
@@ -30,7 +29,6 @@ public class StorageService(IStorageRepository storageRepository) : IStorageServ
     public async Task<IEnumerable<ItemStorageListDto>> GetStorageByItemIdAsync(int itemId)
     {
         var results = await storageRepository.GetStorageByItemIdAsync(itemId);
-
         return results.ToDtoList();
     }
 
@@ -38,7 +36,6 @@ public class StorageService(IStorageRepository storageRepository) : IStorageServ
     public async Task<bool> UpdateAsync(StorageDto dto)
     {
         var storage = dto.ToEntity();
-
         return await storageRepository.UpdateAsync(storage);
     }
 }
