@@ -33,5 +33,5 @@ jobs:
       working-directory: ./back
 
     - name: 5. Run Unit Tests      
-      run: dotnet test --no-build --configuration Release --verbosity normal --logger "github;summary=true"
+      run: dotnet test --no-build --configuration Release --verbosity normal
       working-directory: ./back
