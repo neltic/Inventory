@@ -23,6 +23,20 @@ public interface IBoxRepository
     Task<bool> ExistsAsync(int boxId);
 
     /// <summary>
+    /// Determines whether a box with the specified ID contains any child elements or sub-boxes.
+    /// </summary>
+    /// <param name="boxId">The ID of the box to check for children.</param>
+    /// <returns>True if the box has one or more children; otherwise, false.</returns>
+    Task<bool> HasChildrenAsync(int boxId);
+
+    /// <summary>
+    /// Checks if the specified box contains any items.
+    /// </summary>
+    /// <param name="boxId">The ID of the box to check.</param>
+    /// <returns>True if the box contains at least one item; otherwise, false.</returns>
+    Task<bool> HasItemsAsync(int boxId);
+
+    /// <summary>
     /// Checks for a name collision within the same hierarchy level.
     /// </summary>
     /// <remarks>

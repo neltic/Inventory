@@ -15,5 +15,6 @@ public record BoxDetailed(
     string Notes,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
-    string? FullPath
+    string? FullPath,
+    bool CanBeDeleted
 );

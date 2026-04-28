@@ -17,6 +17,7 @@
 /// <param name="CreatedAt">The timestamp when the box record was first created.</param>
 /// <param name="UpdatedAt">The timestamp of the last modification to the box record.</param>
 /// <param name="FullPath">The breadcrumb-style location path (e.g., "Warehouse > Section A > Box 1").</param>
+/// <param name="CanBeDeleted">Indicates whether the box can be removed without problems</param>
 public record BoxDetailedDto(
     int BoxId,
     int? ParentBoxId,
@@ -30,5 +31,6 @@ public record BoxDetailedDto(
     string Notes,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
-    string? FullPath
+    string? FullPath,
+    bool CanBeDeleted
 );

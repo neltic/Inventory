@@ -21,7 +21,8 @@ public static class BoxMappingExtensions
             model.Notes,
             model.CreatedAt,
             model.UpdatedAt,
-            model.FullPath
+            model.FullPath,
+            model.CanBeDeleted
         );
     }
 

@@ -60,7 +60,7 @@
   </mat-card-content>
 
   <mat-card-actions align="end">
-    <button type="button" matButton *hasRole="Role.Operator" (click)="deleteBox(box.boxId)" [disabled]="isDeleting()" class="btn-delete">      
+    <button type="button" matButton *hasRole="Role.Operator" (click)="deleteBox(box.boxId)" [disabled]="isDeleting() || !box.canBeDeleted" class="btn-delete">      
       @if (isDeleting()) {
         <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
       } @else {

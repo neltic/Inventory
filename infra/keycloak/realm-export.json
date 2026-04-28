@@ -3,6 +3,9 @@
   "displayName": "Inventory App",
   "displayNameHtml": "<strong>Inventory</strong> App",
   "enabled": true,
+  "ssoSessionIdleTimeout": 3600, 
+  "revokeRefreshToken": false,
+  "refreshTokenMaxReuse": 0,
   "roles": {
     "realm": [
       {

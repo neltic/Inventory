@@ -3,6 +3,7 @@ using Stock.Domain.Entities;
 using Stock.Domain.Entities.Views;
 using Stock.Domain.Interfaces;
 using Stock.Infrastructure.Persistence;
+using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Infrastructure.Repositories;
 
@@ -18,6 +19,18 @@ public class BoxRepository(StockDbContext context) : IBoxRepository
     public async Task<bool> ExistsAsync(int boxId)
     {
         return await context.Boxes.AnyAsync(x => x.BoxId == boxId);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> HasChildrenAsync(int boxId)
+    {
+        return await context.Boxes.AnyAsync(x => x.ParentBoxId == boxId);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> HasItemsAsync(int boxId)
+    {
+        return await context.Storages.AnyAsync(x => x.BoxId == boxId);
     }
 
     /// <inheritdoc />

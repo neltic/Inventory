@@ -16,6 +16,7 @@ export interface IBox {
   fullPath?: string;
   hasChildren?: boolean;
   hasItems?: boolean;
+  canBeDeleted?: boolean;
 }
 
 export interface IBoxLookup {

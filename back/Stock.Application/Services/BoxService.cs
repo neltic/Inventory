@@ -93,6 +93,12 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
     {
         var box = await boxRepository.FindAsync(boxId);
         if (box == null) return false;
+        
+        var hasChildrens = await boxRepository.HasChildrenAsync(boxId);
+        if (hasChildrens) return false;
+
+        var hasItems = await boxRepository.HasItemsAsync(boxId);
+        if (hasItems) return false;
 
         return await boxRepository.DeleteAsync(box);
     }
@@ -108,6 +114,6 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
     {
         var path = await boxRepository.GetBoxFullPathByParentAsync(parentBoxId);
 
-        return new(0, parentBoxId, string.Empty, -1, 0, 0, 0, 0, 0, string.Empty, DateTime.Today, DateTime.Today, path);
+        return new(0, parentBoxId, string.Empty, -1, 0, 0, 0, 0, 0, string.Empty, DateTime.Today, DateTime.Today, path, true);
     }
 }
