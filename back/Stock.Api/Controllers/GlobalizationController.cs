@@ -20,7 +20,7 @@ public class GlobalizationController(IGlobalizationService globalization) : Cont
     /// <returns>A list of languages including their codes and names.</returns>
     /// <response code="200">Returns the list of supported languages.</response>
     [AllowAnonymous]
-    [HttpGet("languages")]    
+    [HttpGet("languages")]
     [ProducesResponseType(typeof(IEnumerable<LanguageDto>), 200)]
     public async Task<ActionResult<IEnumerable<LanguageDto>>> GetAllLanguages()
     {

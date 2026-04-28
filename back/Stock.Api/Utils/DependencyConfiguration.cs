@@ -278,7 +278,7 @@ public static class DependencyConfiguration
 
         var boxDWST17808 = await context.Boxes.FirstOrDefaultAsync(b => b.Name.Contains("DWST17808"));
         var boxDWST17805 = await context.Boxes.FirstOrDefaultAsync(b => b.Name.Contains("DWST17805"));
-                
+
         var itemCC = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("USB C → USB C"));
         var itemAMini = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("USB A → Mini USB"));
         var itemAMicro = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("USB A → Micro USB"));

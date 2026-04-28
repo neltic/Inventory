@@ -93,7 +93,7 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
     {
         var box = await boxRepository.FindAsync(boxId);
         if (box == null) return false;
-        
+
         var hasChildrens = await boxRepository.HasChildrenAsync(boxId);
         if (hasChildrens) return false;
 

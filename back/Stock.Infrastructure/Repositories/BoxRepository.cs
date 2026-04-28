@@ -3,7 +3,6 @@ using Stock.Domain.Entities;
 using Stock.Domain.Entities.Views;
 using Stock.Domain.Interfaces;
 using Stock.Infrastructure.Persistence;
-using static Stock.Foundation.Common.LabelRegistry;
 
 namespace Stock.Infrastructure.Repositories;
 
