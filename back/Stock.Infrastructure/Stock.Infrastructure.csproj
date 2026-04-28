@@ -1,6 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Persistence\Custom\Migrations\AddFeatBoxTransferSPs.cs" />
+    <Compile Remove="Persistence\Custom\Migrations\AddGlobalizationData.cs" />
+    <Compile Remove="Persistence\Custom\Migrations\AddInitialBoxesSPs.cs" />
+    <Compile Remove="Persistence\Custom\Migrations\AddInitialCategoriesSPs.cs" />
+    <Compile Remove="Persistence\Custom\Migrations\AddInitialGlobalizationSPs.cs" />
+    <Compile Remove="Persistence\Custom\Migrations\AddInitialItemsSPs.cs" />
+    <Compile Remove="Persistence\Custom\Migrations\AddInitialStorageSPs.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Stock.Application\Stock.Application.csproj" />
     <ProjectReference Include="..\Stock.Foundation\Stock.Foundation.csproj" />
   </ItemGroup>

@@ -37,6 +37,9 @@ public class Storage : AuditableEntity
     /// </summary>
     public DateOnly? ExpiresOn { get; set; }
 
+    /// <summary>Add notes to the stock entry.</summary>
+    public string? Notes { get; set; }
+
     /* --- Navigation Properties --- */
 
     /// <summary>Navigation property for the physical location (Box).</summary>

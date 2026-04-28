@@ -99,7 +99,8 @@ export class Storage extends BaseFormComponent implements OnInit {
       this.fb.group<DetailsStep>({
         quantity: this.fb.control(0, { nonNullable: true, validators: [Validators.min(0)] }),
         expires: this.fb.control(false, { nonNullable: true, validators: [Validators.required] }),
-        expiresOn: this.fb.control(null)
+        expiresOn: this.fb.control(null),
+        notes: this.fb.control(null)
       })
     ])
   });
@@ -117,7 +118,7 @@ export class Storage extends BaseFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.initComponent(['boxId', 'itemId', 'brandId', 'quantity', 'expires', 'expiresOn']);
+    this.initComponent(['boxId', 'itemId', 'brandId', 'quantity', 'expires', 'expiresOn', 'notes']);
     
     this.getStep(2).get('expires')?.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -161,7 +162,8 @@ export class Storage extends BaseFormComponent implements OnInit {
           detailsStep.patchValue({
             quantity: data.quantity,
             expires: data.expires,
-            expiresOn: data.expiresOn
+            expiresOn: data.expiresOn,
+            notes: data.notes
           }, { emitEvent: true });
           callback();
         },
@@ -239,7 +241,7 @@ export class Storage extends BaseFormComponent implements OnInit {
         itemId: Array.isArray(data['itemId']) ? data['itemId'][0] : data['itemId'],
         expiresOn: formattedDate
       };
-      
+      console.log(finalData);
     return finalData;
   }
 
@@ -271,7 +273,8 @@ export class Storage extends BaseFormComponent implements OnInit {
       brandName: selectedBrand?.name ?? '---',
       quantity: data.quantity,
       expires: data.expires,
-      expiresOn: data.expiresOn
+      expiresOn: data.expiresOn,
+      notes: data.notes
     });
   }
 

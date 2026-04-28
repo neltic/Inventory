@@ -5,6 +5,7 @@
     , @Quantity INT
     , @Expires BIT
     , @ExpiresOn DATE = NULL
+    , @Notes NVARCHAR(512) = NULL
 AS
 BEGIN
 
@@ -25,6 +26,7 @@ BEGIN
                 Quantity = @Quantity, 
                 Expires = @Expires, 
                 ExpiresOn = @ExpiresOn,
+                Notes = @Notes,
                 UpdatedAt = SYSDATETIMEOFFSET()
             WHERE 
                 BoxId = @BoxId
@@ -52,9 +54,9 @@ BEGIN
         BEGIN
 
             INSERT INTO [dbo].[Storage]
-                (BoxId, ItemId, BrandId, Quantity, Expires, ExpiresOn, CreatedAt, UpdatedAt)
+                (BoxId, ItemId, BrandId, Quantity, Expires, ExpiresOn, Notes, CreatedAt, UpdatedAt)
             VALUES 
-                (@BoxId, @ItemId, @BrandId, @Quantity, @Expires, @ExpiresOn, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+                (@BoxId, @ItemId, @BrandId, @Quantity, @Expires, @ExpiresOn, @Notes, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
         END
 

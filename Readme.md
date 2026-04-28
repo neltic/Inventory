@@ -119,14 +119,7 @@ The project follows a Code-First approach. The following migrations establish th
 ```powershell
 dotnet ef migrations add InitialCreate --project Stock.Infrastructure --startup-project Stock.Api
 dotnet ef migrations add AddInitialData --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddInitialBoxesSPs --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddInitialItemsSPs --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddInitialStorageSPs --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddInitialCategoriesSPs --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddFeatBoxTransferSPs --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddGlobalizationTables --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddGlobalizationData --project Stock.Infrastructure --startup-project Stock.Api
-dotnet ef migrations add AddInitialGlobalizationSPs --project Stock.Infrastructure --startup-project Stock.Api
+dotnet ef migrations add AddInitialProcedures --project Stock.Infrastructure --startup-project Stock.Api
 ```
 
 ### Database Management

@@ -23,7 +23,7 @@ public class StorageService(IStorageRepository storageRepository) : IStorageServ
     public async Task<StorageDto> GetStorageAsync(int boxId, int itemId, int brandId)
     {
         var result = await storageRepository.GetStorageAsync(boxId, itemId, brandId);
-        return result != null ? result.ToDto() : new(boxId, itemId, brandId, -1, false, null);
+        return result != null ? result.ToDto() : new(boxId, itemId, brandId, -1, false, null, null);
     }
 
     /// <inheritdoc />

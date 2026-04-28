@@ -8,26 +8,26 @@ public static class StorageMappingExtensions
 {
     public static IEnumerable<ItemInBoxListDto> ToDtoList(this IEnumerable<ItemInBoxList> models)
     {
-        return models.Select(b => new ItemInBoxListDto(
-            b.ItemId,
-            b.Name,
-            b.BrandId,
-            b.CategoryId,
-            b.Quantity,
-            b.UpdatedAt
+        return models.Select(i => new ItemInBoxListDto(
+            i.ItemId,
+            i.Name,
+            i.BrandId,
+            i.CategoryId,
+            i.Quantity,
+            i.UpdatedAt
             ));
     }
 
     public static IEnumerable<ItemStorageListDto> ToDtoList(this IEnumerable<ItemStorageList> models)
     {
-        return models.Select(b => new ItemStorageListDto(
-            b.BoxId,
-            b.Name,
-            b.BrandId,
-            b.UpdatedAt,
-            b.Quantity,
-            b.Expires,
-            b.ExpiresOn
+        return models.Select(i => new ItemStorageListDto(
+            i.BoxId,
+            i.Name,
+            i.BrandId,
+            i.UpdatedAt,
+            i.Quantity,
+            i.Expires,
+            i.ExpiresOn
             ));
     }
 
@@ -41,6 +41,7 @@ public static class StorageMappingExtensions
             Quantity = dto.Quantity,
             Expires = dto.Expires,
             ExpiresOn = dto.ExpiresOn,
+            Notes = dto.Notes
         };
     }
 
@@ -52,7 +53,8 @@ public static class StorageMappingExtensions
             model.BrandId,
             model.Quantity,
             model.Expires,
-            model.ExpiresOn
+            model.ExpiresOn,
+            model.Notes
         );
     }
 }

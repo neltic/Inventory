@@ -57,7 +57,7 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
     public async Task<bool> UpdateAsync(Storage storage)
     {
         var rows = await context.Database.ExecuteSqlInterpolatedAsync(
-                $"[dbo].[AddOrEditStorage] @BoxId = {storage.BoxId}, @ItemId = {storage.ItemId}, @BrandId = {storage.BrandId}, @Quantity = {storage.Quantity}, @Expires = {storage.Expires}, @ExpiresOn = {(storage.Expires ? storage.ExpiresOn : null)}"
+                $"[dbo].[AddOrEditStorage] @BoxId = {storage.BoxId}, @ItemId = {storage.ItemId}, @BrandId = {storage.BrandId}, @Quantity = {storage.Quantity}, @Expires = {storage.Expires}, @ExpiresOn = {(storage.Expires ? storage.ExpiresOn : null)}, @Notes = {storage.Notes}"
                 );
 
         return rows > 0;

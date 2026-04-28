@@ -26,6 +26,7 @@ export interface IStorage {
   quantity: number;
   expires: boolean;
   expiresOn?: string | Date;
+  notes: string | null;
 }
 
 export interface StorageForm {
@@ -50,4 +51,5 @@ export interface DetailsStep {
   quantity: FormControl<number>;
   expires: FormControl<boolean>;
   expiresOn: FormControl<string | Date | null>;
+  notes: FormControl<string | null>;
 }

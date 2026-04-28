@@ -164,6 +164,21 @@
                     <mat-error [translateError]="errorMessages['expiresOn']()"></mat-error>
                 }
             </mat-form-field>
+
+            <mat-form-field class="detail-layout-notes">
+                <mat-label translate="Storage.NOTES"></mat-label>
+                <textarea 
+                    matInput                    
+                    formControlName="notes"
+                    (blur)="updateErrorMessage('notes', 'Storage.STORAGE_NOTES')"                    
+                    maxlength="512">
+                </textarea>
+                <span matTextPrefix><mat-icon>description</mat-icon></span>
+                <mat-hint align="end">{{ getStep(2).get('notes')?.value?.length || 0 }}/512</mat-hint>
+                @if (errorMessages['notes']()) {
+                    <mat-error [translateError]="errorMessages['notes']()"></mat-error>
+                }
+            </mat-form-field>
             
         </div>
 
@@ -188,8 +203,7 @@
     <div class="step-content review-layout">
         <h3 class="review-layout-title" translate="Storage.SUMMARY"></h3>
         <mat-card appearance="outlined" class="review-layout-card">
-        <mat-list>
-            
+        <mat-list>            
             <mat-list-item>
                 <mat-icon matListItemIcon>inventory_2</mat-icon>
                 <span matListItemTitle translate="Scope.BOX"></span>
@@ -221,6 +235,12 @@
                 <span matListItemLine class="review-layout-value">{{ reviewSummary().expiresOn | date:'mediumDate' }}</span>
             </mat-list-item>
             }
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <mat-icon matListItemIcon>description</mat-icon>
+                <span matListItemTitle translate="Storage.NOTES"></span>
+                <span matListItemLine class="review-layout-value">{{ reviewSummary().notes }}</span>
+            </mat-list-item>
         </mat-list>
         </mat-card>
     </div>

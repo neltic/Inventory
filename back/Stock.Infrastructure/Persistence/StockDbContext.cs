@@ -226,6 +226,9 @@ public partial class StockDbContext : DbContext
         {
             entity.HasKey(e => e.StorageId);
 
+            entity.Property(e => e.Notes)
+                .HasMaxLength(512);
+
             entity.HasOne(d => d.Box).WithMany(p => p.Storages)
                 .HasForeignKey(s => s.BoxId)
                 .OnDelete(DeleteBehavior.Restrict)

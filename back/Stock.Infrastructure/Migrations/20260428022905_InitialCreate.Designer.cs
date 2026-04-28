@@ -12,8 +12,8 @@ using Stock.Infrastructure.Persistence;
 namespace Stock.Infrastructure.Migrations
 {
     [DbContext(typeof(StockDbContext))]
-    [Migration("20260326181126_AddInitialCategoriesSPs")]
-    partial class AddInitialCategoriesSPs
+    [Migration("20260428022905_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -211,6 +211,59 @@ namespace Stock.Infrastructure.Migrations
                     b.ToTable("Item");
                 });
 
+            modelBuilder.Entity("Stock.Domain.Entities.Label", b =>
+                {
+                    b.Property<int>("LabelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LabelId"));
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("LabelKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("LabelId");
+
+                    b.HasIndex("Context", "LabelKey")
+                        .IsUnique()
+                        .HasDatabaseName("UQ_Label_Context_Key");
+
+                    b.ToTable("Label");
+                });
+
+            modelBuilder.Entity("Stock.Domain.Entities.Language", b =>
+                {
+                    b.Property<string>("LanguageCode")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<bool>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false, "DF_Language_IsDefault");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("LanguageCode");
+
+                    b.HasIndex("IsDefault")
+                        .IsUnique()
+                        .HasDatabaseName("UQ_Language_SingleDefault")
+                        .HasFilter("[IsDefault] = 1");
+
+                    b.ToTable("Language");
+                });
+
             modelBuilder.Entity("Stock.Domain.Entities.Storage", b =>
                 {
                     b.Property<int>("StorageId")
@@ -239,6 +292,10 @@ namespace Stock.Infrastructure.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Notes")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -261,6 +318,47 @@ namespace Stock.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("CK_Storage_Quantity", "[Quantity] > 0");
                         });
+                });
+
+            modelBuilder.Entity("Stock.Domain.Entities.Translation", b =>
+                {
+                    b.Property<int>("TranslationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TranslationId"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Translation_CreatedAt");
+
+                    b.Property<int>("LabelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LanguageCode")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Translation_UpdatedAt");
+
+                    b.HasKey("TranslationId");
+
+                    b.HasIndex("LanguageCode");
+
+                    b.HasIndex("LabelId", "LanguageCode")
+                        .IsUnique()
+                        .HasDatabaseName("UQ_Translation_Label_Language");
+
+                    b.ToTable("Translation");
                 });
 
             modelBuilder.Entity("Stock.Domain.Entities.Views.BoxDetailed", b =>
@@ -383,6 +481,27 @@ namespace Stock.Infrastructure.Migrations
                     b.Navigation("Item");
                 });
 
+            modelBuilder.Entity("Stock.Domain.Entities.Translation", b =>
+                {
+                    b.HasOne("Stock.Domain.Entities.Label", "Label")
+                        .WithMany("Translations")
+                        .HasForeignKey("LabelId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Translation_LabelId");
+
+                    b.HasOne("Stock.Domain.Entities.Language", "Language")
+                        .WithMany("Translations")
+                        .HasForeignKey("LanguageCode")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Translation_LanguageCode");
+
+                    b.Navigation("Label");
+
+                    b.Navigation("Language");
+                });
+
             modelBuilder.Entity("Stock.Domain.Entities.Box", b =>
                 {
                     b.Navigation("Storages");
@@ -407,6 +526,16 @@ namespace Stock.Infrastructure.Migrations
             modelBuilder.Entity("Stock.Domain.Entities.Item", b =>
                 {
                     b.Navigation("Storages");
+                });
+
+            modelBuilder.Entity("Stock.Domain.Entities.Label", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Stock.Domain.Entities.Language", b =>
+                {
+                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }

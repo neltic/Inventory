@@ -10,11 +10,13 @@
 /// <param name="Quantity">The number of units to be recorded in this location. Must be zero or greater.</param>
 /// <param name="Expires">A flag indicating whether this specific batch of items has an expiration date.</param>
 /// <param name="ExpiresOn">The specific expiration date (yyyy-MM-dd). Should be null if 'Expires' is false.</param>
+/// <param name="Notes">Optional free-text notes for this storage entry, such as condition or special handling instructions.</param>
 public record StorageDto(
     int BoxId,
     int ItemId,
     int BrandId,
     int Quantity,
     bool Expires,
-    DateOnly? ExpiresOn
+    DateOnly? ExpiresOn,
+    string? Notes
 );

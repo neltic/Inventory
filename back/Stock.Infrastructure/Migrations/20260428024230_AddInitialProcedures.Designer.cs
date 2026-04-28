@@ -12,8 +12,8 @@ using Stock.Infrastructure.Persistence;
 namespace Stock.Infrastructure.Migrations
 {
     [DbContext(typeof(StockDbContext))]
-    [Migration("20260416182519_AddGlobalizationData")]
-    partial class AddGlobalizationData
+    [Migration("20260428024230_AddInitialProcedures")]
+    partial class AddInitialProcedures
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -291,6 +291,10 @@ namespace Stock.Infrastructure.Migrations
 
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

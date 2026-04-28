@@ -201,35 +201,35 @@ public static class DependencyConfiguration
         var initialBoxes = new List<Box>
         {
             new() {
-                Name = "DEWALT TSTAK VI",
+                Name = "Tstak DWST17808",
                 CategoryId = 7,
                 BrandId = 5,
-                Height = 30.2m,
-                Width = 44.0m,
-                Depth = 33.3m,
-                Notes = "Caja de gran volumen para herramientas eléctricas.",
+                Height = 18.50m,
+                Width = 44.50m,
+                Depth = 33.50m,
+                Notes = "Additional handle on top of each unit for easy and comfortable lifting. Made of high-impact resistant polypropylene.",
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             },
             new() {
-                Name = "DEWALT ToughSystem 2.0",
+                Name = "Tstak DWST17805",
                 CategoryId = 7,
                 BrandId = 5,
-                Height = 40.8m,
-                Width = 55.4m,
-                Depth = 37.1m,
-                Notes = "Caja de alta resistencia, sellado IP65.",
+                Height = 11.70m,
+                Width = 43.80m,
+                Depth = 33.70m,
+                Notes = "TSTAK organizer with transparent lid and removable compartments (2 large and 5 small)",
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             },
             new() {
-                Name = "DEWALT Small Parts Organizer",
+                Name = "Tstak DWST17804",
                 CategoryId = 7,
                 BrandId = 5,
-                Height = 11.5m,
-                Width = 44.0m,
-                Depth = 33.3m,
-                Notes = "Organizador con contenedores extraíbles para tornillería.",
+                Height = 17.50m,
+                Width = 43.90m,
+                Depth = 31.20m,
+                Notes = "Platform that adapts to the different needs of the user. Sides of the organizer with systems to attach to other TSTAK boxes. Drawers with removable dividers to organize small parts and accessories. Removable dividers to store drill bits and tips. Built-in ergonomic handle to carry heavier loads.",
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             }
@@ -253,11 +253,11 @@ public static class DependencyConfiguration
 
         var items = new List<Item>
         {
-            new() { Name = "20V Drill", CategoryId = 7, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "Earphones", CategoryId = 4, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "Mouse", CategoryId = 4, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "Pencils", CategoryId = 5, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "AA Batteries", CategoryId = 2, Notes = "---", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow }
+            new() { Name = "USB C → USB C", CategoryId = 4, Notes = "USB C → USB C", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "USB A → Mini USB", CategoryId = 4, Notes = "USB A → Mini USB", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "USB A → Micro USB", CategoryId = 4, Notes = "USB A → Micro USB", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "Webcam", CategoryId = 4, Notes = "Medium resolution webcam", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
+            new() { Name = "USB A → USB C", CategoryId = 4, Notes = "USB A → USB C", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow }
         };
 
         await context.Items.AddRangeAsync(items);
@@ -276,15 +276,14 @@ public static class DependencyConfiguration
             return;
         }
 
-        var boxTStak = await context.Boxes.FirstOrDefaultAsync(b => b.Name.Contains("TSTAK"));
-        var boxOrganizer = await context.Boxes.FirstOrDefaultAsync(b => b.Name.Contains("Organizer"));
+        var boxDWST17808 = await context.Boxes.FirstOrDefaultAsync(b => b.Name.Contains("DWST17808"));
+        var boxDWST17805 = await context.Boxes.FirstOrDefaultAsync(b => b.Name.Contains("DWST17805"));
+                
+        var itemCC = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("USB C → USB C"));
+        var itemAMini = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("USB A → Mini USB"));
+        var itemAMicro = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("USB A → Micro USB"));
 
-        // 2. Buscamos los ítems específicos
-        var itemDrill = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("20V Drill"));
-        var itemBatteries = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("Batteries"));
-        var itemPencils = await context.Items.FirstOrDefaultAsync(i => i.Name.Contains("Pencils"));
-
-        if (boxTStak == null || boxOrganizer == null || itemDrill == null || itemBatteries == null || itemPencils == null)
+        if (boxDWST17808 == null || boxDWST17805 == null || itemCC == null || itemAMini == null || itemAMicro == null)
         {
             ErrorMessage(MessageSource.DataBase, "Could not find Boxes or Items to relate in Storage.");
             return;
@@ -293,8 +292,8 @@ public static class DependencyConfiguration
         var initialStorage = new List<Storage>
         {
             new() {
-                BoxId = boxTStak.BoxId,
-                ItemId = itemDrill.ItemId,
+                BoxId = boxDWST17808.BoxId,
+                ItemId = itemCC.ItemId,
                 BrandId = 5,
                 Quantity = 1,
                 Expires = false,
@@ -302,8 +301,8 @@ public static class DependencyConfiguration
                 UpdatedAt = DateTimeOffset.UtcNow
             },
             new() {
-                BoxId = boxOrganizer.BoxId,
-                ItemId = itemBatteries!.ItemId,
+                BoxId = boxDWST17805.BoxId,
+                ItemId = itemAMini!.ItemId,
                 BrandId = 8,
                 Quantity = 8,
                 Expires = true,
@@ -312,8 +311,8 @@ public static class DependencyConfiguration
                 UpdatedAt = DateTimeOffset.UtcNow
             },
             new() {
-                BoxId = boxOrganizer.BoxId,
-                ItemId = itemPencils!.ItemId,
+                BoxId = boxDWST17805.BoxId,
+                ItemId = itemAMicro!.ItemId,
                 BrandId = 2,
                 Quantity = 12,
                 Expires = false,
@@ -321,8 +320,8 @@ public static class DependencyConfiguration
                 UpdatedAt = DateTimeOffset.UtcNow
             },
             new() {
-                BoxId = boxOrganizer.BoxId,
-                ItemId = itemBatteries!.ItemId,
+                BoxId = boxDWST17805.BoxId,
+                ItemId = itemAMini!.ItemId,
                 BrandId = 0,
                 Quantity = 12,
                 Expires = true,

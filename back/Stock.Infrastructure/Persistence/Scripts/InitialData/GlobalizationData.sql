@@ -1,4 +1,10 @@
-﻿INSERT INTO [Label] (Context, LabelKey)
+﻿INSERT INTO [Language] (LanguageCode, [Name], IsDefault)
+VALUES 
+  ('en', 'English', 1)
+, ('es-MX', 'Español (México)', 0);
+
+
+INSERT INTO [Label] (Context, LabelKey)
 VALUES 
   -- Box
   ('Box', 'NOT_FOUND'),
@@ -131,6 +137,8 @@ VALUES
   ('Storage', 'EXPIRES'),
   ('Storage', 'EXPIRES_ON'),
   ('Storage', 'EXPIRATION_DATE'),
+  ('Storage', 'NOTES'),
+  ('Storage', 'STORAGE_NOTES'),
   ('Storage', 'REVIEW_CONFIRM'),
   ('Storage', 'FILL_DETAILS'),
   ('Storage', 'SUMMARY'),
@@ -364,6 +372,8 @@ CASE
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRES' THEN 'Expires?'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRES_ON' THEN 'Expires on'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRATION_DATE' THEN 'Expiration Date'
+    WHEN Context = 'Storage' AND LabelKey = 'NOTES' THEN 'Notes'
+    WHEN Context = 'Storage' AND LabelKey = 'STORAGE_NOTES' THEN 'Storage notes'
     WHEN Context = 'Storage' AND LabelKey = 'REVIEW_CONFIRM' THEN 'Review & Confirm'
     WHEN Context = 'Storage' AND LabelKey = 'FILL_DETAILS' THEN 'Fill out details'
     WHEN Context = 'Storage' AND LabelKey = 'SUMMARY' THEN 'Summary'
@@ -581,6 +591,8 @@ CASE
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRES' THEN '¿Expira?'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRES_ON' THEN 'Expira el'
     WHEN Context = 'Storage' AND LabelKey = 'EXPIRATION_DATE' THEN 'Fecha de expiración'
+    WHEN Context = 'Storage' AND LabelKey = 'NOTES' THEN 'Notas'
+    WHEN Context = 'Storage' AND LabelKey = 'STORAGE_NOTES' THEN 'Notas del almacenamiento'
     WHEN Context = 'Storage' AND LabelKey = 'REVIEW_CONFIRM' THEN 'Revisar y Confirmar'
     WHEN Context = 'Storage' AND LabelKey = 'FILL_DETAILS' THEN 'Completa los detalles'
     WHEN Context = 'Storage' AND LabelKey = 'SUMMARY' THEN 'Resumen'
