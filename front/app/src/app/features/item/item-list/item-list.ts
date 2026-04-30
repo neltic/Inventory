@@ -19,86 +19,86 @@ import { FindInListPipe } from '../../../shared/pipes/find-in-list-pipe';
 import { ItemRepeater } from '../item-repeater/item-repeater';
 
 @Component({
-  selector: 'app-item',
-  providers: [provideNativeDateAdapter()],
-  imports: [
-    ItemRepeater,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatOption,
-    MatSelect,
-    MatSelectTrigger,
-    MatDivider,
-    MatList,
-    MatListItem,
-    MatDrawer,
-    MatDrawerContent,
-    MatDrawerContainer,
-    AsPhotoPipe,
-    FindInListPipe,
-    TranslateDirective
-],
-  templateUrl: './item-list.html',
-  styleUrl: './item-list.scss',
+    selector: 'app-item',
+    providers: [provideNativeDateAdapter()],
+    imports: [
+        ItemRepeater,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatOption,
+        MatSelect,
+        MatSelectTrigger,
+        MatDivider,
+        MatList,
+        MatListItem,
+        MatDrawer,
+        MatDrawerContent,
+        MatDrawerContainer,
+        AsPhotoPipe,
+        FindInListPipe,
+        TranslateDirective
+    ],
+    templateUrl: './item-list.html',
+    styleUrl: './item-list.scss',
 })
-export class ItemList extends BaseComponent {  
-  private itemService: ItemService = inject(ItemService);
-  public categoryService: CategoryService = inject(CategoryService);
-  public storageService: StorageService = inject(StorageService);
-  public brandService: BrandService = inject(BrandService);
-  public filterText = signal<string>('');
-  public filterCategory = signal<number | null>(null);
-  public selectedItem = signal<IItem | null>(null);
-  
-  @ViewChild('storageDrawer') drawer!: MatDrawer;
+export class ItemList extends BaseComponent {
+    private itemService: ItemService = inject(ItemService);
+    public categoryService: CategoryService = inject(CategoryService);
+    public storageService: StorageService = inject(StorageService);
+    public brandService: BrandService = inject(BrandService);
+    public filterText = signal<string>('');
+    public filterCategory = signal<number | null>(null);
+    public selectedItem = signal<IItem | null>(null);
 
-  itemResourceList = rxResource({
-    stream: () => {
-      return this.itemService.getItems()
-    } 
-  });
+    @ViewChild('storageDrawer') drawer!: MatDrawer;
 
-  category = computed(() => 
-    this.categoryService.getCategoryById(this.selectedItem()?.categoryId??0)
-  );
-
-  filteredList = computed(() => {
-    const text = this.filterText().toLowerCase();
-    const categoryId = this.filterCategory();
-    const allItems = this.itemResourceList.value() ?? [];
-
-    return allItems.filter(item => {
-      const matchesText = item.name.toLowerCase().includes(text);
-      const matchesCategory = categoryId === null || item.categoryId === categoryId;
-      return matchesText && matchesCategory;
+    itemResourceList = rxResource({
+        stream: () => {
+            return this.itemService.getItems()
+        }
     });
-  });
 
-  onCategoryChange(id: number | null) {
-    this.filterCategory.set(id);
-  }
+    category = computed(() =>
+        this.categoryService.getCategoryById(this.selectedItem()?.categoryId ?? 0)
+    );
 
-  onSearch(event: Event) {
-    const val = (event.target as HTMLInputElement).value;
-    this.filterText.set(val);
-  }
+    filteredList = computed(() => {
+        const text = this.filterText().toLowerCase();
+        const categoryId = this.filterCategory();
+        const allItems = this.itemResourceList.value() ?? [];
 
-  clearSearch() {
-    this.filterText.set('');
-  }
-  
-  onViewStorage(item: any) {
-    this.selectedItem.set(item);
-    this.storageService.getStorageByItem(item.itemId).subscribe({
-      next: (data) => {
-        this.storageService.itemStorage.set(data);
-        this.drawer.open();
-      },
-      error: (err) => console.error(err)
+        return allItems.filter(item => {
+            const matchesText = item.name.toLowerCase().includes(text);
+            const matchesCategory = categoryId === null || item.categoryId === categoryId;
+            return matchesText && matchesCategory;
+        });
     });
-  } 
+
+    onCategoryChange(id: number | null) {
+        this.filterCategory.set(id);
+    }
+
+    onSearch(event: Event) {
+        const val = (event.target as HTMLInputElement).value;
+        this.filterText.set(val);
+    }
+
+    clearSearch() {
+        this.filterText.set('');
+    }
+
+    onViewStorage(item: any) {
+        this.selectedItem.set(item);
+        this.storageService.getStorageByItem(item.itemId).subscribe({
+            next: (data) => {
+                this.storageService.itemStorage.set(data);
+                this.drawer.open();
+            },
+            error: (err) => console.error(err)
+        });
+    }
 
 }

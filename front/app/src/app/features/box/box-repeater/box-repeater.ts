@@ -11,41 +11,41 @@ import { TranslateDirective } from "../../../shared/directives/translate-directi
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 
 @Component({
-  selector: 'app-box-repeater',
-  imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective, HasRoleDirective],
-  templateUrl: './box-repeater.html',
-  styleUrl: './box-repeater.scss',
+    selector: 'app-box-repeater',
+    imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective, HasRoleDirective],
+    templateUrl: './box-repeater.html',
+    styleUrl: './box-repeater.scss',
 })
 export class BoxRepeater {
-  private router: Router = inject(Router);
-  private brandService: BrandService = inject(BrandService);
-  private categoryService: CategoryService = inject(CategoryService);
-  public box = input.required<IBox>();
-  public showItemsEvent = output<any>();
-  public readonly Role = Role;
-  
-  category = computed(() => 
-    this.categoryService.getCategoryById(this.box().categoryId)
-  );
+    private router: Router = inject(Router);
+    private brandService: BrandService = inject(BrandService);
+    private categoryService: CategoryService = inject(CategoryService);
+    public box = input.required<IBox>();
+    public viewItemsEvent = output<any>();
+    public readonly Role = Role;
 
-  brand = computed(() => 
-    this.brandService.getBrandById(this.box().brandId)
-  );
+    category = computed(() =>
+        this.categoryService.getCategoryById(this.box().categoryId)
+    );
 
-  goToEdit() {
-    this.router.navigate(['/box/edit', this.box().boxId]);
-  }
+    brand = computed(() =>
+        this.brandService.getBrandById(this.box().brandId)
+    );
 
-  goToDetails() {
-    this.router.navigate(['/box/detail', this.box().boxId]);
-  }
+    goToEdit() {
+        this.router.navigate(['/box/edit', this.box().boxId]);
+    }
 
-  goToShowContent() {
-    this.router.navigate(['/box/list', this.box().boxId]);
-  }
-  
-  showItems() {
-    this.showItemsEvent.emit(this.box());
-  }
-  
+    goToDetails() {
+        this.router.navigate(['/box/detail', this.box().boxId]);
+    }
+
+    goToShowContent() {
+        this.router.navigate(['/box/list', this.box().boxId]);
+    }
+
+    viewItems() {
+        this.viewItemsEvent.emit(this.box());
+    }
+
 }

@@ -7,47 +7,47 @@ import { INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, includeBearerTokenInterceptor,
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(
-      routes, 
-      withComponentInputBinding(),
-      withRouterConfig({ 
-        paramsInheritanceStrategy: 'always',
-        onSameUrlNavigation: 'reload'
-      }),
-      withPreloading(PreloadAllModules)
-    ),
-    {
-      provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
-      useValue: [
+    providers: [
+        provideBrowserGlobalErrorListeners(),
+        provideRouter(
+            routes,
+            withComponentInputBinding(),
+            withRouterConfig({
+                paramsInheritanceStrategy: 'always',
+                onSameUrlNavigation: 'reload'
+            }),
+            withPreloading(PreloadAllModules)
+        ),
         {
-          urlPattern: /.*\/api\/.*/i,
-          httpMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
-        }
-      ]
-    },
-    provideHttpClient(
-      withInterceptors([
-        languageInterceptor,
-        includeBearerTokenInterceptor
-      ])
-    ),
-    provideKeycloak({
-      config: {
-        url: 'http://localhost:8080',
-        realm: 'StockRealm',
-        clientId: 'stock-frontend'
-      },
-      initOptions: {
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
-        checkLoginIframe: false
-      }
-    }),
-    provideAppInitializer(() => {
-        const globalization = inject(GlobalizationService);
-        return globalization.initializeApp();
-    }),
-  ]
+            provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+            useValue: [
+                {
+                    urlPattern: /.*\/api\/.*/i,
+                    httpMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+                }
+            ]
+        },
+        provideHttpClient(
+            withInterceptors([
+                languageInterceptor,
+                includeBearerTokenInterceptor
+            ])
+        ),
+        provideKeycloak({
+            config: {
+                url: 'http://localhost:8080',
+                realm: 'StockRealm',
+                clientId: 'stock-frontend'
+            },
+            initOptions: {
+                onLoad: 'check-sso',
+                silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+                checkLoginIframe: false
+            }
+        }),
+        provideAppInitializer(() => {
+            const globalization = inject(GlobalizationService);
+            return globalization.initializeApp();
+        }),
+    ]
 };

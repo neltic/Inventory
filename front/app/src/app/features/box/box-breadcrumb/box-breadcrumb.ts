@@ -7,12 +7,12 @@ import { BoxService } from '@services';
 import { BaseComponent } from '../../../shared/components/base/base';
 
 @Component({
-  selector: 'app-box-breadcrumb',
-  imports: [RouterLink, MatButtonModule, MatIconModule],
-  templateUrl: './box-breadcrumb.html',
-  styleUrl: './box-breadcrumb.scss',
+    selector: 'app-box-breadcrumb',
+    imports: [RouterLink, MatButtonModule, MatIconModule],
+    templateUrl: './box-breadcrumb.html',
+    styleUrl: './box-breadcrumb.scss',
 })
 export class BoxBreadcrumb extends BaseComponent {
-  public boxService: BoxService = inject(BoxService);
-  public fullPath = input.required<IBoxFullPath[] | string | null | undefined>();
+    public boxService: BoxService = inject(BoxService);
+    public fullPath = input.required<IBoxFullPath[] | string | null | undefined>();
 }

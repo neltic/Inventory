@@ -3,13 +3,13 @@ import { authGuard } from '@core';
 import { Role } from '@models';
 
 export const routes: Routes = [
-    { 
-        path: '', 
-        pathMatch: 'full', 
-        redirectTo: 'welcome' 
+    {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'welcome'
     },
-    { 
-        path: '', 
+    {
+        path: '',
         canActivateChild: [authGuard],
         children: [
             {
@@ -39,8 +39,8 @@ export const routes: Routes = [
                 path: 'brand',
                 loadChildren: () => import('./features/brand/brand.routes').then(m => m.BRAND_ROUTES)
             },
-        ] 
-    },    
+        ]
+    },
     {
         path: 'unauthorized',
         loadComponent: () => import('./shared/components/unauthorized/unauthorized').then(m => m.Unauthorized)

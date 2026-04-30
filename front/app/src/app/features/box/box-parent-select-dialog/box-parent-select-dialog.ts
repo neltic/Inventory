@@ -16,61 +16,61 @@ import { TranslateErrorDirective } from '../../../shared/directives/translate-er
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 
 @Component({
-  selector: 'app-box-parent-select-dialog',
-  imports: [
-    MatIcon,
-    MatButtonModule,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    ReactiveFormsModule,    
-    MatIconModule,
-    MatListModule,
-    MatError,
-    MatCheckbox,
-    MatCheckboxModule,
-    A11yModule,
-    FormsModule,
-    AsPhotoPipe,
-    TranslateDirective,
-    TranslateErrorDirective
-  ],
-  templateUrl: './box-parent-select-dialog.html',
-  styleUrl: './box-parent-select-dialog.scss',
+    selector: 'app-box-parent-select-dialog',
+    imports: [
+        MatIcon,
+        MatButtonModule,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatListModule,
+        MatError,
+        MatCheckbox,
+        MatCheckboxModule,
+        A11yModule,
+        FormsModule,
+        AsPhotoPipe,
+        TranslateDirective,
+        TranslateErrorDirective
+    ],
+    templateUrl: './box-parent-select-dialog.html',
+    styleUrl: './box-parent-select-dialog.scss',
 })
 export class BoxParentSelectDialog extends BaseFormComponent implements OnInit {
-  public data: IBox = inject(MAT_DIALOG_DATA);
-  private boxService: BoxService = inject(BoxService);
-  private dialogRef: MatDialogRef<BoxParentSelectDialog> = inject(MatDialogRef<BoxParentSelectDialog>);
+    public data: IBox = inject(MAT_DIALOG_DATA);
+    private boxService: BoxService = inject(BoxService);
+    private dialogRef: MatDialogRef<BoxParentSelectDialog> = inject(MatDialogRef<BoxParentSelectDialog>);
 
-  constructor() {
-    super();
-  }
+    constructor() {
+        super();
+    }
 
-  mainForm = this.fb.group<BoxTransferForm>({
-    newParentId: this.fb.control([-1], [ this.boxService.validators.isValidDestination() ]),
-    confirmMove: this.fb.control(false, { nonNullable: true, validators: [Validators.requiredTrue]})
-  });
-
-  boxResourceList = rxResource<IBoxTransfer[], any>({    
-    stream: () => this.boxService.getAvailableParentBoxesBy(this.data.boxId)
-  });
-
-  ngOnInit(): void {
-    this.initComponent(['newParentId', 'confirmMove']);
-  }
-
-  move() {
-    this.isSaving.set(true);    
-    const formValues = this.mainForm.getRawValue();      
-    const newParentId = Array.isArray(formValues.newParentId) ? formValues.newParentId[0] : formValues.newParentId;
-    this.boxService.moveBox(this.data.boxId, newParentId).subscribe({
-      next: () => this.dialogRef.close(true),
-      complete: () => this.isSaving.set(false)
+    mainForm = this.fb.group<BoxTransferForm>({
+        newParentId: this.fb.control([-1], [this.boxService.validators.isValidDestination()]),
+        confirmMove: this.fb.control(false, { nonNullable: true, validators: [Validators.requiredTrue] })
     });
-  }
 
-  get canMove(): boolean {
-    return this.mainForm.valid;
-  }
+    boxResourceList = rxResource<IBoxTransfer[], any>({
+        stream: () => this.boxService.getAvailableParentBoxesBy(this.data.boxId)
+    });
+
+    ngOnInit(): void {
+        this.initComponent(['newParentId', 'confirmMove']);
+    }
+
+    move() {
+        this.isSaving.set(true);
+        const formValues = this.mainForm.getRawValue();
+        const newParentId = Array.isArray(formValues.newParentId) ? formValues.newParentId[0] : formValues.newParentId;
+        this.boxService.moveBox(this.data.boxId, newParentId).subscribe({
+            next: () => this.dialogRef.close(true),
+            complete: () => this.isSaving.set(false)
+        });
+    }
+
+    get canMove(): boolean {
+        return this.mainForm.valid;
+    }
 }

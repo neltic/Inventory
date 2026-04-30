@@ -1,40 +1,40 @@
 <mat-form-field class="filter-category">
     <mat-label [translate]="label"></mat-label>
-    
+
     @let list = catalogList();
     @let selectedId = parentForm.get(controlName)?.value;
     @let selected = selectedId | findInList:categoryService.categories():'categoryId';
 
     <mat-select [formControlName]="controlName" (blur)="handleBlur()">
-    <mat-select-trigger>
-        <div class="selected-category-option">
-        @if (selected) { 
-            <span>{{ selected.name }}</span>                
-        } @else { 
-            <span>---</span>
-        }
-        </div>
-    </mat-select-trigger>
+        <mat-select-trigger>
+            <div class="selected-category-option">
+                @if (selected) {
+                <span>{{ selected.name }}</span>
+                } @else {
+                <span>---</span>
+                }
+            </div>
+        </mat-select-trigger>
 
-    @for (category of list; track category.categoryId) {
-    <mat-option [value]="category.categoryId">
-        <div class="category-option">
-            <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
-            <span>{{category.name}}</span>
-        </div>
-    </mat-option>        
-    }
+        @for (category of list; track category.categoryId) {
+        <mat-option [value]="category.categoryId">
+            <div class="category-option">
+                <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
+                <span>{{category.name}}</span>
+            </div>
+        </mat-option>
+        }
     </mat-select>
 
     <span matTextPrefix>
-        @if (selected) {   
-            <mat-icon [style.color]="selected.color">{{ selected.icon }}</mat-icon>
-        } @else {   
-            <mat-icon>warning</mat-icon>
+        @if (selected) {
+        <mat-icon [style.color]="selected.color">{{ selected.icon }}</mat-icon>
+        } @else {
+        <mat-icon>warning</mat-icon>
         }
     </span>
 
     @if (parentErrorSignal && parentErrorSignal()) {
-        <mat-error [translateError]="parentErrorSignal()"></mat-error>
+    <mat-error [translateError]="parentErrorSignal()"></mat-error>
     }
 </mat-form-field>

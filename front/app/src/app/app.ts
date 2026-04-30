@@ -4,11 +4,11 @@ import { Footer } from './layout/footer/footer';
 import { Menu } from './layout/menu/menu';
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet, Menu, Footer],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+    selector: 'app-root',
+    imports: [RouterOutlet, Menu, Footer],
+    templateUrl: './app.html',
+    styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('Main App');
+    protected readonly title = signal('Main App');
 }

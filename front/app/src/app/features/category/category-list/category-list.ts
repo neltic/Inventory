@@ -16,121 +16,121 @@ import { TranslateDirective } from '../../../shared/directives/translate-directi
 import { CategoryEditDialog } from '../category-edit-dialog/category-edit-dialog';
 
 @Component({
-  selector: 'app-category-list',
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatChip,
-    MatChipSet,
-    MatChipsModule,
-    MatChipAvatar,
-    DragDropModule,
-    MatTableModule,
-    MatInputModule,
-    MatFormFieldModule,
-    FormsModule,
-    TranslateDirective,
-    HasRoleDirective
-],
-  templateUrl: './category-list.html',
-  styleUrl: './category-list.scss',
+    selector: 'app-category-list',
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatButtonModule,
+        MatChip,
+        MatChipSet,
+        MatChipsModule,
+        MatChipAvatar,
+        DragDropModule,
+        MatTableModule,
+        MatInputModule,
+        MatFormFieldModule,
+        FormsModule,
+        TranslateDirective,
+        HasRoleDirective
+    ],
+    templateUrl: './category-list.html',
+    styleUrl: './category-list.scss',
 })
 export class CategoryList extends BaseComponent {
-  private categoryService: CategoryService = inject(CategoryService);
-  public filterText = signal<string>('');
+    private categoryService: CategoryService = inject(CategoryService);
+    public filterText = signal<string>('');
 
-  filteredCategories = computed(() => {
-    const text = this.filterText().toLowerCase();
-    const all = this.categoryService.categories();
-    if (!text) return all;
-    return all.filter(c => c.name.toLowerCase().includes(text));
-  });
-  
-  isDragDisabled = computed(() => this.filterText().length > 0 || !this.securityService.hasRole(this.Role.Editor));
-
-  readonly displayedColumns = computed(() => {
-    const isEditor = this.securityService.hasRole(this.Role.Editor);    
-    return [
-      ...(isEditor ? ['reorder'] : []),
-      'id', 
-      'order', 
-      'icon', 
-      'name', 
-      'scopes', 
-      ...(isEditor ? ['actions'] : []) 
-    ];
-  });
-
-  constructor() {
-    super();    
-    effect(() => {
-      if (this.params.action() === 'add') {
-        this.openAddDialog();        
-        this.params.clearQueryAction();
-      }
+    filteredCategories = computed(() => {
+        const text = this.filterText().toLowerCase();
+        const all = this.categoryService.categories();
+        if (!text) return all;
+        return all.filter(c => c.name.toLowerCase().includes(text));
     });
-  }
 
-  async openAddDialog() {
-    const nextOrder = this.categoryService.categories().length > 0 ? Math.max(...this.categoryService.categories().map(c => c.order)) + 1 : 1;
-    const category: ICategory = {
-      ...EMPTY_CATEGORY,
-      order: nextOrder
-    };
-    await this.openEditDialog(category);
-  }
+    isDragDisabled = computed(() => this.filterText().length > 0 || !this.securityService.hasRole(this.Role.Editor));
 
-  async openEditDialog(category?: ICategory) {
-    const dialogRef = this.dialog.open(CategoryEditDialog, { 
-      data: category, 
-      panelClass: 'edit-dialog',
-      disableClose: true
+    readonly displayedColumns = computed(() => {
+        const isEditor = this.securityService.hasRole(this.Role.Editor);
+        return [
+            ...(isEditor ? ['reorder'] : []),
+            'id',
+            'order',
+            'icon',
+            'name',
+            'scopes',
+            ...(isEditor ? ['actions'] : [])
+        ];
     });
-    await firstValueFrom(dialogRef.afterClosed());    
-  }
 
-  async deleteCategory(category: ICategory) {
-    const confirmed = await this.openWarning('Message.CONFIRM_DELETE_CATEGORY', [category.name]);
-    if (!confirmed) {
-      return;
+    constructor() {
+        super();
+        effect(() => {
+            if (this.params.action() === 'add') {
+                this.openAddDialog();
+                this.params.clearQueryAction();
+            }
+        });
     }
-    this.categoryService.delete(category.categoryId).subscribe({
-      next: () => {   
-        this.openSnack('success', 'Global.OK', 'Message.CATEGORY_DELETED');
-      },
-      error: (error) => this.handleError(error)
-    });
-  }
 
-  async drop(event: CdkDragDrop<ICategory[]>) {
+    async openAddDialog() {
+        const nextOrder = this.categoryService.categories().length > 0 ? Math.max(...this.categoryService.categories().map(c => c.order)) + 1 : 1;
+        const category: ICategory = {
+            ...EMPTY_CATEGORY,
+            order: nextOrder
+        };
+        await this.openEditDialog(category);
+    }
 
-    if (event.previousIndex === event.currentIndex) return;
-    
-    const originalList = [...this.categoryService.categories()];
-    const newList = [...originalList];
+    async openEditDialog(category?: ICategory) {
+        const dialogRef = this.dialog.open(CategoryEditDialog, {
+            data: category,
+            panelClass: 'edit-dialog',
+            disableClose: true
+        });
+        await firstValueFrom(dialogRef.afterClosed());
+    }
 
-    moveItemInArray(newList, event.previousIndex, event.currentIndex);
-    
-    const optimizedList = newList.map((c, i) => ({ ...c, order: i + 1 }));
+    async deleteCategory(category: ICategory) {
+        const confirmed = await this.openWarning('Message.CONFIRM_DELETE_CATEGORY', [category.name]);
+        if (!confirmed) {
+            return;
+        }
+        this.categoryService.delete(category.categoryId).subscribe({
+            next: () => {
+                this.openSnack('success', 'Global.OK', 'Message.CATEGORY_DELETED');
+            },
+            error: (error) => this.handleError(error)
+        });
+    }
 
-    this.categoryService.updateLocalCategories(optimizedList);
+    async drop(event: CdkDragDrop<ICategory[]>) {
 
-    const movedItem = originalList[event.previousIndex];
-    const newOrder = event.currentIndex + 1;
+        if (event.previousIndex === event.currentIndex) return;
 
-    this.categoryService.reorder(movedItem.categoryId, newOrder).subscribe({
-      next: () => this.openSnack('success', 'Global.OK', 'Message.MOVED_TO_POSITION', [newOrder]),
-      error: (err) => {
-        this.categoryService.updateLocalCategories(originalList);
-        this.handleError(err);
-      }
-    });
-  }
+        const originalList = [...this.categoryService.categories()];
+        const newList = [...originalList];
 
-  trackById(index: number, item: ICategory) {
-    return item.categoryId;
-  }
+        moveItemInArray(newList, event.previousIndex, event.currentIndex);
+
+        const optimizedList = newList.map((c, i) => ({ ...c, order: i + 1 }));
+
+        this.categoryService.updateLocalCategories(optimizedList);
+
+        const movedItem = originalList[event.previousIndex];
+        const newOrder = event.currentIndex + 1;
+
+        this.categoryService.reorder(movedItem.categoryId, newOrder).subscribe({
+            next: () => this.openSnack('success', 'Global.OK', 'Message.MOVED_TO_POSITION', [newOrder]),
+            error: (err) => {
+                this.categoryService.updateLocalCategories(originalList);
+                this.handleError(err);
+            }
+        });
+    }
+
+    trackById(index: number, item: ICategory) {
+        return item.categoryId;
+    }
 
 }

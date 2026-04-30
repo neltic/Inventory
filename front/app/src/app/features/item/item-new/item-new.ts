@@ -17,125 +17,125 @@ import { TranslateErrorDirective } from '../../../shared/directives/translate-er
 import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 
 @Component({
-  selector: 'app-item-new',
-  standalone: true,
-  imports: [
-    MatIcon,
-    MatCardModule,
-    MatButtonModule,
-    MatFormField,
-    MatLabel,
-    MatError,
-    MatHint,
-    MatProgressSpinnerModule,
-    MatInputModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    ɵInternalFormsSharedModule,
-    ImgFallbackDirective,
-    CategorySelect,
-    TranslateDirective,
-    TranslateErrorDirective,
-    TranslatePipe
-],
-  providers: [{ provide: BaseFormComponent, useExisting: ItemNew }],
-  templateUrl: './item-new.html',
-  styleUrl: './item-new.scss',
+    selector: 'app-item-new',
+    standalone: true,
+    imports: [
+        MatIcon,
+        MatCardModule,
+        MatButtonModule,
+        MatFormField,
+        MatLabel,
+        MatError,
+        MatHint,
+        MatProgressSpinnerModule,
+        MatInputModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        ɵInternalFormsSharedModule,
+        ImgFallbackDirective,
+        CategorySelect,
+        TranslateDirective,
+        TranslateErrorDirective,
+        TranslatePipe
+    ],
+    providers: [{ provide: BaseFormComponent, useExisting: ItemNew }],
+    templateUrl: './item-new.html',
+    styleUrl: './item-new.scss',
 })
 export class ItemNew extends BaseFormComponent implements OnInit {
-  private fileService: FileService = inject(FileService);
-  public itemService: ItemService = inject(ItemService);
-  public categoryService: CategoryService = inject(CategoryService);
-  public imageGuid = signal<string>('');
-  
-  itemResource = rxResource<IItem, any>({
-    stream: () => { 
-      return this.itemService.getEmptyItem();
-    }
-  });
+    private fileService: FileService = inject(FileService);
+    public itemService: ItemService = inject(ItemService);
+    public categoryService: CategoryService = inject(CategoryService);
+    public imageGuid = signal<string>('');
 
-  mainForm = this.fb.group<ItemForm>({
-    name: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(5), Validators.maxLength(64)] }),
-    categoryId: this.fb.control(0, { nonNullable: true, validators: [Validators.required, this.categoryService.validators.existsInScope(this.EntityScope.Item)] }),
-    notes: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(10), Validators.maxLength(512)] }),      
-  }); 
+    itemResource = rxResource<IItem, any>({
+        stream: () => {
+            return this.itemService.getEmptyItem();
+        }
+    });
 
-  constructor() {
-    super();
-    effect(() => {
-      const item = this.itemResource.value();      
-      if (item) {        
-        this.mainForm.patchValue({
-          name: item.name,
-          notes: item.notes,
-          categoryId: item.categoryId
+    mainForm = this.fb.group<ItemForm>({
+        name: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(5), Validators.maxLength(64)] }),
+        categoryId: this.fb.control(0, { nonNullable: true, validators: [Validators.required, this.categoryService.validators.existsInScope(this.EntityScope.Item)] }),
+        notes: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(10), Validators.maxLength(512)] }),
+    });
+
+    constructor() {
+        super();
+        effect(() => {
+            const item = this.itemResource.value();
+            if (item) {
+                this.mainForm.patchValue({
+                    name: item.name,
+                    notes: item.notes,
+                    categoryId: item.categoryId
+                });
+            }
         });
-      }
-    });
-  }
-
-  ngOnInit() {
-    this.initComponent(['name', 'categoryId', 'notes']);
-  }
-
-  onSubmit(): void {
-    if (this.mainForm.invalid) {
-      this.mainForm.markAllAsTouched();
-      return;
     }
-    if (this.isSaving()) return;
-    if (this.isUploadingImage()) {
-      this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
-      return;
+
+    ngOnInit() {
+        this.initComponent(['name', 'categoryId', 'notes']);
     }
-    this.isSaving.set(true);
 
-    const currentId = this.itemResource.value()?.itemId ?? 0;
-    const formValues = this.mainForm.getRawValue();
+    onSubmit(): void {
+        if (this.mainForm.invalid) {
+            this.mainForm.markAllAsTouched();
+            return;
+        }
+        if (this.isSaving()) return;
+        if (this.isUploadingImage()) {
+            this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
+            return;
+        }
+        this.isSaving.set(true);
 
-    const itemData: IItem = {
-      ...formValues,
-      itemId: currentId,
-    };
+        const currentId = this.itemResource.value()?.itemId ?? 0;
+        const formValues = this.mainForm.getRawValue();
 
-    this.itemService.saveItem(itemData)
-    .pipe(    
-      switchMap((res: any) => {        
-        return this.itemService.assignImage(res.itemId, this.imageGuid());
-      })
-    )
-    .subscribe({
-      next: () => {        
-        const snackRef = this.openSnack('success', 'Global.OK', 'Message.ITEM_SAVED');
-        snackRef.afterDismissed().subscribe(() => {
-          this.goBack();
+        const itemData: IItem = {
+            ...formValues,
+            itemId: currentId,
+        };
+
+        this.itemService.saveItem(itemData)
+            .pipe(
+                switchMap((res: any) => {
+                    return this.itemService.assignImage(res.itemId, this.imageGuid());
+                })
+            )
+            .subscribe({
+                next: () => {
+                    const snackRef = this.openSnack('success', 'Global.OK', 'Message.ITEM_SAVED');
+                    snackRef.afterDismissed().subscribe(() => {
+                        this.goBack();
+                    });
+                },
+                error: (error) => {
+                    this.handleError(error);
+                    this.isSaving.set(false);
+                }
+            });
+    }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files?.length) return;
+
+        const file = input.files[0];
+        this.isUploadingImage.set(true);
+        this.fileService.uploadTempImage(file).pipe(
+            finalize(() => {
+                input.value = '';
+                this.onImageLoad();
+            })
+        ).subscribe({
+            next: (response: any) => {
+                this.imageGuid.set(response.fileGuid);
+                this.openSnack('success', 'Global.OK', 'Message.IMAGE_READY_TO_SAVE');
+            },
+            error: (error) => this.handleError(error)
         });
-      },
-      error: (error) => {
-        this.handleError(error);
-        this.isSaving.set(false);
-      }
-    });
-  }  
-  
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;    
-    if (!input.files?.length) return;
-
-    const file = input.files[0];      
-    this.isUploadingImage.set(true);    
-    this.fileService.uploadTempImage(file).pipe(
-      finalize(() => {
-        input.value = '';
-        this.onImageLoad();
-      })
-    ).subscribe({
-      next: (response: any) => {
-        this.imageGuid.set(response.fileGuid);        
-        this.openSnack('success', 'Global.OK', 'Message.IMAGE_READY_TO_SAVE');
-      },
-      error: (error) => this.handleError(error)
-    });
-  }  
+    }
 
 }

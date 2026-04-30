@@ -1,7 +1,6 @@
 import { Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,79 +18,81 @@ import { FindInListPipe } from '../../../shared/pipes/find-in-list-pipe';
 import { BoxRepeater } from '../box-repeater/box-repeater';
 
 @Component({
-  selector: 'app-box',
-  imports: [
-    BoxRepeater,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDivider,
-    MatList,
-    MatListItem,
-    MatDrawer,
-    MatDrawerContent,
-    MatDrawerContainer,
-    MatBadgeModule,
-    FindInListPipe,
-    AsPhotoPipe,
-    ImgFallbackDirective,
-    TranslateDirective
-],
-  templateUrl: './box-list.html',
-  styleUrl: './box-list.scss',
+    selector: 'app-box',
+    imports: [
+        BoxRepeater,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDivider,
+        MatList,
+        MatListItem,
+        MatDrawer,
+        MatDrawerContent,
+        MatDrawerContainer,
+        FindInListPipe,
+        AsPhotoPipe,
+        ImgFallbackDirective,
+        TranslateDirective
+    ],
+    templateUrl: './box-list.html',
+    styleUrl: './box-list.scss',
 })
-export class BoxList extends BaseComponent {  
-  private boxService: BoxService = inject(BoxService);
-  public storageService: StorageService = inject(StorageService);
-  public categoryService: CategoryService = inject(CategoryService);
-  public brandService: BrandService = inject(BrandService);
-  public filterText = signal<string>('');
-  public selectedBoxName = signal<string>('');
+export class BoxList extends BaseComponent {
+    private boxService: BoxService = inject(BoxService);
+    public storageService: StorageService = inject(StorageService);
+    public categoryService: CategoryService = inject(CategoryService);
+    public brandService: BrandService = inject(BrandService);
+    public filterText = signal<string>('');
+    public selectedBox = signal<IBox | null>(null);
 
-  @ViewChild('itemDrawer') drawer!: MatDrawer;
+    @ViewChild('itemDrawer') drawer!: MatDrawer;
 
-  constructor() {
-    super();
-    effect(() => {
-      this.params.parentBoxId();
-      this.boxResourceList.reload();
+    constructor() {
+        super();
+        effect(() => {
+            this.params.parentBoxId();
+            this.boxResourceList.reload();
+        });
+    }
+
+    boxResourceList = rxResource<IBox[], any>({
+        stream: () => this.boxService.getBoxesBy(this.params.parentBoxId())
     });
-  }  
 
-  boxResourceList = rxResource<IBox[], any>({    
-    stream: () => this.boxService.getBoxesBy(this.params.parentBoxId())
-  });
-
-  filteredList = computed(() => {
-    const rawData = this.boxResourceList.value() ?? [];
-    const query = this.filterText().toLowerCase();
-    if (!query) return rawData;
-    return rawData.filter(item => 
-      item.name.toLowerCase().includes(query)
+    category = computed(() =>
+        this.categoryService.getCategoryById(this.selectedBox()?.categoryId ?? 0)
     );
-  });
 
-  onSearch(event: Event) {
-    const val = (event.target as HTMLInputElement).value;
-    this.filterText.set(val);
-  }
-
-  clearSearch() {
-    this.filterText.set('');
-  }
-
-  onShowItems(box: any) {
-    this.selectedBoxName.set(box.name);
-
-    this.storageService.getItemsByBox(box.boxId).subscribe({
-      next: (data) => {
-        this.storageService.itemsInBox.set(data);
-        this.drawer.open();
-      },
-      error: (error) => this.handleError(error)
+    filteredList = computed(() => {
+        const rawData = this.boxResourceList.value() ?? [];
+        const query = this.filterText().toLowerCase();
+        if (!query) return rawData;
+        return rawData.filter(item =>
+            item.name.toLowerCase().includes(query)
+        );
     });
-  }
+
+    onSearch(event: Event) {
+        const val = (event.target as HTMLInputElement).value;
+        this.filterText.set(val);
+    }
+
+    clearSearch() {
+        this.filterText.set('');
+    }
+
+    onViewItems(box: any) {
+        this.selectedBox.set(box);
+        this.storageService.getItemsByBox(box.boxId).subscribe({
+            next: (data) => {
+                this.storageService.itemsInBox.set(data);
+                this.drawer.open();
+            },
+            error: (error) => this.handleError(error)
+        });
+    }
 
 }

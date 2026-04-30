@@ -1,9 +1,17 @@
 <div class="dialog dialog-{{data.type}}">
-<mat-dialog-content>
-  <p>{{data.question}}</p>  
-</mat-dialog-content>
-<mat-dialog-actions>  
-  <button matButton type="button" [mat-dialog-close]="true" cdkFocusInitial class="dialog-action" translate="Global.YES"></button>
-  <button matButton type="button" [mat-dialog-close]="false" class="btn-cancel" translate="Global.NO"></button>
-</mat-dialog-actions>
+    <mat-dialog-content>
+        <p>{{data.question}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button matButton type="button"
+                [mat-dialog-close]="true"
+                cdkFocusInitial
+                class="dialog-action"
+                translate="Global.YES"></button>
+        <button matButton
+                type="button"
+                [mat-dialog-close]="false"
+                class="btn-cancel"
+                translate="Global.NO"></button>
+    </mat-dialog-actions>
 </div>

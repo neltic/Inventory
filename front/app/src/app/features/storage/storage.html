@@ -1,277 +1,278 @@
 <form [formGroup]="mainForm">
-  <mat-stepper formArrayName="steps" #stepper linear (selectionChange)="onStepChange($event)">
-    
-    <mat-step formGroupName="0" [stepControl]="getStep(0)" state="box">
+    <mat-stepper formArrayName="steps" #stepper linear (selectionChange)="onStepChange($event)">
 
-        <ng-template matStepLabel><span translate="Storage.SELECT_BOX"></span></ng-template>
+        <mat-step formGroupName="0" [stepControl]="getStep(0)" state="box">
 
-        <div class="step-content">
-      
-            <mat-selection-list 
-                formControlName="boxId" 
-                [multiple]="false"            
-                class="selection-list">
-                @for (box of boxResourceList.value(); track box.boxId) {
-                <mat-list-option 
-                    [value]="box.boxId"
-                    togglePosition="after">
-                    <span matListItemAvatar class="selection-list-image">
-                        <img [src]="box.boxId | asPhoto:'box':box.updatedAt:'icons'"
-                            appImgFallback crossorigin>
-                    </span>
-                    <div matListItemTitle [style.margin-left.px]="box.indent * 32" >
-                        <mat-icon class="selection-list-connector">
-                        @if (box.indent > 0) { subdirectory_arrow_right } 
-                        @else { folder }
-                        </mat-icon>
-                        <span>{{ box.name }}</span>
-                    </div>
-                </mat-list-option>
-                }
-            </mat-selection-list>
+            <ng-template matStepLabel><span translate="Storage.SELECT_BOX"></span></ng-template>
 
-        </div>
-      
-        <div class="stepper-actions">
-            <button mat-button matStepperNext type="button">
-                <span translate="Global.NEXT"></span>
-                <mat-icon iconPositionEnd>arrow_forward</mat-icon>
-            </button>
-        </div>
+            <div class="step-content">
 
-    </mat-step>
-
-    <mat-step formGroupName="1" [stepControl]="getStep(1)" state="item">
-      
-        <ng-template matStepLabel><span translate="Storage.SELECT_ITEM"></span></ng-template>
-
-        <div class="step-content item-layout">            
-
-            <div class="item-layout-items">
-
-                <section class="search-bar">
-                    <mat-form-field class="search-Item">
-                    <mat-label translate="Item.FILTER_BY_NAME"></mat-label>
-                    <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
-                    @if (filterText()) {
-                        <button matSuffix matIconButton aria-label="Clear" (click)="filterText.set('')">
-                        <mat-icon>close</mat-icon>
-                        </button>
-                    }
-                    </mat-form-field>
-                    <mat-form-field class="filter-category">
-                        <mat-label translate="Item.FILTER_BY_CATEGORY"></mat-label>
-                        <mat-select [value]="filterCategory()" (selectionChange)="onCategoryChange($event.value)">
-
-                            <mat-select-trigger>
-                            <div class="selected-category-option">
-                            @if (filterCategory()) {
-                                @let selectedCategory = categoryService.getCategoryById(filterCategory()!);
-                                <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
-                                <span>{{ selectedCategory?.name }}</span>                
-                            } @else {       
-                                <mat-icon>all_inclusive</mat-icon>                         
-                                <span translate="Global.ALL"></span>
-                            }
-                            </div>
-                            </mat-select-trigger>
-
-                            <mat-option [value]="null">
-                                <div class="category-option">
-                                    <mat-icon>all_inclusive</mat-icon>
-                                    <span translate="Global.ALL"></span>
-                                </div>
-                            </mat-option>
-                            @for (category of categoryService.itemCategories(); track category.categoryId) {
-                            <mat-option [value]="category.categoryId">
-                                <div class="category-option">
-                                    <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
-                                    <span>{{category.name}}</span>
-                                </div>
-                            </mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                </section>
-
-                <mat-selection-list 
-                    formControlName="itemId" 
-                    [multiple]="false"                     
-                    class="selection-list selection-list-with-scroll">
-                    @for (item of filteredList(); track item.itemId) {
-                    @let category = categoryService.getCategoryById(item.categoryId);
-                    <mat-list-option 
-                        [value]="item.itemId"
-                        togglePosition="after">
+                <mat-selection-list formControlName="boxId"
+                                    [multiple]="false"
+                                    class="selection-list">
+                    @for (box of boxResourceList.value(); track box.boxId) {
+                    <mat-list-option [value]="box.boxId"
+                                     togglePosition="after">
                         <span matListItemAvatar class="selection-list-image">
-                            <img [src]="item.itemId | asPhoto:'item':item.updatedAt:'icons'"
-                                appImgFallback crossorigin>
-                        </span>                        
-                        <mat-icon matListItemIcon [style.color]="category?.color">{{ category?.icon }}</mat-icon>
-                        <div matListItemTitle>                            
-                            <span>{{ item.name }}</span>
+                            <img [src]="box.boxId | asPhoto:'box':box.updatedAt:'icons'"
+                                 appImgFallback crossorigin>
+                        </span>
+                        <div matListItemTitle [style.margin-left.px]="box.indent * 32">
+                            <mat-icon class="selection-list-connector">
+                                @if (box.indent > 0) { subdirectory_arrow_right }
+                                @else { folder }
+                            </mat-icon>
+                            <span>{{ box.name }}</span>
                         </div>
                     </mat-list-option>
                     }
                 </mat-selection-list>
+
             </div>
 
-            <div class="item-layout-brands">
-                <app-brand-select controlName="brandId" label="Item.BRAND" [scope]="EntityScope.Item" friendlyErrorName="Item.ITEM_BRAND" />                
+            <div class="stepper-actions">
+                <button mat-button matStepperNext type="button">
+                    <span translate="Global.NEXT"></span>
+                    <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+                </button>
             </div>
-        </div>
 
-        <div class="stepper-actions">
-            <button mat-button matStepperPrevious type="button">
-                <mat-icon>arrow_back</mat-icon>
-                <span translate="Global.BACK"></span>
-            </button>
-            <button mat-button matStepperNext type="button">
-                <span translate="Global.NEXT"></span>
-                <mat-icon iconPositionEnd>arrow_forward</mat-icon>
-            </button>
-        </div>
-    </mat-step>
+        </mat-step>
 
-    <mat-step formGroupName="2" [stepControl]="getStep(2)" state="detail">
+        <mat-step formGroupName="1" [stepControl]="getStep(1)" state="item">
 
-        <ng-template matStepLabel><span translate="Storage.FILL_DETAILS"></span></ng-template>
+            <ng-template matStepLabel><span translate="Storage.SELECT_ITEM"></span></ng-template>
 
-        <div class="step-content">
-            <div class="detail-layout">
-        
-            <mat-form-field class="detail-layout-quantity">
-                <mat-label translate="Storage.QUANTITY"></mat-label>
-                <input 
-                    matInput 
-                    formControlName="quantity" 
-                    (blur)="updateErrorMessage('quantity', 'Storage.STORAGE_QUANTITY')"
-                    type="number">
-                @if (errorMessages['quantity']()) {
-                    <mat-error [translateError]="errorMessages['quantity']()"></mat-error>
-                }
-            </mat-form-field>
+            <div class="step-content item-layout">
 
-            <div class="detail-layout-expires">
-                <mat-checkbox formControlName="expires"><span translate="Storage.EXPIRES"></span></mat-checkbox>
+                <div class="item-layout-items">
+
+                    <section class="search-bar">
+                        <mat-form-field class="search-Item">
+                            <mat-label translate="Item.FILTER_BY_NAME"></mat-label>
+                            <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
+                            @if (filterText()) {
+                            <button matSuffix matIconButton aria-label="Clear" (click)="filterText.set('')">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            }
+                        </mat-form-field>
+                        <mat-form-field class="filter-category">
+                            <mat-label translate="Item.FILTER_BY_CATEGORY"></mat-label>
+                            <mat-select [value]="filterCategory()" (selectionChange)="onCategoryChange($event.value)">
+
+                                <mat-select-trigger>
+                                    <div class="selected-category-option">
+                                        @if (filterCategory()) {
+                                        @let selectedCategory = categoryService.getCategoryById(filterCategory()!);
+                                        <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon
+                                            }}</mat-icon>
+                                        <span>{{ selectedCategory?.name }}</span>
+                                        } @else {
+                                        <mat-icon>all_inclusive</mat-icon>
+                                        <span translate="Global.ALL"></span>
+                                        }
+                                    </div>
+                                </mat-select-trigger>
+
+                                <mat-option [value]="null">
+                                    <div class="category-option">
+                                        <mat-icon>all_inclusive</mat-icon>
+                                        <span translate="Global.ALL"></span>
+                                    </div>
+                                </mat-option>
+                                @for (category of categoryService.itemCategories(); track category.categoryId) {
+                                <mat-option [value]="category.categoryId">
+                                    <div class="category-option">
+                                        <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
+                                        <span>{{category.name}}</span>
+                                    </div>
+                                </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </section>
+
+                    <mat-selection-list formControlName="itemId"
+                                        [multiple]="false"
+                                        class="selection-list selection-list-with-scroll">
+                        @for (item of filteredList(); track item.itemId) {
+                        @let category = categoryService.getCategoryById(item.categoryId);
+                        <mat-list-option [value]="item.itemId"
+                                         togglePosition="after">
+                            <span matListItemAvatar class="selection-list-image">
+                                <img [src]="item.itemId | asPhoto:'item':item.updatedAt:'icons'"
+                                     appImgFallback crossorigin>
+                            </span>
+                            <mat-icon matListItemIcon [style.color]="category?.color">{{ category?.icon }}</mat-icon>
+                            <div matListItemTitle>
+                                <span>{{ item.name }}</span>
+                            </div>
+                        </mat-list-option>
+                        }
+                    </mat-selection-list>
+                </div>
+
+                <div class="item-layout-brands">
+                    <app-brand-select controlName="brandId"
+                                      label="Item.BRAND"
+                                      [scope]="EntityScope.Item"
+                                      friendlyErrorName="Item.ITEM_BRAND" />
+                </div>
             </div>
-            
-            <mat-form-field class="detail-layout-expires-on" [hidden]="!getStep(2).get('expires')?.value">
-                <mat-label translate="Storage.EXPIRATION_DATE"></mat-label>
-                <input matInput [min]="minDate" [matDatepicker]="picker" formControlName="expiresOn" readonly>                
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker disabled="false"></mat-datepicker>
-                @if (errorMessages['expiresOn']()) {
-                    <mat-error [translateError]="errorMessages['expiresOn']()"></mat-error>
-                }
-            </mat-form-field>
 
-            <mat-form-field class="detail-layout-notes">
-                <mat-label translate="Storage.NOTES"></mat-label>
-                <textarea 
-                    matInput                    
-                    formControlName="notes"
-                    (blur)="updateErrorMessage('notes', 'Storage.STORAGE_NOTES')"                    
-                    maxlength="512">
+            <div class="stepper-actions">
+                <button mat-button matStepperPrevious type="button">
+                    <mat-icon>arrow_back</mat-icon>
+                    <span translate="Global.BACK"></span>
+                </button>
+                <button mat-button matStepperNext type="button">
+                    <span translate="Global.NEXT"></span>
+                    <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+                </button>
+            </div>
+        </mat-step>
+
+        <mat-step formGroupName="2" [stepControl]="getStep(2)" state="detail">
+
+            <ng-template matStepLabel><span translate="Storage.FILL_DETAILS"></span></ng-template>
+
+            <div class="step-content">
+                <div class="detail-layout">
+
+                    <mat-form-field class="detail-layout-quantity">
+                        <mat-label translate="Storage.QUANTITY"></mat-label>
+                        <input matInput
+                               formControlName="quantity"
+                               (blur)="updateErrorMessage('quantity', 'Storage.STORAGE_QUANTITY')"
+                               type="number">
+                        @if (errorMessages['quantity']()) {
+                        <mat-error [translateError]="errorMessages['quantity']()"></mat-error>
+                        }
+                    </mat-form-field>
+
+                    <div class="detail-layout-expires">
+                        <mat-checkbox formControlName="expires"><span translate="Storage.EXPIRES"></span></mat-checkbox>
+                    </div>
+
+                    <mat-form-field class="detail-layout-expires-on" [hidden]="!getStep(2).get('expires')?.value">
+                        <mat-label translate="Storage.EXPIRATION_DATE"></mat-label>
+                        <input matInput [min]="minDate" [matDatepicker]="picker" formControlName="expiresOn" readonly>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker disabled="false"></mat-datepicker>
+                        @if (errorMessages['expiresOn']()) {
+                        <mat-error [translateError]="errorMessages['expiresOn']()"></mat-error>
+                        }
+                    </mat-form-field>
+
+                    <mat-form-field class="detail-layout-notes">
+                        <mat-label translate="Storage.NOTES"></mat-label>
+                        <textarea matInput
+                                  formControlName="notes"
+                                  (blur)="updateErrorMessage('notes', 'Storage.STORAGE_NOTES')"
+                                  maxlength="512">
                 </textarea>
-                <span matTextPrefix><mat-icon>description</mat-icon></span>
-                <mat-hint align="end">{{ getStep(2).get('notes')?.value?.length || 0 }}/512</mat-hint>
-                @if (errorMessages['notes']()) {
-                    <mat-error [translateError]="errorMessages['notes']()"></mat-error>
-                }
-            </mat-form-field>
-            
+                        <span matTextPrefix><mat-icon>description</mat-icon></span>
+                        <mat-hint align="end">{{ getStep(2).get('notes')?.value?.length || 0 }}/512</mat-hint>
+                        @if (errorMessages['notes']()) {
+                        <mat-error [translateError]="errorMessages['notes']()"></mat-error>
+                        }
+                    </mat-form-field>
+
+                </div>
             </div>
-        </div>
 
-        <div class="stepper-actions">
-            <button mat-button matStepperPrevious type="button">
-                <mat-icon>arrow_back</mat-icon>
-                <span translate="Global.BACK"></span>
-            </button>
-            <button mat-button matStepperNext type="button">
-                <span translate="Global.NEXT"></span>
-                <mat-icon iconPositionEnd>arrow_forward</mat-icon>
-            </button>
-        </div>
+            <div class="stepper-actions">
+                <button mat-button matStepperPrevious type="button">
+                    <mat-icon>arrow_back</mat-icon>
+                    <span translate="Global.BACK"></span>
+                </button>
+                <button mat-button matStepperNext type="button">
+                    <span translate="Global.NEXT"></span>
+                    <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+                </button>
+            </div>
 
-    </mat-step>
+        </mat-step>
 
-    <mat-step state="confirm">
+        <mat-step state="confirm">
 
-    <ng-template matStepLabel><span translate="Storage.REVIEW_CONFIRM"></span></ng-template>
+            <ng-template matStepLabel><span translate="Storage.REVIEW_CONFIRM"></span></ng-template>
 
-    @if (reviewSummary()) {    
-    <div class="step-content review-layout">
-        <h3 class="review-layout-title" translate="Storage.SUMMARY"></h3>
-        <mat-card appearance="outlined" class="review-layout-card">
-        <mat-list>            
-            <mat-list-item>
-                <mat-icon matListItemIcon>inventory_2</mat-icon>
-                <span matListItemTitle translate="Scope.BOX"></span>
-                <span matListItemLine class="review-layout-value">{{ reviewSummary().boxName }}</span>
-            </mat-list-item>            
-            <mat-divider></mat-divider>
-            <mat-list-item>
-                <mat-icon matListItemIcon>art_track</mat-icon>
-                <span matListItemTitle translate="Scope.ITEM"></span>
-                <span matListItemLine class="review-layout-value">{{ reviewSummary().itemName }}</span>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>
-                <mat-icon matListItemIcon>verified</mat-icon>
-                <span matListItemTitle translate="Item.ITEM_BRAND">Brand</span>
-                <span matListItemLine class="review-layout-value">{{ reviewSummary().brandName }}</span>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>
-                <mat-icon matListItemIcon>format_list_numbered</mat-icon>
-                <span matListItemTitle translate="Storage.QUANTITY"></span>
-                <span matListItemLine class="review-layout-value">{{ reviewSummary().quantity }}</span>
-            </mat-list-item>
-            @if (reviewSummary().expires) {
-            <mat-divider></mat-divider>
-            <mat-list-item>
-                <mat-icon matListItemIcon>event_busy</mat-icon>
-                <span matListItemTitle translate="Storage.EXPIRATION_DATE"></span>
-                <span matListItemLine class="review-layout-value">{{ reviewSummary().expiresOn | date:'mediumDate' }}</span>
-            </mat-list-item>
+            @if (reviewSummary()) {
+            <div class="step-content review-layout">
+                <h3 class="review-layout-title" translate="Storage.SUMMARY"></h3>
+                <mat-card appearance="outlined" class="review-layout-card">
+                    <mat-list>
+                        <mat-list-item>
+                            <mat-icon matListItemIcon>inventory_2</mat-icon>
+                            <span matListItemTitle translate="Scope.BOX"></span>
+                            <span matListItemLine class="review-layout-value">{{ reviewSummary().boxName }}</span>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <mat-icon matListItemIcon>art_track</mat-icon>
+                            <span matListItemTitle translate="Scope.ITEM"></span>
+                            <span matListItemLine class="review-layout-value">{{ reviewSummary().itemName }}</span>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <mat-icon matListItemIcon>verified</mat-icon>
+                            <span matListItemTitle translate="Item.ITEM_BRAND">Brand</span>
+                            <span matListItemLine class="review-layout-value">{{ reviewSummary().brandName }}</span>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <mat-icon matListItemIcon>format_list_numbered</mat-icon>
+                            <span matListItemTitle translate="Storage.QUANTITY"></span>
+                            <span matListItemLine class="review-layout-value">{{ reviewSummary().quantity }}</span>
+                        </mat-list-item>
+                        @if (reviewSummary().expires) {
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <mat-icon matListItemIcon>event_busy</mat-icon>
+                            <span matListItemTitle translate="Storage.EXPIRATION_DATE"></span>
+                            <span matListItemLine class="review-layout-value">{{ reviewSummary().expiresOn |
+                                date:'mediumDate' }}</span>
+                        </mat-list-item>
+                        }
+                        @if(reviewSummary().notes?.trim().length > 0) {
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <mat-icon matListItemIcon>description</mat-icon>
+                            <span matListItemTitle translate="Storage.NOTES"></span>
+                            <span matListItemLine class="review-layout-value">{{ reviewSummary().notes }}</span>
+                        </mat-list-item>
+                        }
+                    </mat-list>
+                </mat-card>
+            </div>
             }
-            <mat-divider></mat-divider>
-            <mat-list-item>
-                <mat-icon matListItemIcon>description</mat-icon>
-                <span matListItemTitle translate="Storage.NOTES"></span>
-                <span matListItemLine class="review-layout-value">{{ reviewSummary().notes }}</span>
-            </mat-list-item>
-        </mat-list>
-        </mat-card>
-    </div>
-    }
 
-    <div class="stepper-actions">
-        <button mat-button matStepperPrevious type="button">
-            <mat-icon>arrow_back</mat-icon>
-            <span translate="Global.BACK"></span>
-        </button>
-        <button mat-button (click)="save()" [disabled]="mainForm.invalid">            
-            <mat-icon>save</mat-icon>
-            <span translate="Global.CONFIRM_SAVE"></span>            
-        </button>
-    </div>
-    </mat-step>
+            <div class="stepper-actions">
+                <button mat-button matStepperPrevious type="button">
+                    <mat-icon>arrow_back</mat-icon>
+                    <span translate="Global.BACK"></span>
+                </button>
+                <button mat-button (click)="save()" [disabled]="mainForm.invalid">
+                    <mat-icon>save</mat-icon>
+                    <span translate="Global.CONFIRM_SAVE"></span>
+                </button>
+            </div>
+        </mat-step>
 
-    <ng-template matStepperIcon="box">
-        <mat-icon>inventory</mat-icon>
-    </ng-template>
-    <ng-template matStepperIcon="item">
-        <mat-icon>art_track</mat-icon>
-    </ng-template>
-    <ng-template matStepperIcon="detail">
-        <mat-icon>production_quantity_limits</mat-icon>
-    </ng-template>
-    <ng-template matStepperIcon="confirm">
-        <mat-icon>thumb_up_alt</mat-icon>
-    </ng-template>
+        <ng-template matStepperIcon="box">
+            <mat-icon>inventory</mat-icon>
+        </ng-template>
+        <ng-template matStepperIcon="item">
+            <mat-icon>art_track</mat-icon>
+        </ng-template>
+        <ng-template matStepperIcon="detail">
+            <mat-icon>production_quantity_limits</mat-icon>
+        </ng-template>
+        <ng-template matStepperIcon="confirm">
+            <mat-icon>thumb_up_alt</mat-icon>
+        </ng-template>
 
-  </mat-stepper>
+    </mat-stepper>
 </form>

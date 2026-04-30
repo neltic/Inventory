@@ -1,84 +1,104 @@
-<mat-drawer-container autosize [hasBackdrop]="true">
-  <mat-drawer #itemDrawer position="end" mode="over">
-    <div class="drawer-header">
-      <div>
-        <mat-icon>inventory_2</mat-icon>
-        <h3>{{ selectedBoxName() }}</h3>
-      </div>
-      <button mat-icon-button (click)="itemDrawer.close()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>    
-    <mat-divider></mat-divider>
-    <mat-list>
-      @for (item of storageService.itemsInBox(); track (item.itemId + '-' + item.brandId)) {
-        @let cat = item.categoryId | findInList:categoryService.categories():'categoryId';
-        @let brand = item.brandId | findInList:brandService.brands():'brandId';
-        <mat-list-item>
-            <span matListItemAvatar class="list-item-image">
-                <img                 
-                    [src]="item.itemId | asPhoto:'item':item.updatedAt:'icons'"
-                    alt="{{ item.name }}"
-                    appImgFallback
-                    loading="lazy"
-                    crossorigin
-                    >
-            </span>
-            <span matListItemIcon [style.color]="cat?.color" class="list-item-icon">
-                <mat-icon>{{ cat?.icon || 'inventory' }}</mat-icon>
-            </span>
-            <span matListItemTitle class="list-item-title" matBadge="{{item.quantity}}" matBadgePosition="after">
-                {{ item.name }}
-            </span>
-            @if(item.notes && item.notes.trim().length > 0) {
-            <span class="list-item-text">
-                {{ item.notes }}
-            </span>
-            }
-            <strong class="list-item-tag-v" [class.is-dark]="isDarkColor(brand?.background)" [style.color]="brand?.background" [style.borderColor]="brand?.background">{{brand?.name}}</strong>
-        </mat-list-item>
-      } @empty {
-        <div class="empty-drawer">
-          <mat-icon>subtitles_off</mat-icon>
-          <p translate="Box.NO_ITEMS_FOUND"></p>
+<mat-drawer-container [hasBackdrop]="true">
+    <mat-drawer #itemDrawer position="end" mode="over">
+        <div class="drawer-header">
+            <div>
+                @if (category()) {
+                <mat-icon [style.color]="category()?.color">
+                    {{ category()?.icon }}
+                </mat-icon>
+                } @else {
+                <mat-icon color="disabled">inventory_2</mat-icon>
+                }
+                <h3>{{ selectedBox()?.name }}</h3>
+            </div>
+            <button mat-icon-button (click)="itemDrawer.close()">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
-      }
-    </mat-list>
-  </mat-drawer>
+        <mat-divider></mat-divider>
+        <mat-list>
+            @for (item of storageService.itemsInBox(); track (item.itemId + '-' + item.brandId)) {
+            @let cat = item.categoryId | findInList:categoryService.categories():'categoryId';
+            @let brand = item.brandId | findInList:brandService.brands():'brandId';
+            <mat-list-item>
 
-  <mat-drawer-content>
+                <span matListItemAvatar class="list-item-image">
+                    <img [src]="item.itemId | asPhoto:'item':item.updatedAt:'icons'"
+                         alt="{{ item.name }}"
+                         appImgFallback
+                         loading="lazy"
+                         crossorigin>
+                </span>
 
-    <section class="search-bar">
-      <mat-form-field class="search-box">
-        <mat-label translate="Box.FILTER_BY_NAME"></mat-label>
-        <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
-        @if (filterText()) {
-          <button matSuffix matIcon-button aria-label="Clear" (click)="filterText.set('')">
-            <mat-icon>close</mat-icon>
-          </button>
-        }
-      </mat-form-field>
-    </section>
+                <span matListItemIcon class="list-item-quantity">
+                    <i translate="Storage.QUANTITY_ABBREVIATION"></i>
+                    <strong>{{ item.quantity }}</strong>
+                </span>
 
-    <section class="list-result">
-      @if (boxResourceList.isLoading()) {
-        <div class="loading-message"></div>
-      } @else {
-        @for (box of filteredList(); track box.boxId) {      
-          <app-box-repeater [box]="box" (showItemsEvent)="onShowItems($event)"/>
-        } @empty {
-          <div class="empty-message">
-            @if(filterText()) {
-            <p translate="Box.NO_BOXES_WITH_DESCRIPTION" [translateParams]="[filterText()]"></p>
-            } @else {
-            <p translate="Box.NO_SUB_BOXES"></p>
-            <p translate="Box.CREATE_NEW_INFO"></p>
-            <p><strong translate="Menu.BOX"></strong> &gt; <strong translate="Menu.NEW"></strong></p>
+                <span matListItemTitle class="list-item-title">
+                    <span matListItemIcon [style.color]="cat?.color" class="list-item-icon-mini">
+                        <mat-icon>{{ cat?.icon || 'inventory' }}</mat-icon>
+                    </span>
+                    <span>
+                        {{ item.name }}
+                    </span>
+                </span>
+
+                @if(item.notes && item.notes.trim().length > 0) {
+                <span class="list-item-text">
+                    {{ item.notes }}
+                </span>
+                }
+
+                <strong class="list-item-tag-v"                        
+                        [style.color]="brand?.color"
+                        [style.backgroundColor]="brand?.background">
+                    {{brand?.name}}
+                </strong>
+
+            </mat-list-item>
+            } @empty {
+            <div class="empty-drawer">
+                <mat-icon>subtitles_off</mat-icon>
+                <p translate="Box.NO_ITEMS_FOUND"></p>
+            </div>
             }
-          </div>
-        }
-      }    
-    </section>
+        </mat-list>
+    </mat-drawer>
 
-  </mat-drawer-content>
+    <mat-drawer-content>
+
+        <section class="search-bar">
+            <mat-form-field class="search-box">
+                <mat-label translate="Box.FILTER_BY_NAME"></mat-label>
+                <input matInput type="text" [value]="filterText()" (input)="onSearch($event)">
+                @if (filterText()) {
+                <button matSuffix matIcon-button aria-label="Clear" (click)="filterText.set('')">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+            </mat-form-field>
+        </section>
+
+        <section class="list-result">
+            @if (boxResourceList.isLoading()) {
+            <div class="loading-message"></div>
+            } @else {
+            @for (box of filteredList(); track box.boxId) {
+            <app-box-repeater [box]="box" (viewItemsEvent)="onViewItems($event)" />
+            } @empty {
+            <div class="empty-message">
+                @if(filterText()) {
+                <p translate="Box.NO_BOXES_WITH_DESCRIPTION" [translateParams]="[filterText()]"></p>
+                } @else {
+                <p translate="Box.NO_SUB_BOXES"></p>
+                <p translate="Box.CREATE_NEW_INFO"></p>
+                <p><strong translate="Menu.BOX"></strong> &gt; <strong translate="Menu.NEW"></strong></p>
+                }
+            </div>
+            }
+            }
+        </section>
+
+    </mat-drawer-content>
 </mat-drawer-container>

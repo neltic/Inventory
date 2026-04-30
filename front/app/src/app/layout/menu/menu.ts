@@ -9,21 +9,21 @@ import { HasRoleDirective } from '../../shared/directives/has-role-directive';
 import { TranslateDirective } from '../../shared/directives/translate-directive';
 
 @Component({
-  selector: 'app-menu',
-  imports: [RouterLink, MatIconModule, MatButtonModule, MatMenuModule, TranslateDirective, HasRoleDirective],
-  templateUrl: './menu.html',
-  styleUrl: './menu.scss',
+    selector: 'app-menu',
+    imports: [RouterLink, MatIconModule, MatButtonModule, MatMenuModule, TranslateDirective, HasRoleDirective],
+    templateUrl: './menu.html',
+    styleUrl: './menu.scss',
 })
 export class Menu extends BaseComponent {
-  
-  onLanguageChange(lang: ILanguage) {
-    if (this.isCurrentLang(lang.languageCode)) {
-      return;
-    }
-    this.globalization.updateLanguage(lang.languageCode);
-  }
 
-  isCurrentLang(code: string): boolean {
-    return localStorage.getItem('language') === code;
-  }
+    onLanguageChange(lang: ILanguage) {
+        if (this.isCurrentLang(lang.languageCode)) {
+            return;
+        }
+        this.globalization.updateLanguage(lang.languageCode);
+    }
+
+    isCurrentLang(code: string): boolean {
+        return localStorage.getItem('language') === code;
+    }
 }

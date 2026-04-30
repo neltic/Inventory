@@ -10,21 +10,21 @@ import { HasRoleDirective } from '../../shared/directives/has-role-directive';
 import { TranslateDirective } from "../../shared/directives/translate-directive";
 
 @Component({
-  selector: 'app-welcome',
-  standalone: true,
-  imports: [
-    RouterLink,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatRippleModule,    
-    TranslateDirective,
-    HasRoleDirective
-],  
-  templateUrl: './welcome.html',
-  styleUrl: './welcome.scss',
+    selector: 'app-welcome',
+    standalone: true,
+    imports: [
+        RouterLink,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatRippleModule,
+        TranslateDirective,
+        HasRoleDirective
+    ],
+    templateUrl: './welcome.html',
+    styleUrl: './welcome.scss',
 })
-export class Welcome {  
-  public securityService: SecurityService = inject(SecurityService);
-  public readonly Role = Role;
+export class Welcome {
+    public securityService: SecurityService = inject(SecurityService);
+    public readonly Role = Role;
 }

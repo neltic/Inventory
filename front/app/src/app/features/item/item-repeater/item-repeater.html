@@ -1,29 +1,42 @@
 <mat-card class="list-card" appearance="outlined">
-  <mat-card-header>    
-    <mat-card-title>
-      @if (category()) {
-        <mat-icon [style.color]="category()?.color">
-          {{ category()?.icon }}
-        </mat-icon>
-      } @else {
-        <mat-icon color="disabled">help_outline</mat-icon>
-      }      
-      <span class="list-card-title">{{ item().name }}</span>  
-    </mat-card-title>
-  </mat-card-header>
-  
-  <img mat-card-image 
-       [src]="item().itemId | asPhoto:'item':item().updatedAt:'thumbnails'"
-       alt="{{ item().name }}"
-       appImgFallback
-       crossorigin>
-    
-  <mat-card-actions>
-    <button matButton *hasRole="Role.Operator" (click)="goToEdit()"><mat-icon>edit_square</mat-icon><span translate="Global.EDIT"></span></button>
-    <button matButton (click)="goToDetails()"><mat-icon>zoom_in</mat-icon><span translate="Global.DETAILS"></span></button>    
-    @if( item().hasStock ) {
-      <button matButton (click)="viewStorage()"><mat-icon>inventory</mat-icon><span translate="Global.STOCK">Stock</span></button>
-    }    
-  </mat-card-actions>
+    <mat-card-header>
+        <mat-card-title>
+            @if (category()) {
+            <mat-icon [style.color]="category()?.color">
+                {{ category()?.icon }}
+            </mat-icon>
+            } @else {
+            <mat-icon color="disabled">help_outline</mat-icon>
+            }
+            <span class="list-card-title">{{ item().name }}</span>
+        </mat-card-title>
+    </mat-card-header>
+
+    <img mat-card-image
+         [src]="item().itemId | asPhoto:'item':item().updatedAt:'thumbnails'"
+         alt="{{ item().name }}"
+         appImgFallback
+         crossorigin>
+
+    <mat-card-actions>
+        <button matButton
+                *hasRole="Role.Operator"
+                (click)="goToEdit()">
+            <mat-icon>edit_square</mat-icon>
+            <span translate="Global.EDIT"></span>
+        </button>
+        <button matButton
+                (click)="goToDetails()">
+            <mat-icon>zoom_in</mat-icon>
+            <span translate="Global.DETAILS"></span>
+        </button>
+        @if( item().hasStock ) {
+        <button matButton
+                (click)="viewStorage()">
+            <mat-icon>inventory</mat-icon>
+            <span translate="Global.STOCK">Stock</span>
+        </button>
+        }
+    </mat-card-actions>
 
 </mat-card>

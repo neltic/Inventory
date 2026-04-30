@@ -4,23 +4,23 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, Ma
 import { TranslateDirective } from '../../directives/translate-directive';
 
 export interface DialogData {
-  type: 'success' | 'error' | 'info' | 'warning';
-  question: string;
+    type: 'success' | 'error' | 'info' | 'warning';
+    question: string;
 }
 
 @Component({
-  selector: 'app-confirm-dialog',
-  imports: [
-    MatButtonModule,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    TranslateDirective
-  ],
-  templateUrl: './confirm-dialog.html',
-  styleUrl: './confirm-dialog.scss',
+    selector: 'app-confirm-dialog',
+    imports: [
+        MatButtonModule,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        TranslateDirective
+    ],
+    templateUrl: './confirm-dialog.html',
+    styleUrl: './confirm-dialog.scss',
 })
 export class ConfirmDialog {
-  readonly dialogRef = inject(MatDialogRef<ConfirmDialog>);
-  readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+    readonly dialogRef = inject(MatDialogRef<ConfirmDialog>);
+    readonly data = inject<DialogData>(MAT_DIALOG_DATA);
 }

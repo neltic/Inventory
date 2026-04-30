@@ -14,78 +14,78 @@ import { TranslateDirective } from '../../../shared/directives/translate-directi
 import { TranslateErrorDirective } from '../../../shared/directives/translate-error-directive';
 
 @Component({
-  selector: 'app-category-edit-dialog',
-  imports: [
-    MatIcon,
-    MatButtonModule,
-    MatFormField,
-    MatLabel,
-    MatError,
-    MatHint,
-    MatProgressSpinnerModule,
-    MatInputModule,
-    MatIconModule,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatSelectModule,
-    MatSelectTrigger,
-    MatOption,
-    ReactiveFormsModule,    
-    MatIconModule,
-    FormsModule,
-    TranslateDirective,
-    TranslateErrorDirective
-  ],
-  templateUrl: './category-edit-dialog.html',
-  styleUrl: './category-edit-dialog.scss',  
+    selector: 'app-category-edit-dialog',
+    imports: [
+        MatIcon,
+        MatButtonModule,
+        MatFormField,
+        MatLabel,
+        MatError,
+        MatHint,
+        MatProgressSpinnerModule,
+        MatInputModule,
+        MatIconModule,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatSelectModule,
+        MatSelectTrigger,
+        MatOption,
+        ReactiveFormsModule,
+        MatIconModule,
+        FormsModule,
+        TranslateDirective,
+        TranslateErrorDirective
+    ],
+    templateUrl: './category-edit-dialog.html',
+    styleUrl: './category-edit-dialog.scss',
 })
 export class CategoryEditDialog extends BaseFormComponent implements OnInit {
-  public data: ICategory = inject(MAT_DIALOG_DATA);
-  private categoryService: CategoryService = inject(CategoryService);
-  private dialogRef: MatDialogRef<CategoryEditDialog> = inject(MatDialogRef<CategoryEditDialog>);
-  
-  mainForm = this.fb.group<CategoryForm>({
-    name: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(3), Validators.maxLength(64)] }),
-    icon: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(3), Validators.maxLength(32)] }),      
-    color: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(7), Validators.maxLength(7)] }),
-    includedIn: this.fb.control([], { nonNullable: true, validators: [Validators.required, Validators.minLength(1)] })
-  });
+    public data: ICategory = inject(MAT_DIALOG_DATA);
+    private categoryService: CategoryService = inject(CategoryService);
+    private dialogRef: MatDialogRef<CategoryEditDialog> = inject(MatDialogRef<CategoryEditDialog>);
 
-  constructor() {
-    super();
-    if(!this.securityService.hasRole(this.Role.Editor)) {      
-      this.dialogRef.close();      
-    }
-  }
-
-  ngOnInit() {
-    this.initComponent(['name', 'icon', 'color', 'includedIn']);
-    if (this.data) {
-      this.mainForm.patchValue({
-        ...this.data,
-        includedIn: this.entityScope.toArray(this.data.includedIn)
-      });      
-    }
-  }  
-
-  save() {
-    this.isSaving.set(true);    
-    const formValues = this.mainForm.getRawValue();    
-    const categoryToSave: ICategory = {
-      ...this.data,
-      ...formValues,
-      includedIn: this.entityScope.toScope(formValues.includedIn || [])
-    };
-    
-    this.categoryService.save(categoryToSave).subscribe({
-      next: () => this.dialogRef.close(true),
-      complete: () => this.isSaving.set(false),
-      error: (error) => {
-          this.handleError(error);
-          this.isSaving.set(false);
-        }
+    mainForm = this.fb.group<CategoryForm>({
+        name: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(3), Validators.maxLength(64)] }),
+        icon: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(3), Validators.maxLength(32)] }),
+        color: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(7), Validators.maxLength(7)] }),
+        includedIn: this.fb.control([], { nonNullable: true, validators: [Validators.required, Validators.minLength(1)] })
     });
-  }
-  
+
+    constructor() {
+        super();
+        if (!this.securityService.hasRole(this.Role.Editor)) {
+            this.dialogRef.close();
+        }
+    }
+
+    ngOnInit() {
+        this.initComponent(['name', 'icon', 'color', 'includedIn']);
+        if (this.data) {
+            this.mainForm.patchValue({
+                ...this.data,
+                includedIn: this.entityScope.toArray(this.data.includedIn)
+            });
+        }
+    }
+
+    save() {
+        this.isSaving.set(true);
+        const formValues = this.mainForm.getRawValue();
+        const categoryToSave: ICategory = {
+            ...this.data,
+            ...formValues,
+            includedIn: this.entityScope.toScope(formValues.includedIn || [])
+        };
+
+        this.categoryService.save(categoryToSave).subscribe({
+            next: () => this.dialogRef.close(true),
+            complete: () => this.isSaving.set(false),
+            error: (error) => {
+                this.handleError(error);
+                this.isSaving.set(false);
+            }
+        });
+    }
+
 }

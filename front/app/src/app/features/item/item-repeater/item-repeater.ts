@@ -11,32 +11,32 @@ import { TranslateDirective } from "../../../shared/directives/translate-directi
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
 
 @Component({
-  selector: 'app-item-repeater',
-  imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective, HasRoleDirective],
-  templateUrl: './item-repeater.html',
-  styleUrl: './item-repeater.scss',
+    selector: 'app-item-repeater',
+    imports: [MatIcon, MatCardModule, MatButtonModule, ImgFallbackDirective, AsPhotoPipe, TranslateDirective, HasRoleDirective],
+    templateUrl: './item-repeater.html',
+    styleUrl: './item-repeater.scss',
 })
 export class ItemRepeater {
-  private router: Router = inject(Router);
-  private categoryService: CategoryService = inject(CategoryService);  
-  public item = input.required<IItem>();
-  public viewStorageEvent = output<any>();
-  public readonly Role = Role;
+    private router: Router = inject(Router);
+    private categoryService: CategoryService = inject(CategoryService);
+    public item = input.required<IItem>();
+    public viewStorageEvent = output<any>();
+    public readonly Role = Role;
 
-  category = computed(() => 
-    this.categoryService.getCategoryById(this.item().categoryId)
-  );
-  
-  goToEdit() {
-    this.router.navigate(['/item/edit', this.item().itemId]);
-  }
+    category = computed(() =>
+        this.categoryService.getCategoryById(this.item().categoryId)
+    );
 
-  goToDetails() {
-    this.router.navigate(['/item/detail', this.item().itemId]);
-  }
+    goToEdit() {
+        this.router.navigate(['/item/edit', this.item().itemId]);
+    }
 
-  viewStorage() {
-    this.viewStorageEvent.emit(this.item());
-  }
-  
+    goToDetails() {
+        this.router.navigate(['/item/detail', this.item().itemId]);
+    }
+
+    viewStorage() {
+        this.viewStorageEvent.emit(this.item());
+    }
+
 }

@@ -1,17 +1,27 @@
 <div class="unauthorized">
-  <div>
-    <section class="icon">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="lock-icon">
-        <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3A5.25 5.25 0 0 0 12 1.5Zm-3.75 8.25v-3a3.75 3.75 0 1 1 7.5 0v3h-7.5Z" clip-rule="evenodd" />
-      </svg>
-    </section>
-    <h1 class="error-code">403</h1>
-    <h2 class="error-title" translate="Unauthorized.TITLE"></h2>    
-    <p class="error-message" translate="Unauthorized.MESSAGE_PERMISSIONS"></p>
-    <p class="error-message" translate="Unauthorized.MESSAGE_ROLE_REQUIRED"></p>
-    <section class="action-buttons">
-      <button matButton type="button" class="btn-primary" (click)="goHome()" translate="Unauthorized.GO_HOME"></button>          
-      <button matButton type="button" class="btn-cancel" (click)="logout()" translate="Unauthorized.CHANGE_ACCOUNT"></button>
-    </section>    
-  </div>
+    <div>
+        <section class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="lock-icon">
+                <path fill-rule="evenodd"
+                      d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3A5.25 5.25 0 0 0 12 1.5Zm-3.75 8.25v-3a3.75 3.75 0 1 1 7.5 0v3h-7.5Z"
+                      clip-rule="evenodd" />
+            </svg>
+        </section>
+        <h1 class="error-code">403</h1>
+        <h2 class="error-title" translate="Unauthorized.TITLE"></h2>
+        <p class="error-message" translate="Unauthorized.MESSAGE_PERMISSIONS"></p>
+        <p class="error-message" translate="Unauthorized.MESSAGE_ROLE_REQUIRED"></p>
+        <section class="action-buttons">
+            <button matButton
+                    type="button"
+                    class="btn-primary"
+                    (click)="goHome()"
+                    translate="Unauthorized.GO_HOME"></button>
+            <button matButton
+                    type="button"
+                    class="btn-cancel"
+                    (click)="logout()"
+                    translate="Unauthorized.CHANGE_ACCOUNT"></button>
+        </section>
+    </div>
 </div>

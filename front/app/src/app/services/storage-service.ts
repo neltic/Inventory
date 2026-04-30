@@ -5,34 +5,34 @@ import { Observable } from 'rxjs';
 import { IItemInBox, IItemStorage, IStorage } from '../models/i-storage';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class StorageService {
-  
-  private http = inject(HttpClient);
-  private readonly apiUrl = environment.endpoint.storage;
-  
-  itemsInBox = signal<IItemInBox[]>([]);
-  itemStorage = signal<IItemStorage[]>([]);
 
-  getItemsByBox(boxId: number): Observable<IItemInBox[]> {
-    return this.http.get<IItemInBox[]>(`${this.apiUrl}/boxes/${boxId}`);
-  }
+    private http = inject(HttpClient);
+    private readonly apiUrl = environment.endpoint.storage;
 
-  remove(boxId: number, itemId: number, brandId: number): Observable<boolean> {    
-    return this.http.delete<boolean>(`${this.apiUrl}/boxes/${boxId}/items/${itemId}/brands/${brandId}`);
-  }
+    itemsInBox = signal<IItemInBox[]>([]);
+    itemStorage = signal<IItemStorage[]>([]);
 
-  getStorageByItem(itemId: number): Observable<IItemStorage[]> {
-    return this.http.get<IItemStorage[]>(`${this.apiUrl}/items/${itemId}`);
-  }
+    getItemsByBox(boxId: number): Observable<IItemInBox[]> {
+        return this.http.get<IItemInBox[]>(`${this.apiUrl}/boxes/${boxId}`);
+    }
 
-  getStorage(boxId: number, itemId: number, brandId: number): Observable<IStorage> {
-    return this.http.get<IStorage>(`${this.apiUrl}/boxes/${boxId}/items/${itemId}/brands/${brandId}`);
-  }
+    remove(boxId: number, itemId: number, brandId: number): Observable<boolean> {
+        return this.http.delete<boolean>(`${this.apiUrl}/boxes/${boxId}/items/${itemId}/brands/${brandId}`);
+    }
 
-  saveStorage(storage: IStorage): Observable<any> {    
-    return this.http.put<any>(`${this.apiUrl}`, storage);    
-  }
+    getStorageByItem(itemId: number): Observable<IItemStorage[]> {
+        return this.http.get<IItemStorage[]>(`${this.apiUrl}/items/${itemId}`);
+    }
+
+    getStorage(boxId: number, itemId: number, brandId: number): Observable<IStorage> {
+        return this.http.get<IStorage>(`${this.apiUrl}/boxes/${boxId}/items/${itemId}/brands/${brandId}`);
+    }
+
+    saveStorage(storage: IStorage): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}`, storage);
+    }
 
 }

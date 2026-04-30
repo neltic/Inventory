@@ -1,74 +1,84 @@
 <div class="custom-form">
-@if(itemResource.value(); as item) {
-<mat-card class="custom-card" appearance="outlined">
-  <mat-card-header>    
-    <mat-card-title>{{ item.name }}</mat-card-title>
-  </mat-card-header>
-  
-  <img mat-card-image 
-       [src]="item.itemId | asPhoto:'item':item.updatedAt"
-       alt="{{ item.name }}"
-       appImgFallback
-       crossorigin>
-    
-  <mat-card-content>
-    <p>
-        @let selectedCategory = categoryService.getCategoryById(item.categoryId);
-        <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
-        <span>{{ selectedCategory?.name }}</span>          
-    </p>
-    <div class="inbox-as-list">
-        <mat-icon>all_inbox</mat-icon>
-        <div class="inbox-as-list-block">
-          @for (loc of itemLocations(); track (loc.boxId + '-' + loc.brandId); let isLast = $last) {
-             @let selectedBrand = brandService.getBrandById(loc.brandId);
-            <a [routerLink]="['/box/detail', loc.boxId]" class="box-link">
-              {{ loc.name }}               
-            </a>            
-            <strong class="qty-badge" [style.borderColor]="selectedBrand?.color" [style.color]="selectedBrand?.color" [style.backgroundColor]="selectedBrand?.background">{{ loc.quantity }} <i>- {{selectedBrand?.name}}</i></strong>
-            <button type="button" *hasRole="Role.Operator" (click)="removeFromBox(loc, item.itemId, selectedBrand?.name??'')"></button>
-            @if (!isLast) { <i class="separator">,</i> }
-          } @empty {
-            <i class="unregistered-label" translate="Global.UNREGISTERED"></i>
-          }
-        </div>
-      </div>
-    <p>
-        <mat-icon>note</mat-icon>
-        <span>{{ item.notes }}</span>
-    </p>
-    <p>
-        <mat-icon>event</mat-icon>
-        <span 
-          [matTooltip]="(item.createdAt | date:'full')!"
-          matTooltipPosition="above"><span translate="Global.CREATED"></span> {{ item.createdAt | relativeTime }}
-        </span>
-    </p>
-    <p>
-        <mat-icon>access_time</mat-icon>
-        <span
-          [matTooltip]="(item.updatedAt | date:'full')!"
-          matTooltipPosition="above"><span translate="Global.UPDATED"></span> {{ item.updatedAt | relativeTime }}
-        </span>
-    </p>
-  </mat-card-content>
+    @if(itemResource.value(); as item) {
+    <mat-card class="custom-card" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title>{{ item.name }}</mat-card-title>
+        </mat-card-header>
 
-  <mat-card-actions align="end">
-    <button type="button" matButton *hasRole="Role.Operator" (click)="deleteItem(item.itemId)" [disabled]="isDeleting() || isStored()" class="btn-delete">      
-      @if (isDeleting()) {
-        <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
-      } @else {
-        <mat-icon>delete_forever</mat-icon>
-      }
-      @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
-      @else { <span translate="Global.DELETING"></span> }
-    </button>    
-    <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
-      <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span></button>
-  </mat-card-actions>
+        <img mat-card-image
+             [src]="item.itemId | asPhoto:'item':item.updatedAt"
+             alt="{{ item.name }}"
+             appImgFallback
+             crossorigin>
 
-</mat-card>
-} @else if (itemResource.isLoading()) {
-  <div class="loading-message"></div>
-}
+        <mat-card-content>
+            <p>
+                @let selectedCategory = categoryService.getCategoryById(item.categoryId);
+                <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
+                <span>{{ selectedCategory?.name }}</span>
+            </p>
+            <div class="inbox-as-list">
+                <mat-icon>all_inbox</mat-icon>
+                <div class="inbox-as-list-block">
+                    @for (loc of itemLocations(); track (loc.boxId + '-' + loc.brandId); let isLast = $last) {
+                    @let selectedBrand = brandService.getBrandById(loc.brandId);
+                    <a [routerLink]="['/box/detail', loc.boxId]" class="box-link">
+                        {{ loc.name }}
+                    </a>
+                    <strong class="qty-badge" [style.borderColor]="selectedBrand?.color"
+                            [style.color]="selectedBrand?.color" [style.backgroundColor]="selectedBrand?.background">{{
+                        loc.quantity }} <i>- {{selectedBrand?.name}}</i></strong>
+                    <button type="button" *hasRole="Role.Operator"
+                            (click)="removeFromBox(loc, item.itemId, selectedBrand?.name??'')"></button>
+                    @if (!isLast) { <i class="separator">,</i> }
+                    } @empty {
+                    <i class="unregistered-label" translate="Global.UNREGISTERED"></i>
+                    }
+                </div>
+            </div>
+            <p>
+                <mat-icon>note</mat-icon>
+                <span>{{ item.notes }}</span>
+            </p>
+            <p>
+                <mat-icon>event</mat-icon>
+                <span [matTooltip]="(item.createdAt | date:'full')!"
+                      matTooltipPosition="above">
+                    <span translate="Global.CREATED"></span>
+                    {{ item.createdAt | relativeTime }}
+                </span>
+            </p>
+            <p>
+                <mat-icon>access_time</mat-icon>
+                <span [matTooltip]="(item.updatedAt | date:'full')!"
+                      matTooltipPosition="above">
+                    <span translate="Global.UPDATED"></span>
+                    {{ item.updatedAt | relativeTime }}
+                </span>
+            </p>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+            <button type="button"
+                    matButton
+                    *hasRole="Role.Operator"
+                    (click)="deleteItem(item.itemId)"
+                    [disabled]="isDeleting() || isStored()"
+                    class="btn-delete">
+                @if (isDeleting()) {
+                <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
+                } @else {
+                <mat-icon>delete_forever</mat-icon>
+                }
+                @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
+                @else { <span translate="Global.DELETING"></span> }
+            </button>
+            <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
+                <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span></button>
+        </mat-card-actions>
+
+    </mat-card>
+    } @else if (itemResource.isLoading()) {
+    <div class="loading-message"></div>
+    }
 </div>

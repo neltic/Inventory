@@ -11,30 +11,30 @@ import { FindInListPipe } from '../../pipes/find-in-list-pipe';
 import { BaseSelectComponent } from '../base-select/base-select';
 
 @Component({
-  selector: 'app-brand-select',
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    FindInListPipe,
-    TranslateErrorDirective,
-    TranslateDirective
-],
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      useFactory: () => inject(ControlContainer, { skipSelf: true })
-    }
-  ],
-  templateUrl: './brand-select.html',
-  styleUrl: './brand-select.scss',
+    selector: 'app-brand-select',
+    imports: [
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        FindInListPipe,
+        TranslateErrorDirective,
+        TranslateDirective
+    ],
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            useFactory: () => inject(ControlContainer, { skipSelf: true })
+        }
+    ],
+    templateUrl: './brand-select.html',
+    styleUrl: './brand-select.scss',
 })
 export class BrandSelect extends BaseSelectComponent<IBrand> {
-  public brandService = inject(BrandService);
-  
-  override initList() {
-    this.catalogList = this.brandService.getBrandsByScope(this.scope);
-  }
+    public brandService = inject(BrandService);
+
+    override initList() {
+        this.catalogList = this.brandService.getBrandsByScope(this.scope);
+    }
 
 }

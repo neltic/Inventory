@@ -4,62 +4,62 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 
 interface RouteParams {
-  parentBoxId?: string;
-  boxId?: string;
-  itemId?: string;
-  action?: string;
+    parentBoxId?: string;
+    boxId?: string;
+    itemId?: string;
+    action?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class RouteParamsService {
-  private router = inject(Router);
- 
-  private params$ = this.router.events.pipe(
-    filter(event => event instanceof NavigationEnd),
-    map(() => this.extractAllParams()), 
-    startWith(this.extractAllParams())
-  );
+    private router = inject(Router);
 
-  private params = toSignal<RouteParams>(this.params$);
-  
-  readonly parentBoxId = computed(() => 
-    this.parseParam(this.params()?.parentBoxId, null)
-  );
+    private params$ = this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => this.extractAllParams()),
+        startWith(this.extractAllParams())
+    );
 
-  readonly boxId = computed(() => 
-    this.parseParam(this.params()?.boxId, 0)
-  );
+    private params = toSignal<RouteParams>(this.params$);
 
-  readonly itemId = computed(() => 
-    this.parseParam(this.params()?.itemId, 0)
-  );
+    readonly parentBoxId = computed(() =>
+        this.parseParam(this.params()?.parentBoxId, null)
+    );
 
-  readonly action = computed(() => this.params()?.action || null);
-  
-  private parseParam<T>(value: string | undefined, defaultValue: T): number | T {
-    if (!value) return defaultValue;
-    const parsed = parseInt(value, 10);
-    return isNaN(parsed) ? defaultValue : (parsed as any);
-  }
+    readonly boxId = computed(() =>
+        this.parseParam(this.params()?.boxId, 0)
+    );
 
-  private extractAllParams(): RouteParams {
-    let root = this.router.routerState.snapshot.root;
-    let params: any = {};
-    let queryParams: any = root.queryParams;     
-    let stack = [root];
-    while (stack.length > 0) {
-      const node = stack.pop()!;
-      params = { ...params, ...node.params };
-      if (node.firstChild) stack.push(node.firstChild);
+    readonly itemId = computed(() =>
+        this.parseParam(this.params()?.itemId, 0)
+    );
+
+    readonly action = computed(() => this.params()?.action || null);
+
+    private parseParam<T>(value: string | undefined, defaultValue: T): number | T {
+        if (!value) return defaultValue;
+        const parsed = parseInt(value, 10);
+        return isNaN(parsed) ? defaultValue : (parsed as any);
     }
-    return { ...params, action: queryParams['action'] };
-  }
 
-  public clearQueryAction() {
-    this.router.navigate([], { 
-        queryParams: { action: null }, 
-        queryParamsHandling: 'merge' 
-    });
-  }
-   
+    private extractAllParams(): RouteParams {
+        let root = this.router.routerState.snapshot.root;
+        let params: any = {};
+        let queryParams: any = root.queryParams;
+        let stack = [root];
+        while (stack.length > 0) {
+            const node = stack.pop()!;
+            params = { ...params, ...node.params };
+            if (node.firstChild) stack.push(node.firstChild);
+        }
+        return { ...params, action: queryParams['action'] };
+    }
+
+    public clearQueryAction() {
+        this.router.navigate([], {
+            queryParams: { action: null },
+            queryParamsHandling: 'merge'
+        });
+    }
+
 }

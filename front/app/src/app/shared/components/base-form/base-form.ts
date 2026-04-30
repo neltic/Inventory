@@ -9,12 +9,12 @@ import { ERROR_FORM_MESSAGES } from '../error/error-form-mapping';
 @Directive()
 export abstract class BaseFormComponent extends BaseComponent {
 
-    private injector = inject(Injector);  
-    protected fb = inject(FormBuilder);    
+    private injector = inject(Injector);
+    protected fb = inject(FormBuilder);
     public isSaving = signal(false);
     public isUploadingImage = signal(false);
-    public errorMessages: Record<string, WritableSignal<string>> = {};    
-    public formStatus!: Signal<FormControlStatus>; 
+    public errorMessages: Record<string, WritableSignal<string>> = {};
+    public formStatus!: Signal<FormControlStatus>;
 
     public abstract mainForm: FormGroup;
 
@@ -22,11 +22,11 @@ export abstract class BaseFormComponent extends BaseComponent {
         this.setErrorMessages(fields);
         this.formStatus = toSignal(
             this.mainForm.statusChanges.pipe(
-                startWith(this.mainForm.status)), 
-                { 
-                    initialValue: this.mainForm.status as FormControlStatus,
-                    injector: this.injector 
-                }
+                startWith(this.mainForm.status)),
+            {
+                initialValue: this.mainForm.status as FormControlStatus,
+                injector: this.injector
+            }
         );
     }
 
@@ -39,14 +39,14 @@ export abstract class BaseFormComponent extends BaseComponent {
     public isBusy = computed(() => {
         if (!this.formStatus) return true;
         return this.isSaving() || this.isUploadingImage() || this.formStatus() === 'INVALID';
-    });   
-  
-    updateErrorMessage(fieldName: string, friendlyErrorName: GlobalizationKey) {        
+    });
+
+    updateErrorMessage(fieldName: string, friendlyErrorName: GlobalizationKey) {
         const control = this.findControlRecursive(this.mainForm, fieldName);
-        const errorSignal = this.errorMessages[fieldName];               
-        if (!control || !errorSignal) return; 
-        const firstErrorKey = Object.keys(control.errors || {})[0];   
-        const labelKey = ERROR_FORM_MESSAGES[firstErrorKey]     
+        const errorSignal = this.errorMessages[fieldName];
+        if (!control || !errorSignal) return;
+        const firstErrorKey = Object.keys(control.errors || {})[0];
+        const labelKey = ERROR_FORM_MESSAGES[firstErrorKey]
         if (firstErrorKey && labelKey) {
             errorSignal.set(`${labelKey}|${friendlyErrorName}`);
         } else {
@@ -56,7 +56,7 @@ export abstract class BaseFormComponent extends BaseComponent {
 
     private findControlRecursive(parent: AbstractControl, name: string): AbstractControl | null {
         if (parent instanceof FormGroup) {
-            if (parent.controls[name]) return parent.controls[name];            
+            if (parent.controls[name]) return parent.controls[name];
             for (const key in parent.controls) {
                 const found = this.findControlRecursive(parent.controls[key], name);
                 if (found) return found;

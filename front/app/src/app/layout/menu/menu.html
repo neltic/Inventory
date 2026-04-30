@@ -2,7 +2,7 @@
 
     <button matButton [routerLink]="['/welcome']" class="btn-icon-only">
         <mat-icon>home</mat-icon>
-    </button>      
+    </button>
 
     <button matButton [matMenuTriggerFor]="boxMenu">
         <mat-icon>inventory</mat-icon>
@@ -32,8 +32,8 @@
             <mat-icon>search</mat-icon>
             <span translate="Menu.SEARCH"></span>
         </button>
-    </mat-menu>   
-    
+    </mat-menu>
+
     <button matButton *hasRole="Role.Operator" [routerLink]="['/storage']">
         <mat-icon>storage</mat-icon>
         <span translate="Menu.STORAGE"></span>
@@ -43,18 +43,21 @@
         <mat-icon>category</mat-icon>
         <span translate="Menu.CATEGORY"></span>
     </button>
-    <mat-menu #categoryMenu="matMenu">        
-        <button mat-menu-item *hasRole="Role.Editor" [routerLink]="['/category/list']" [queryParams]="{ action: 'add' }">
+    <mat-menu #categoryMenu="matMenu">
+        <button mat-menu-item
+                *hasRole="Role.Editor"
+                [routerLink]="['/category/list']"
+                [queryParams]="{ action: 'add' }">
             <mat-icon>add</mat-icon>
             <span translate="Menu.NEW"></span>
-        </button>        
+        </button>
         <button mat-menu-item [routerLink]="['/category/list']">
             <mat-icon>{{ securityService.hasRole(Role.Editor) ? 'dashboard_customize' : 'search' }} </mat-icon>
             @if(securityService.hasRole(Role.Editor)) {
-                <span translate="Menu.SETUP"></span>
+            <span translate="Menu.SETUP"></span>
             } @else {
-                <span translate="Menu.SEARCH"></span>
-            }            
+            <span translate="Menu.SEARCH"></span>
+            }
         </button>
     </mat-menu>
 
@@ -62,20 +65,20 @@
         <mat-icon>verified</mat-icon>
         <span translate="Menu.BRAND"></span>
     </button>
-    <mat-menu #brandMenu="matMenu">        
+    <mat-menu #brandMenu="matMenu">
         <button mat-menu-item *hasRole="Role.Editor" [routerLink]="['/brand/list']" [queryParams]="{ action: 'add' }">
             <mat-icon>add</mat-icon>
             <span translate="Menu.NEW"></span>
-        </button>        
+        </button>
         <button mat-menu-item [routerLink]="['/brand/list']">
             <mat-icon>{{ securityService.hasRole(Role.Editor) ? 'dashboard_customize' : 'search' }} </mat-icon>
-            @if(securityService.hasRole(Role.Editor)) {                
-                <span translate="Menu.SETUP"></span>
+            @if(securityService.hasRole(Role.Editor)) {
+            <span translate="Menu.SETUP"></span>
             } @else {
-                <span translate="Menu.SEARCH"></span>
+            <span translate="Menu.SEARCH"></span>
             }
         </button>
-    </mat-menu>   
+    </mat-menu>
 
     <span class="spacer"></span>
 
@@ -86,12 +89,12 @@
 
     <mat-menu #langMenu="matMenu">
         @for (lang of globalization.languages(); track lang.languageCode) {
-            <button mat-menu-item (click)="onLanguageChange(lang)">
-                <mat-icon>
-                    {{ isCurrentLang(lang.languageCode) ? 'check' : 'translate' }}
-                </mat-icon>
-                <span [translate]="globalization.getLanguageLabelKey(lang.languageCode)"></span>
-            </button>
+        <button mat-menu-item (click)="onLanguageChange(lang)">
+            <mat-icon>
+                {{ isCurrentLang(lang.languageCode) ? 'check' : 'translate' }}
+            </mat-icon>
+            <span [translate]="globalization.getLanguageLabelKey(lang.languageCode)"></span>
+        </button>
         }
     </mat-menu>
 
@@ -100,11 +103,11 @@
         <span translate="Session.GREETING"></span><span>{{ securityService.givenName() }}</span>
     </button>
 
-    <mat-menu #sessionMenu="matMenu">        
+    <mat-menu #sessionMenu="matMenu">
         <button mat-menu-item (click)="securityService.logout()">
             <mat-icon>logout</mat-icon>
             <span translate="Session.LOGOUT"></span>
-        </button>    
+        </button>
     </mat-menu>
 
 </nav>

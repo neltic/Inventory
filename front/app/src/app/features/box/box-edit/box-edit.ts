@@ -21,136 +21,136 @@ import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
 
 @Component({
-  selector: 'app-box-edit',
-  standalone: true,
-  imports: [
-    MatIcon,
-    MatCardModule,
-    MatButtonModule,
-    MatFormField,
-    MatLabel,
-    MatError,
-    MatHint,
-    MatProgressSpinnerModule,
-    MatInputModule,    
-    ReactiveFormsModule,
-    ɵInternalFormsSharedModule,
-    ImgFallbackDirective,
-    RelativeTimePipe,
-    BoxBreadcrumb,
-    CategorySelect,
-    BrandSelect,
-    AsPhotoPipe,
-    TranslatePipe,
-    TranslateDirective,
-    TranslateErrorDirective
-  ],
-  providers: [{ provide: BaseFormComponent, useExisting: BoxEdit }],
-  templateUrl: './box-edit.html',
-  styleUrl: './box-edit.scss',
+    selector: 'app-box-edit',
+    standalone: true,
+    imports: [
+        MatIcon,
+        MatCardModule,
+        MatButtonModule,
+        MatFormField,
+        MatLabel,
+        MatError,
+        MatHint,
+        MatProgressSpinnerModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        ɵInternalFormsSharedModule,
+        ImgFallbackDirective,
+        RelativeTimePipe,
+        BoxBreadcrumb,
+        CategorySelect,
+        BrandSelect,
+        AsPhotoPipe,
+        TranslatePipe,
+        TranslateDirective,
+        TranslateErrorDirective
+    ],
+    providers: [{ provide: BaseFormComponent, useExisting: BoxEdit }],
+    templateUrl: './box-edit.html',
+    styleUrl: './box-edit.scss',
 })
 export class BoxEdit extends BaseFormComponent implements OnInit {
-  private boxService = inject(BoxService);
-  private fileService = inject(FileService);  
-  protected categoryService = inject(CategoryService);
-  protected brandService = inject(BrandService);  
-  protected imageGuid = signal<string | null>(null);
-  
-  boxResource = rxResource<IBox, any>({
-    stream: () => { 
-      return this.boxService.getBoxBy(this.params.boxId()); 
-    }
-  });
+    private boxService = inject(BoxService);
+    private fileService = inject(FileService);
+    protected categoryService = inject(CategoryService);
+    protected brandService = inject(BrandService);
+    protected imageGuid = signal<string | null>(null);
 
-  mainForm = this.fb.group<BoxForm>({
-    parentBoxId: this.fb.control(this.params.parentBoxId()),
-    name: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(5), Validators.maxLength(64)] }),
-    categoryId: this.fb.control(0, { nonNullable: true, validators: [Validators.required, this.categoryService.validators.existsInScope(this.EntityScope.Box)] }),
-    brandId: this.fb.control(0, { nonNullable: true, validators: [Validators.required, this.brandService.validators.existsInScope(this.EntityScope.Box)] }),
-    notes: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(10), Validators.maxLength(512)] }),
-    height: this.fb.control(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
-    width: this.fb.control(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
-    depth: this.fb.control(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] })
-  });
-
-  constructor() { 
-    super();
-    effect(() => {
-      const box = this.boxResource.value();      
-      if (box && !this.mainForm.dirty) {        
-        this.mainForm.patchValue(box);
-      }
-    });
-  }
-
-  ngOnInit() {
-    this.initComponent(['name', 'brandId', 'categoryId', 'width', 'height', 'depth', 'notes']);
-  }
-
-  onSubmit(): void {
-    if (this.mainForm.invalid) {
-      this.mainForm.markAllAsTouched();
-      return;
-    }
-    if (this.isSaving()) return;
-    if (this.isUploadingImage()) {
-      this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
-      return;
-    }
-    this.isSaving.set(true);
-
-    const currentId = this.boxResource.value()?.boxId ?? 0;
-    const formValues = this.mainForm.getRawValue();
-
-    const boxData: IBox = {
-      ...formValues,
-      boxId: currentId
-    };
-
-    this.boxService.saveBox(boxData)
-      .pipe(    
-        finalize(() => this.isSaving.set(false)) 
-      )
-      .subscribe({
-        next: () => {
-          this.openSnack('success', 'Global.OK', 'Message.BOX_SAVED');
-          this.mainForm.markAsPristine();   
-        },
-        error: (error) => this.handleError(error)
-      });
-  } 
-  
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const currentId = this.boxResource.value()?.boxId ?? 0;
-
-    if (currentId === 0 || !input.files?.length) return;
-  
-    const file = input.files[0];      
-    this.isUploadingImage.set(true);
-    
-    this.fileService.uploadTempImage(file).pipe(
-      switchMap(res => {
-        this.imageGuid.set(res.fileGuid);        
-        return this.boxService.assignImage(currentId, res.fileGuid);
-      }), finalize(() => {
-        input.value = '';
-        this.onImageLoad();
-      })
-    ).subscribe({
-      next: (response: any) => {
-        const newDate = response.updatedAt;
-        const currentBox = this.boxResource.value();
-        if (currentBox) {
-            this.boxResource.set({
-                ...currentBox,
-                updatedAt: newDate
-            });
+    boxResource = rxResource<IBox, any>({
+        stream: () => {
+            return this.boxService.getBoxBy(this.params.boxId());
         }
-        this.openSnack('success', 'Global.OK', 'Message.IMAGE_UPDATED');
-      },
-      error: (error) => this.handleError(error, 'Error.IMAGE_PROCESSING')
     });
-  }  
+
+    mainForm = this.fb.group<BoxForm>({
+        parentBoxId: this.fb.control(this.params.parentBoxId()),
+        name: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(5), Validators.maxLength(64)] }),
+        categoryId: this.fb.control(0, { nonNullable: true, validators: [Validators.required, this.categoryService.validators.existsInScope(this.EntityScope.Box)] }),
+        brandId: this.fb.control(0, { nonNullable: true, validators: [Validators.required, this.brandService.validators.existsInScope(this.EntityScope.Box)] }),
+        notes: this.fb.control('', { nonNullable: true, validators: [Validators.required, Validators.minLength(10), Validators.maxLength(512)] }),
+        height: this.fb.control(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
+        width: this.fb.control(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
+        depth: this.fb.control(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] })
+    });
+
+    constructor() {
+        super();
+        effect(() => {
+            const box = this.boxResource.value();
+            if (box && !this.mainForm.dirty) {
+                this.mainForm.patchValue(box);
+            }
+        });
+    }
+
+    ngOnInit() {
+        this.initComponent(['name', 'brandId', 'categoryId', 'width', 'height', 'depth', 'notes']);
+    }
+
+    onSubmit(): void {
+        if (this.mainForm.invalid) {
+            this.mainForm.markAllAsTouched();
+            return;
+        }
+        if (this.isSaving()) return;
+        if (this.isUploadingImage()) {
+            this.openSnack('warning', 'Global.OK', 'Message.WAIT_IMAGE_UPLOAD');
+            return;
+        }
+        this.isSaving.set(true);
+
+        const currentId = this.boxResource.value()?.boxId ?? 0;
+        const formValues = this.mainForm.getRawValue();
+
+        const boxData: IBox = {
+            ...formValues,
+            boxId: currentId
+        };
+
+        this.boxService.saveBox(boxData)
+            .pipe(
+                finalize(() => this.isSaving.set(false))
+            )
+            .subscribe({
+                next: () => {
+                    this.openSnack('success', 'Global.OK', 'Message.BOX_SAVED');
+                    this.mainForm.markAsPristine();
+                },
+                error: (error) => this.handleError(error)
+            });
+    }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const currentId = this.boxResource.value()?.boxId ?? 0;
+
+        if (currentId === 0 || !input.files?.length) return;
+
+        const file = input.files[0];
+        this.isUploadingImage.set(true);
+
+        this.fileService.uploadTempImage(file).pipe(
+            switchMap(res => {
+                this.imageGuid.set(res.fileGuid);
+                return this.boxService.assignImage(currentId, res.fileGuid);
+            }), finalize(() => {
+                input.value = '';
+                this.onImageLoad();
+            })
+        ).subscribe({
+            next: (response: any) => {
+                const newDate = response.updatedAt;
+                const currentBox = this.boxResource.value();
+                if (currentBox) {
+                    this.boxResource.set({
+                        ...currentBox,
+                        updatedAt: newDate
+                    });
+                }
+                this.openSnack('success', 'Global.OK', 'Message.IMAGE_UPDATED');
+            },
+            error: (error) => this.handleError(error, 'Error.IMAGE_PROCESSING')
+        });
+    }
 
 }

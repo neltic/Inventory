@@ -1,48 +1,48 @@
 import { FormControl } from "@angular/forms";
 
 export interface IItemInBox {
-  itemId: number;
-  name: string;
-  brandId: number;
-  categoryId: number;
-  quantity: number;
-  updatedAt?: string | Date;
-  notes: string | null;
+    itemId: number;
+    name: string;
+    brandId: number;
+    categoryId: number;
+    quantity: number;
+    updatedAt?: string | Date;
+    notes: string | null;
 }
 
 export interface IItemStorage {
-  boxId: number;
-  name: string;
-  brandId: number;
-  updatedAt?: string | Date;
-  quantity: number;
-  expires: boolean;
-  expiresOn: string | Date;
-  notes: string | null;
+    boxId: number;
+    name: string;
+    brandId: number;
+    updatedAt?: string | Date;
+    quantity: number;
+    expires: boolean;
+    expiresOn: string | Date;
+    notes: string | null;
 }
 
 export interface IStorage {
-  boxId: number;
-  itemId: number;
-  brandId: number;
-  quantity: number;
-  expires: boolean;
-  expiresOn?: string | Date;
-  notes: string | null;
+    boxId: number;
+    itemId: number;
+    brandId: number;
+    quantity: number;
+    expires: boolean;
+    expiresOn?: string | Date;
+    notes: string | null;
 }
 
 export interface BoxStep {
-  boxId: FormControl<number>;
+    boxId: FormControl<number>;
 }
 
 export interface ItemStep {
-  itemId: FormControl<number>;
-  brandId: FormControl<number>;
+    itemId: FormControl<number>;
+    brandId: FormControl<number>;
 }
 
 export interface DetailsStep {
-  quantity: FormControl<number>;
-  expires: FormControl<boolean>;
-  expiresOn: FormControl<string | Date | null>;
-  notes: FormControl<string | null>;
+    quantity: FormControl<number>;
+    expires: FormControl<boolean>;
+    expiresOn: FormControl<string | Date | null>;
+    notes: FormControl<string | null>;
 }

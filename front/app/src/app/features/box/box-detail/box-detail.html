@@ -1,84 +1,93 @@
 <div class="custom-form">
-@if(boxResource.value(); as box) {
-<mat-card class="custom-card" appearance="outlined">
-  <mat-card-header>    
-    <mat-card-title>{{ box.name }}</mat-card-title>
-  </mat-card-header>
-  
-  <div class="image-container">
+    @if(boxResource.value(); as box) {
+    <mat-card class="custom-card" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title>{{ box.name }}</mat-card-title>
+        </mat-card-header>
 
-      <img mat-card-image 
-          [src]="box.boxId | asPhoto:'box':box.updatedAt"
-          alt="{{ box.name }}"
-          appImgFallback
-          class="image-container-photo always-visible"
-          crossorigin>
-  
-  </div>
+        <div class="image-container">
+            <img mat-card-image
+                 [src]="box.boxId | asPhoto:'box':box.updatedAt"
+                 alt="{{ box.name }}"
+                 appImgFallback
+                 class="image-container-photo always-visible"
+                 crossorigin>
+        </div>
 
-  <mat-card-content>
-    <app-box-breadcrumb [fullPath]="currentPath()" />
-    <p>
-        @let selectedCategory = categoryService.getCategoryById(box.categoryId);
-        <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
-        <span>{{ selectedCategory?.name }}</span>          
-    </p>
-    <p>
-        @let selectedBrand = brandService.getBrandById(box.brandId);
-        <mat-icon [style.color]="selectedBrand?.background">verified</mat-icon>
-        <span>{{ selectedBrand?.name }}</span>          
-    </p>
-    <p>
-        <mat-icon>note</mat-icon>
-        <span>{{ box.notes }}</span>
-    </p>
-    <p>
-        <mat-icon>view_in_ar</mat-icon>
-        <span>
-            <strong>{{ box.width }}</strong>cm 
-            x
-            <strong>{{ box.height }}</strong>cm
-            x
-            <strong>{{ box.depth }}</strong>cm
-            = <strong>{{ box.volume }}</strong>cm³ <span translate="Box.VOLUME_FORMULA"></span>
-        </span>
-    </p>
-    <p>
-        <mat-icon>event</mat-icon>
-        <span 
-          [matTooltip]="(box.createdAt | date:'full')!"
-          matTooltipPosition="above"><span translate="Global.CREATED"></span> {{ box.createdAt | relativeTime }}
-        </span>
-    </p>
-    <p>
-        <mat-icon>access_time</mat-icon>
-        <span
-          [matTooltip]="(box.updatedAt | date:'full')!"
-          matTooltipPosition="above"><span translate="Global.UPDATED"></span> {{ box.updatedAt | relativeTime }}
-        </span>
-    </p>
-  </mat-card-content>
+        <mat-card-content>
+            <app-box-breadcrumb [fullPath]="currentPath()" />
+            <p>
+                @let selectedCategory = categoryService.getCategoryById(box.categoryId);
+                <mat-icon [style.color]="selectedCategory?.color">{{ selectedCategory?.icon }}</mat-icon>
+                <span>{{ selectedCategory?.name }}</span>
+            </p>
+            <p>
+                @let selectedBrand = brandService.getBrandById(box.brandId);
+                <mat-icon [style.color]="selectedBrand?.background">verified</mat-icon>
+                <span>{{ selectedBrand?.name }}</span>
+            </p>
+            <p>
+                <mat-icon>note</mat-icon>
+                <span>{{ box.notes }}</span>
+            </p>
+            <p>
+                <mat-icon>view_in_ar</mat-icon>
+                <span>
+                    <strong>{{ box.width }}</strong>cm
+                    x
+                    <strong>{{ box.height }}</strong>cm
+                    x
+                    <strong>{{ box.depth }}</strong>cm
+                    = <strong>{{ box.volume }}</strong>cm³ <span translate="Box.VOLUME_FORMULA"></span>
+                </span>
+            </p>
+            <p>
+                <mat-icon>event</mat-icon>
+                <span
+                      [matTooltip]="(box.createdAt | date:'full')!"
+                      matTooltipPosition="above">
+                    <span translate="Global.CREATED"></span>
+                    {{ box.createdAt | relativeTime }}
+                </span>
+            </p>
+            <p>
+                <mat-icon>access_time</mat-icon>
+                <span
+                      [matTooltip]="(box.updatedAt | date:'full')!"
+                      matTooltipPosition="above">
+                    <span translate="Global.UPDATED"></span>
+                    {{ box.updatedAt | relativeTime }}
+                </span>
+            </p>
+        </mat-card-content>
 
-  <mat-card-actions align="end">
-    <button type="button" matButton *hasRole="Role.Operator" (click)="deleteBox(box.boxId)" [disabled]="isDeleting() || !box.canBeDeleted" class="btn-delete">      
-      @if (isDeleting()) {
-        <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
-      } @else {
-        <mat-icon>delete_forever</mat-icon>
-      }      
-      @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
-      @else { <span translate="Global.DELETING"></span> }
-    </button>    
-    <button type="button" matButton *hasRole="Role.Operator" (click)="openBoxParentSelectDialog(box)" [disabled]="isDeleting()">
-      <mat-icon>move_to_inbox</mat-icon><span translate="Box.MOVE_TO"></span>
-    </button>
-    <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
-      <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span>
-    </button>
-  </mat-card-actions>
+        <mat-card-actions align="end">
+            <button type="button"
+                    matButton *hasRole="Role.Operator"
+                    (click)="deleteBox(box.boxId)"
+                    [disabled]="isDeleting() || !box.canBeDeleted"
+                    class="btn-delete">
+                @if (isDeleting()) {
+                <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
+                } @else {
+                <mat-icon>delete_forever</mat-icon>
+                }
+                @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
+                @else { <span translate="Global.DELETING"></span> }
+            </button>
+            <button type="button"
+                    matButton *hasRole="Role.Operator"
+                    (click)="openBoxParentSelectDialog(box)"
+                    [disabled]="isDeleting()">
+                <mat-icon>move_to_inbox</mat-icon><span translate="Box.MOVE_TO"></span>
+            </button>
+            <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
+                <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span>
+            </button>
+        </mat-card-actions>
 
-</mat-card>
-} @else if (boxResource.isLoading()) {
-  <div class="loading-message"></div>
-}
+    </mat-card>
+    } @else if (boxResource.isLoading()) {
+    <div class="loading-message"></div>
+    }
 </div>

@@ -2,47 +2,47 @@ import { Directive, effect, ElementRef, inject, Input, Renderer2, signal } from 
 import { GlobalizationService } from '@services';
 
 @Directive({
-  selector: '[translateError]',
-  standalone: true
+    selector: '[translateError]',
+    standalone: true
 })
 export class TranslateErrorDirective {
 
-  private globalization = inject(GlobalizationService);
-  private el = inject(ElementRef);
-  private renderer = inject(Renderer2);  
-  private value = signal<string>('');  
-  
-  @Input('translateError') set translateErrorValue(val: string) { this.value.set(val); }
+    private globalization = inject(GlobalizationService);
+    private el = inject(ElementRef);
+    private renderer = inject(Renderer2);
+    private value = signal<string>('');
 
-  constructor() {
-    effect(() => {
-      if (!this.value) {
-        this.updateText('');
-        return;
-      };
+    @Input('translateError') set translateErrorValue(val: string) { this.value.set(val); }
 
-      const [errorKeyPart, friendlyNamePart] = this.value().split('|');
-      
-      let translatedFriendlyName = '';
-      if (friendlyNamePart && friendlyNamePart.includes('.')) {      
-        translatedFriendlyName = this.globalization.translate(friendlyNamePart);
-      } else {
-        translatedFriendlyName = friendlyNamePart || '';
-      }
+    constructor() {
+        effect(() => {
+            if (!this.value) {
+                this.updateText('');
+                return;
+            };
 
-      if (errorKeyPart && errorKeyPart.includes('.')) {
-        const finalTranslation = this.globalization.translate(errorKeyPart, [translatedFriendlyName]);
-        this.updateText(finalTranslation);
-        return;
-      }
+            const [errorKeyPart, friendlyNamePart] = this.value().split('|');
 
-      this.updateText(this.value());
-      return;      
-    });
-  }
+            let translatedFriendlyName = '';
+            if (friendlyNamePart && friendlyNamePart.includes('.')) {
+                translatedFriendlyName = this.globalization.translate(friendlyNamePart);
+            } else {
+                translatedFriendlyName = friendlyNamePart || '';
+            }
 
-  private updateText(text: string): void {
-    this.renderer.setProperty(this.el.nativeElement, 'textContent', text);
-  }
+            if (errorKeyPart && errorKeyPart.includes('.')) {
+                const finalTranslation = this.globalization.translate(errorKeyPart, [translatedFriendlyName]);
+                this.updateText(finalTranslation);
+                return;
+            }
+
+            this.updateText(this.value());
+            return;
+        });
+    }
+
+    private updateText(text: string): void {
+        this.renderer.setProperty(this.el.nativeElement, 'textContent', text);
+    }
 
 }

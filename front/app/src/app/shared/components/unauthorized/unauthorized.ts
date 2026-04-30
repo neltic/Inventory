@@ -6,21 +6,21 @@ import { SecurityService } from '@services';
 import { TranslateDirective } from '../../directives/translate-directive';
 
 @Component({
-  selector: 'app-unauthorized',
-  standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule, TranslateDirective],
-  templateUrl: './unauthorized.html',
-  styleUrl: './unauthorized.scss',
+    selector: 'app-unauthorized',
+    standalone: true,
+    imports: [CommonModule, RouterModule, MatButtonModule, TranslateDirective],
+    templateUrl: './unauthorized.html',
+    styleUrl: './unauthorized.scss',
 })
 export class Unauthorized {
-  private router = inject(Router);  
-  private securityService: SecurityService = inject(SecurityService);
+    private router = inject(Router);
+    private securityService: SecurityService = inject(SecurityService);
 
-  goHome() {
-    this.router.navigate(['/']);
-  }
+    goHome() {
+        this.router.navigate(['/']);
+    }
 
-  logout() {
-    this.securityService.logoutAndRelogin(); 
-  }
+    logout() {
+        this.securityService.logoutAndRelogin();
+    }
 }

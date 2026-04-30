@@ -19,7 +19,8 @@
 .category-option {
     display: flex;
     align-items: center;
-    gap: 8pt;    
+    gap: 8pt;
+
     mat-icon {
         font-size: 20pt;
         height: 20pt;
@@ -31,7 +32,8 @@
 .selected-category-option {
     display: flex;
     align-items: center;
-    gap: 8pt;    
+    gap: 8pt;
+
     mat-icon {
         font-size: 10pt;
         height: 10pt;
@@ -42,44 +44,47 @@
 
 
 .list-item-controls {
-  display: flex;
-  align-items: center;
-  gap: 5pt;
-  margin: 0;
-  margin-left: 5pt;
+    display: flex;
+    align-items: center;
+    gap: 5pt;
+    margin: 0;
+    margin-left: 5pt;
 
-  fieldset {
-    border-color: #444;
-    border-radius: 8pt;
-    text-align: center;
+    fieldset {
+        border-color: #444;
+        border-radius: 8pt;
+        text-align: center;
 
-    legend {
-        color: #999;
-        font-size: small;
-        text-align: left;
-    }
-
-    span { margin: 0 5pt; }
-
-    input {
-        background-color: transparent;
-        border: none;
-        &.number {
-            text-align: right;
-            width: 80px;
+        legend {
+            color: #999;
+            font-size: small;
+            text-align: left;
         }
-    }    
-  }
 
-  button {
-    .mat-icon {
-        color: rgb(19, 99, 128);
-    }
-  }
+        span {
+            margin: 0 5pt;
+        }
 
-  button:disabled {
-    .mat-icon {
-        color:#999;
+        input {
+            background-color: transparent;
+            border: none;
+
+            &.number {
+                text-align: right;
+                width: 80px;
+            }
+        }
     }
-  }
+
+    button {
+        .mat-icon {
+            color: rgb(19, 99, 128);
+        }
+    }
+
+    button:disabled {
+        .mat-icon {
+            color: #999;
+        }
+    }
 }

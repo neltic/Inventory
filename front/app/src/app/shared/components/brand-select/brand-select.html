@@ -1,40 +1,40 @@
 <mat-form-field class="filter-brand">
     <mat-label [translate]="label"></mat-label>
-    
+
     @let list = catalogList();
     @let selectedId = parentForm.get(controlName)?.value;
     @let selected = selectedId | findInList:brandService.brands():'brandId';
 
     <mat-select [formControlName]="controlName" (blur)="handleBlur()">
-    <mat-select-trigger>
-        <div class="selected-brand-option">
-        @if (selected) { 
-            <span>{{ selected.name }}</span>                
-        } @else { 
-            <span>---</span>
-        }
-        </div>
-    </mat-select-trigger>
+        <mat-select-trigger>
+            <div class="selected-brand-option">
+                @if (selected) {
+                <span>{{ selected.name }}</span>
+                } @else {
+                <span>---</span>
+                }
+            </div>
+        </mat-select-trigger>
 
-    @for (brand of list; track brand.brandId) {
-    <mat-option [value]="brand.brandId">
-        <div class="brand-option">
-            <mat-icon [style.color]="brand.background">verified</mat-icon>
-            <span>{{brand.name}}</span>
-        </div>
-    </mat-option>        
-    }
-    </mat-select>   
+        @for (brand of list; track brand.brandId) {
+        <mat-option [value]="brand.brandId">
+            <div class="brand-option">
+                <mat-icon [style.color]="brand.background">verified</mat-icon>
+                <span>{{brand.name}}</span>
+            </div>
+        </mat-option>
+        }
+    </mat-select>
 
     <span matTextPrefix>
-        @if (selected) {   
-            <mat-icon [style.color]="selected.background">verified</mat-icon>
-        } @else {   
-            <mat-icon>warning</mat-icon>
+        @if (selected) {
+        <mat-icon [style.color]="selected.background">verified</mat-icon>
+        } @else {
+        <mat-icon>warning</mat-icon>
         }
     </span>
 
     @if (parentErrorSignal && parentErrorSignal()) {
-        <mat-error [translateError]="parentErrorSignal()"></mat-error>
+    <mat-error [translateError]="parentErrorSignal()"></mat-error>
     }
 </mat-form-field>

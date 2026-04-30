@@ -11,30 +11,30 @@ import { FindInListPipe } from '../../pipes/find-in-list-pipe';
 import { BaseSelectComponent } from '../base-select/base-select';
 
 @Component({
-  selector: 'app-category-select',
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    FindInListPipe,
-    TranslateErrorDirective,
-    TranslateDirective
-],
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      useFactory: () => inject(ControlContainer, { skipSelf: true })
-    }
-  ],
-  templateUrl: './category-select.html',
-  styleUrl: './category-select.scss',
+    selector: 'app-category-select',
+    imports: [
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        FindInListPipe,
+        TranslateErrorDirective,
+        TranslateDirective
+    ],
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            useFactory: () => inject(ControlContainer, { skipSelf: true })
+        }
+    ],
+    templateUrl: './category-select.html',
+    styleUrl: './category-select.scss',
 })
 export class CategorySelect extends BaseSelectComponent<ICategory> {
-  public categoryService = inject(CategoryService);
-  
-  override initList() {
-    this.catalogList = this.categoryService.getCategoriesByScope(this.scope);
-  }
-  
+    public categoryService = inject(CategoryService);
+
+    override initList() {
+        this.catalogList = this.categoryService.getCategoriesByScope(this.scope);
+    }
+
 }
