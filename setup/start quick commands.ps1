@@ -7,15 +7,15 @@ if (!(Test-Path $ProfilePath)) {
 
 $Commands = @"
 
-# Save changes in develop: XSave "type(scope): message"
-function XSave(`$msg) {
+# Save changes in develop: xSave "type(scope): message"
+function xSave(`$msg) {
     git add .
     git commit -m "`$msg"
     if (`$?) { git push origin develop }
 }
 
-# Deploy develop to main: XDeploy
-function XDeploy {
+# Deploy develop to main: xDeploy
+function xDeploy {
     git checkout main
     git pull origin main
     git merge develop
@@ -31,7 +31,7 @@ function XDeploy {
 
 Add-Content -Path $ProfilePath -Value $Commands
 
-Write-Host "'XSave' and 'XDeploy' commands successfully installed!" -ForegroundColor Green
+Write-Host "'xSave' and 'xDeploy' commands successfully installed!" -ForegroundColor Green
 Write-Host "Please restart your terminal or run: . `$PROFILE" -ForegroundColor Cyan
 
 Start-Sleep -Seconds 15

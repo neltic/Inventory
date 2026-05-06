@@ -52,37 +52,48 @@ The system uses a logical hierarchy for stock control:
 Configure the `.env` file in the root directory. This file acts as the bridge between your Host and the containers:
 
 ```env
+DB_USERNAME=YourUser
+DB_PASSWORD=YourPassword123!
+DB_CONNECTION=Server=stock-db,1433;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;
+DB_BACKUP_CONNECTION=Server=localhost;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;
+DB_BACKUP_PATH=/var/opt/mssql/temp
 STATIC_STORAGE_PATH=/host_mnt/c/your/path/Storage/front/static
-DB_CONNECTION="Server=host.docker.internal,1433;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;"
-DB_BACKUP_CONNECTION=Server=YourLocalServer;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;
-DB_BACKUP_PATH=C:\your\path\Storage\front\static\temp
 GOOGLE_DRIVE_FOLDER_ID=YourGoogleDriveFolderId
 GOOGLE_CLIENT_ID=YourGoogleDriveClientId
 GOOGLE_CLIENT_SECRET=YourGoogleDriveSecret
 GOOGLE_REFRESH_TOKEN=YourGoogleDriveRefreshToken
+KEYCLOAK_ADMIN_PASSWORD=admin
 WORKER_USER_ID=Storage OAuth
 WORKER_APP_NAME=Storage-Data-Backup
-KEYCLOAK_ADMIN_PASSWORD=YourAdminPassword
-KC_DB_USERNAME=YourUser
-KC_DB_PASSWORD=YourPassword
+WORKER_BACKUP_RUN_AT_STARTUP=true
+WORKER_BACKUP_RUN_AFTER_MINUTES=60
 ```
 This ensures your private configuration and connection strings are decoupled from the code.
 
 ### 3. Database Configuration
-You need to manually create two databases: one for the inventory application and one for user administration.
-The recommendations are:
-- `StockDb`
-- `KeycloakDb`
-For the last one, don't forget to check the [security](#-security) section to see the special features it requires.
+The system is designed for **Zero-Configuration Deployment**. When you start the containers for the first time, the SQL Server instance automatically initializes the required databases using the internal setup scripts.
+
+#### **Automatic Initialization**
+The infrastructure guarantees the creation of the following tables:
+*   **StockDb** 
+*   **KeycloakDb:** Created with `READ_COMMITTED_SNAPSHOT ON` to support Keycloak's high-concurrency requirements.
+
+#### **Manual Inspection (Optional)**
+If you need to verify the state of the databases or perform manual maintenance, you can connect to the instance using any SQL client (like SSMS or Azure Data Studio) with the credentials defined in your `.env` file:
+
+*   **Server:** `localhost,1433`
+*   **Authentication:** SQL Server Authentication
+*   **Database:** `StockDb` / `KeycloakDb`
 
 ### 4. Users (Keycloak)
-When the container is created, it reads the file `infra\keycloak realm-export.json`, which contains the configuration for creating the realm, roles, and users needed to get started.
+When the container is created, it reads the file `infra\auth\realm-export.json`, which contains the configuration for creating the realm, roles, and users needed to get started.
 
 ## 🐳 Container Infrastructure
 The system orchestrates 6 specialized services:
 
 | Container | Function | Access |
 | :--- | :--- | :--- |
+| **stock-db** | SQL Server 2022 (Linux) w/ UTF8 Collation | Port 1433 |
 | **stock-back** | Main API (ASP.NET Core) | `http://localhost:5000` |
 | **stock-front** | Web Application (Angular) | `http://localhost:4200` |
 | **stock-worker** | Background Service (Backups & Cloud Sync) | Logs via Docker |
@@ -90,7 +101,8 @@ The system orchestrates 6 specialized services:
 | **stock-cleaner** | `/temp` folder cleanup (Python) | Automated |
 | **stock-cache** | Fast persistence engine (Redis) | Port 6379 |
 
-Important: If you have a local IIS service running on port 80, you must stop it (`iisreset /stop`) before starting the containers to avoid port conflicts.
+> [!TIP]
+> **Port Conflicts:** If you have a local IIS service running on port 80, you must stop it (`iisreset /stop`) before starting the containers to avoid conflicts with the **stock-cdn**.
 
 
 ## 🛡️ Resilience Strategy (DRP)
@@ -112,6 +124,8 @@ Every **12 hours**, the Worker instructs SQL Server to generate a Full Backup (`
 The `/setup/` folder contains PowerShell scripts to streamline the environment for example:
 - `.\setup\start-all.ps1`: Starts the entire ecosystem.
 - `.\setup\start-cdn.ps1`: Only starts the image server (useful for local API debugging).
+- `.\setup\start-quick-commands.ps1`: injects custom functions into your PowerShell Profile to simplify the Git workflow.
+
 
 ### Database Schema Evolution
 The project follows a Code-First approach. The following migrations establish the core structure, stored procedures (SPs), and seed data:
@@ -175,25 +189,9 @@ Thanks to this synchronization, usage in components is completely type-safe:
 ### Identity and Access Management (IAM)
 This project implements a layered security architecture, delegating identity management to Keycloak. 
 This approach provides:
-- Single Sign-On (SSO): Centralized authentication.
-- Role-Based Access Control (RBAC): Permissions managed via specific roles.
-- JWT Tokens: Secure and standardized communication between the Frontend and the Backend API.
-
-### Database Configuration (Keycloak)
-If you need to recreate the database instance for the identity server, follow these requirements:
-1. Create a database named KeycloakDB.
-2. Use a UTF8 compatible collation (e.g., Modern_Spanish_100_CI_AS_SC_UTF8 or any other compatible with your specific language).
-3. Mandatory: Set READ_COMMITTED_SNAPSHOT to ON to prevent transaction locking within Keycloak's internal operations.
-```sql
-USE master;
-GO
-
-CREATE DATABASE [KeycloakDb] COLLATE Modern_Spanish_100_CI_AS_SC_UTF8;
-GO
-
-ALTER DATABASE [KeycloakDb] SET READ_COMMITTED_SNAPSHOT ON;
-GO
-```
+- **Single Sign-On (SSO)**: Centralized authentication.
+- **Role-Based Access Control (RBAC)**: Permissions managed via specific roles.
+- **JWT Tokens**: Secure and standardized communication between the Frontend and the Backend API.
 
 ### Users and Roles
 The system defines the following profiles to ensure users only access the data and actions they are authorized to perform:
@@ -204,14 +202,17 @@ The system defines the following profiles to ensure users only access the data a
 | **operator** | Inventory manager | Authorized to move stock and handle inventory actions. |
 | **admin** | Full system access | Can manage both inventory, catalogs, and system configurations. |
 
-Note. Users with the same role name were created during the initial load to facilitate testing.
+> [!TIP]
+> To facilitate testing, the system includes pre-configured users for each role. You can find the credentials in the `infra/auth/realm-export.json` file or use the `admin` account created at startup.
 
 ## 📝 Key Features
-- **Hybrid Storage:** Files are served locally for speed (CDN) but backed up in the cloud for security.
-- **Audit Interceptors:** Automatic management of `CreatedAt` and `UpdatedAt` in EF Core.
-- **Reactive State:** Powered by **Angular Signals** for a fluid UI experience without unnecessary refreshes.
+- **Zero-Config Infrastructure:** Automated environment setup via Docker, including auto-initialization of databases with specialized configurations (UTF8 & Snapshot Isolation).
+- **Hybrid Storage & Cloud Sync:** Files are served locally via Nginx (CDN) for maximum speed but are automatically synchronized to Google Drive for disaster recovery.
+- **Automated Resilience (DRP):** Integrated background worker that performs scheduled Full Backups and immediate cloud uploads.
 - **Soft Delete Sync:** Support for cloud file removal via temporary markers.
+- **Reactive UI:** Built with **Angular Signals**, providing a fluid and high-performance user experience with granular state management.
 - **Type-Safe Globalization:** Automated synchronization between SQL Server labels and TypeScript Union Types to eliminate magic strings.
 - **Lazy-Loaded Architecture:** Highly optimized bundle sizes with specific chunking for Material components and feature modules.
-- **Clean Architecture Principles:** Strict separation of concerns between Domain, Infrastructure, and Presentation layers.
-- **Robust Role-Based Security:** Fully integrated Keycloak-Angular implementation with functional providers and granular UI visibility through custom directives and computed signals.
+- **Clean Architecture:** Strict separation of concerns (Domain, Application, Infrastructure, and Presentation) ensuring a maintainable and scalable codebase.
+- **Robust Security (IAM):** Granular Role-Based Access Control (RBAC) managed by Keycloak, protecting every API endpoint and UI component.
+- **Smart Audit System:** EF Core interceptors for automated management of `CreatedAt` and `UpdatedAt` timestamps across all entities.

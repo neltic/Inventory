@@ -11,7 +11,15 @@ GO
 IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'StockDb')
 BEGIN
 
-    CREATE DATABASE StockDb;
+    CREATE DATABASE [StockDb];
+	
+END
+GO
+
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'StockDev')
+BEGIN
+
+    CREATE DATABASE [StockDev];
 	
 END
 GO
