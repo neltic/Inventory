@@ -169,6 +169,8 @@ public static class DependencyConfiguration
 
     public static async Task CreateDummyDataAsync(this IServiceProvider appServices)
     {
+        var createDummyData = appServices.GetRequiredService<IConfiguration>().GetValue<bool>("Dummy:CreateWhenEmpty");
+        if(!createDummyData) return;
         try
         {
             using var scope = appServices.CreateScope();

@@ -4,6 +4,7 @@
 **/.vs/
 **/.user
 **/appsettings.Development.json
+**/appsettings.Production.json
 **/*.db
 **/*.db-journal
 *.slnx.user
@@ -27,3 +28,9 @@ Thumbs.db
 front/static/img/item/
 front/static/img/box/
 front/static/temp/
+
+# --- SQL ---
+infra/sql/data/*
+!infra/sql/data/.gitkeep
+infra/sql/backup/*
+!infra/sql/backup/.gitkeep

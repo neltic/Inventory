@@ -1,7 +1,35 @@
 services:
 
+  stock-db:
+    image: storage/stock-db:1.0
+    build:
+      context: .
+      dockerfile: ./infra/sql/Dockerfile
+    container_name: stock-db
+    environment:
+      - ACCEPT_EULA=Y      
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
+      - MSSQL_PID=Developer
+      - MSSQL_COLLATION=Latin1_General_100_CI_AS_SC_UTF8
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./infra/sql/data:/var/opt/mssql/data
+      - ./infra/sql/backups:/var/opt/mssql/backups
+      - "${STATIC_STORAGE_PATH}/temp:/var/opt/mssql/temp"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${DB_PASSWORD}", "-Q", "SELECT 1", "-C"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
   stock-cache:
-    image: redis:latest
+    image: storage/stock-cache:1.0
+    build:
+      context: .
+      dockerfile: ./infra/cache/Dockerfile
     container_name: stock-cache
     ports:
       - "6379:6379"
@@ -15,7 +43,10 @@ services:
       - app-network
       
   stock-cache-insight:
-    image: redis/redisinsight:latest
+    image: storage/stock-cache-insight:1.0
+    build:
+      context: .
+      dockerfile: ./infra/cache-insight/Dockerfile
     container_name: stock-cache-insight
     ports:
       - "5540:5540"
@@ -34,8 +65,11 @@ services:
     networks:
       - app-network
       
-  stock-cdn:
-    image: nginx:alpine
+  stock-cdn:    
+    image: storage/stock-cdn:1.0
+    build:
+      context: .
+      dockerfile: ./infra/cdn/Dockerfile
     container_name: stock-cdn
     ports:
       - "80:80" 
@@ -46,18 +80,22 @@ services:
       - app-network
       
   stock-cleaner:
-    image: python:3.11-alpine
+    image: storage/stock-cleaner:1.0
+    build:
+      context: .
+      dockerfile: ./infra/cleaner/Dockerfile
     container_name: stock-cleaner
     volumes:      
       - "${STATIC_STORAGE_PATH}/temp:/temp_files:rw"
-      - "./infra/cleaner/task.py:/task.py:ro"
-    command: python -u /task.py
     restart: always
     networks:
       - app-network
       
   stock-auth:
-    image: quay.io/keycloak/keycloak:latest
+    image: storage/stock-auth:1.0
+    build:
+      context: .
+      dockerfile: ./infra/auth/Dockerfile
     container_name: stock-auth
     environment:
       - KC_HEALTH_ENABLED=true    
@@ -66,16 +104,11 @@ services:
       - KC_HOSTNAME_STRICT=false
       - KC_HTTP_ENABLED=true      
       - KC_DB=mssql
-      - KC_DB_URL=jdbc:sqlserver://host.docker.internal:1433;databaseName=KeycloakDB;encrypt=false;trustServerCertificate=true
-      - KC_DB_USERNAME=${KC_DB_USERNAME}
-      - KC_DB_PASSWORD=${KC_DB_PASSWORD}
+      - KC_DB_URL=jdbc:sqlserver://stock-db:1433;databaseName=KeycloakDb;encrypt=false;trustServerCertificate=true
+      - KC_DB_USERNAME=${DB_USERNAME}
+      - KC_DB_PASSWORD=${DB_PASSWORD}
     ports:
-      - "8080:8080"
-    volumes:      
-      - ./infra/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-    command:
-      - start-dev 
-      - --import-realm
+      - "8080:8080"    
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
@@ -83,15 +116,19 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 40s    
+      start_period: 40s
+    depends_on:
+      stock-db:
+        condition: service_healthy
     networks:
       - app-network
 
   stock-back:
-    container_name: stock-back
+    image: storage/stock-back:1.0
     build:
       context: ./back
       dockerfile: Stock.Api/Dockerfile
+    container_name: stock-back
     ports:
       - "5000:8080"
     environment:
@@ -112,6 +149,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
+      stock-db:
+        condition: service_healthy 
       stock-auth:
         condition: service_healthy
       stock-cache:
@@ -128,13 +167,16 @@ services:
       - app-network
       
   stock-front:
-    container_name: stock-front
+    image: storage/stock-front:1.0
     build:
       context: ./front/app
       dockerfile: Dockerfile
+    container_name: stock-front    
     ports:
       - "4200:80"
     depends_on:
+      stock-db:
+        condition: service_healthy
       stock-auth:
         condition: service_healthy
       stock-back:
@@ -147,10 +189,11 @@ services:
       - app-network  
 
   stock-worker:
-    container_name: stock-worker
+    image: storage/stock-worker:1.0
     build:
       context: ./back
       dockerfile: Stock.Worker/Dockerfile
+    container_name: stock-worker
     restart: always
     environment:
       - DOTNET_ENVIRONMENT=Development
@@ -163,10 +206,14 @@ services:
       - GOOGLE_REFRESH_TOKEN=${GOOGLE_REFRESH_TOKEN}
       - WORKER_USER_ID=${WORKER_USER_ID}
       - WORKER_APP_NAME=${WORKER_APP_NAME}
+      - WORKER_BACKUP_RUN_AT_STARTUP=${WORKER_BACKUP_RUN_AT_STARTUP}
+      - WORKER_BACKUP_RUN_AFTER_MINUTES=${WORKER_BACKUP_RUN_AFTER_MINUTES}
     volumes:      
       - "${STATIC_STORAGE_PATH}:/app/storage:rw"
     depends_on:
       stock-back:
+        condition: service_healthy
+      stock-db:
         condition: service_healthy
     networks:
       - app-network

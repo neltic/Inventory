@@ -114,6 +114,11 @@ public class LocalFileService(LocalFileOptions options) : ILocalFileService
         if (File.Exists(fullPath)) File.Delete(fullPath);
     }
 
+    public TimeSpan GetDelay()
+    {
+        return options.RunAtStartup ? TimeSpan.Zero : TimeSpan.FromMinutes(options.RunAfterMinutes);
+    }
+
     private static void CheckDirectory(string path)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);

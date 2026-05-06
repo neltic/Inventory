@@ -1,5 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
-USER $APP_UID
+
+USER root
+
+RUN usermod -a -G root app
+
+USER app
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build

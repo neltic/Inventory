@@ -31,4 +31,6 @@ public interface ILocalFileService
     string FormatPath(string[] parts);
 
     void DeleteFile(string fullPath);
+
+    TimeSpan GetDelay();
 }

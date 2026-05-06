@@ -22,7 +22,9 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton(new LocalFileOptions
         {
-            StoragePath = Environment.GetEnvironmentVariable("STATIC_STORAGE_PATH") ?? ""
+            StoragePath = Environment.GetEnvironmentVariable("STATIC_STORAGE_PATH") ?? "",
+            RunAtStartup = Environment.GetEnvironmentVariable("WORKER_BACKUP_RUN_AT_STARTUP")?.ToLower() == "true",
+            RunAfterMinutes = int.TryParse(Environment.GetEnvironmentVariable("WORKER_BACKUP_RUN_AFTER_MINUTES"), out var minutes) ? minutes : 60
         });
 
         services.AddSingleton<ILocalFileService, LocalFileService>();

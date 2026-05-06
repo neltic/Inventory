@@ -48,10 +48,8 @@ var app = builder.Build();
 // Run database update on startup
 app.Services.RunDataBaseUpdate();
 
-#if DEBUG
-// Dummy Data
+// Dummy Data (Only if create dummy data is enabled in appsettings)
 await app.Services.CreateDummyDataAsync();
-#endif
 
 // Initialize cache on startup
 await app.Services.InitializeCacheAsync();

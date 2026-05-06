@@ -42,7 +42,7 @@ public partial class CloudBackupWorker(
         watcher.Created += (s, e) => _ = Task.Run(() => ProcessFile(e.FullPath, e.Name));
         watcher.Changed += (s, e) => _ = Task.Run(() => ProcessFile(e.FullPath, e.Name));
 
-        _ = Task.Run(() => SyncLocalToCloud(stoppingToken), stoppingToken);
+        _ = Task.Run(async () => SyncLocalToCloud(stoppingToken), stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -95,6 +95,9 @@ public partial class CloudBackupWorker(
     {
         try
         {
+            TimeSpan delay = localFileService.GetDelay();
+            await Task.Delay(delay, ct);
+
             LogInitialSyncStart(logger);
 
             var files = localFileService.GetFiles();
