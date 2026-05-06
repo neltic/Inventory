@@ -32,5 +32,5 @@ front/static/temp/
 # --- SQL ---
 infra/sql/data/*
 !infra/sql/data/.gitkeep
-infra/sql/backup/*
-!infra/sql/backup/.gitkeep
+infra/sql/backups/*
+!infra/sql/backups/.gitkeep
