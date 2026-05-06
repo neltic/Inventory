@@ -25,12 +25,17 @@
 Thumbs.db
 
 # --- Local images ---
-front/static/img/item/
-front/static/img/box/
-front/static/temp/
+infra/cdn/static/img/item/*
+infra/cdn/static/img/box/*
+infra/cdn/static/temp/*
+
+!infra/cdn/static/img/item/0.png
+!infra/cdn/static/img/box/0.png
+!infra/cdn/static/temp/.gitkeep
 
 # --- SQL ---
 infra/sql/data/*
-!infra/sql/data/.gitkeep
 infra/sql/backups/*
+
+!infra/sql/data/.gitkeep
 !infra/sql/backups/.gitkeep

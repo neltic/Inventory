@@ -61,11 +61,11 @@ Configure the `.env` file in the root directory. This file acts as the bridge be
 
 ```env
 DB_USERNAME=YourUser
-DB_PASSWORD=YourPassword123!
-DB_CONNECTION=Server=stock-db,1433;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;
-DB_BACKUP_CONNECTION=Server=localhost;Database=StockDb;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;
+DB_PASSWORD=YourSecurePassword
+DB_CONNECTION="Server=stock-db,1433;Database=StockDb;User Id=${DB_USERNAME};Password=${DB_PASSWORD};TrustServerCertificate=True;"
+DB_BACKUP_CONNECTION="Server=localhost;Database=StockDb;User Id=${DB_USERNAME};Password=${DB_PASSWORD};TrustServerCertificate=True;"
 DB_BACKUP_PATH=/var/opt/mssql/temp
-STATIC_STORAGE_PATH=/host_mnt/c/your/path/Storage/front/static
+STATIC_STORAGE_PATH=/host_mnt/c/your/path/Storage/infra/cdn/static
 GOOGLE_DRIVE_FOLDER_ID=YourGoogleDriveFolderId
 GOOGLE_CLIENT_ID=YourGoogleDriveClientId
 GOOGLE_CLIENT_SECRET=YourGoogleDriveSecret
