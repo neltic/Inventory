@@ -11,7 +11,15 @@ Technical guide for the Inventory Control Application
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 🎯 Overview
-Inventory App is a comprehensive stock control system designed under **Clean Architecture** principles. It doesn't just manage physical inventory; it ensures data integrity and availability through a coordinated micro-services architecture for temporary file cleanup and automated cloud backups.
+**Inventory App** is a high-performance Asset Management Platform built on **Clean Architecture** and **Microservices-driven** principles. 
+
+Unlike traditional inventory systems, this platform provides a **Zero-Configuration ecosystem** that ensures data persistence and disaster recovery through a sophisticated orchestration of background workers, cloud synchronization, and containerized infrastructure.
+
+### Key Value Propositions
+- **Native Data Integrity:** Engineered with a native **UTF-8 SQL engine** to handle globalized data without character loss.
+- **Resilient by Design:** Features an automated **Disaster Recovery Plan (DRP)** that synchronizes both physical files and database backups to the cloud (Google Drive) in real-time.
+- **Developer-Centric:** Designed for rapid deployment with a **Zero-Manual-Setup** approach, where the entire database and security layer (Keycloak) initialize automatically.
+- **Optimized Performance:** Implements a multi-level cache strategy (Redis + CDN) and a reactive frontend (Angular Signals) for sub-second response times.
 
 
 ## 🧭 Content
@@ -20,7 +28,7 @@ Inventory App is a comprehensive stock control system designed under **Clean Arc
 - [⚙️ Setup & Configuration](#️-setup--configuration)
 - [🐳 Container Infrastructure](#-container-infrastructure)
 - [🛡️ Resilience Strategy (DRP)](#️-resilience-strategy-drp)
-- [🛠️ Start & Migrations](#️-start--migrations)
+- [🛠️ Migrations](#️-migrations)
 - [🌍 Globalization](#-globalization)
 - [🔐 Security](#-security)
 - [📝 Key Features](#-key-features)
@@ -74,32 +82,39 @@ This ensures your private configuration and connection strings are decoupled fro
 The system is designed for **Zero-Configuration Deployment**. When you start the containers for the first time, the SQL Server instance automatically initializes the required databases using the internal setup scripts.
 
 #### **Automatic Initialization**
-The infrastructure guarantees the creation of the following tables:
+The infrastructure guarantees the creation of the following databases:
 *   **StockDb** 
 *   **KeycloakDb:** Created with `READ_COMMITTED_SNAPSHOT ON` to support Keycloak's high-concurrency requirements.
 
 #### **Manual Inspection (Optional)**
 If you need to verify the state of the databases or perform manual maintenance, you can connect to the instance using any SQL client (like SSMS or Azure Data Studio) with the credentials defined in your `.env` file:
 
-*   **Server:** `localhost,1433`
+*   **Server:** `localhost:1433`
 *   **Authentication:** SQL Server Authentication
 *   **Database:** `StockDb` / `KeycloakDb`
 
 ### 4. Users (Keycloak)
 When the container is created, it reads the file `infra\auth\realm-export.json`, which contains the configuration for creating the realm, roles, and users needed to get started.
 
+### 5. Execution Scripts
+The `/setup/` folder contains PowerShell scripts to streamline the environment for example:
+- `.\setup\start-all.ps1`: Starts the entire ecosystem.
+- `.\setup\start-cdn.ps1`: Only starts the image server (useful for local API debugging).
+- `.\setup\start-quick-commands.ps1`: injects custom functions into your PowerShell Profile to simplify the Git workflow.
+
+
 ## 🐳 Container Infrastructure
 The system orchestrates 6 specialized services:
 
 | Container | Function | Access |
 | :--- | :--- | :--- |
-| **stock-db** | SQL Server 2022 (Linux) w/ UTF8 Collation | Port 1433 |
+| **stock-db** | SQL Server 2022 (Linux) w/ UTF8 Collation | Port `1433` |
 | **stock-back** | Main API (ASP.NET Core) | `http://localhost:5000` |
 | **stock-front** | Web Application (Angular) | `http://localhost:4200` |
 | **stock-worker** | Background Service (Backups & Cloud Sync) | Logs via Docker |
 | **stock-cdn** | Image Server (Nginx) | `http://localhost/cdn/` |
 | **stock-cleaner** | `/temp` folder cleanup (Python) | Automated |
-| **stock-cache** | Fast persistence engine (Redis) | Port 6379 |
+| **stock-cache** | Fast persistence engine (Redis) | Port `6379` |
 
 > [!TIP]
 > **Port Conflicts:** If you have a local IIS service running on port 80, you must stop it (`iisreset /stop`) before starting the containers to avoid conflicts with the **stock-cdn**.
@@ -118,14 +133,7 @@ Every **12 hours**, the Worker instructs SQL Server to generate a Full Backup (`
 - **Self-Healing:** On startup, the Worker verifies the last existing backup to decide whether to execute a new one, avoiding unnecessary duplication.
 
 
-## 🛠️ Start & Migrations
-
-### Execution Scripts
-The `/setup/` folder contains PowerShell scripts to streamline the environment for example:
-- `.\setup\start-all.ps1`: Starts the entire ecosystem.
-- `.\setup\start-cdn.ps1`: Only starts the image server (useful for local API debugging).
-- `.\setup\start-quick-commands.ps1`: injects custom functions into your PowerShell Profile to simplify the Git workflow.
-
+## 🛠️ Migrations
 
 ### Database Schema Evolution
 The project follows a Code-First approach. The following migrations establish the core structure, stored procedures (SPs), and seed data:
