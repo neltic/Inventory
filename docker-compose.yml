@@ -212,10 +212,12 @@ services:
     volumes:      
       - "${STATIC_STORAGE_PATH}:/app/storage:rw"
     depends_on:
-      stock-back:
-        condition: service_healthy
       stock-db:
+        condition: service_healthy 
+      stock-auth:
         condition: service_healthy
+      stock-back:
+        condition: service_healthy      
     networks:
       - app-network
 

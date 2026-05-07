@@ -11,12 +11,26 @@ public class ProcessedFileService : IProcessedFileService
     public bool ShouldProcess(string fullPath, int waitTimeMs)
     {
         var now = DateTime.UtcNow;
-        if (_processedFiles.TryGetValue(fullPath, out var lastProcessed))
-        {
-            if ((now - lastProcessed).TotalSeconds < (waitTimeMs / 1000.0)) return false;
-        }
-        _processedFiles[fullPath] = now;
-        return true;
+        bool shouldProcess = false;
+
+        _processedFiles.AddOrUpdate(
+            fullPath,            
+            (key) => {
+                shouldProcess = true;
+                return now;
+            },            
+            (key, lastProcessed) => {
+                if ((now - lastProcessed).TotalMilliseconds >= waitTimeMs)
+                {
+                    shouldProcess = true;
+                    return now;
+                }
+                shouldProcess = false;
+                return lastProcessed;
+            }
+        );
+
+        return shouldProcess;
     }
 
     public int CleanupProcessedFiles()

@@ -104,7 +104,7 @@ The `/setup/` folder contains PowerShell scripts to streamline the environment f
 
 
 ## 🐳 Container Infrastructure
-The system orchestrates 6 specialized services:
+The system orchestrates 7 specialized services:
 
 | Container | Function | Access |
 | :--- | :--- | :--- |

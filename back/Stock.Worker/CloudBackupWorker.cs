@@ -205,7 +205,6 @@ public partial class CloudBackupWorker(
         }
     }
 
-
     private async Task HandleSyncFromTemp(string fullPath, string syncFileName)
     {
         if (!File.Exists(fullPath)) return;

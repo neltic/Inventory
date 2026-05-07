@@ -6,11 +6,8 @@ using Stock.Domain.Entities.Views;
 
 namespace Stock.Infrastructure.Persistence;
 
-public partial class StockDbContext : DbContext
+public partial class StockDbContext(DbContextOptions<StockDbContext> options) : DbContext(options)
 {
-    public StockDbContext(DbContextOptions<StockDbContext> options)
-        : base(options) { }
-
     public virtual DbSet<Box> Boxes { get; set; }
 
     public virtual DbSet<Item> Items { get; set; }
