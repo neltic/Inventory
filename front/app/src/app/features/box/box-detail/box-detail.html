@@ -7,7 +7,7 @@
 
         <div class="image-container">
             <img mat-card-image
-                 [src]="box.boxId | asPhoto:'box':box.updatedAt"
+                 [src]="box.boxId | asPhoto:'box':box.imageAt"
                  alt="{{ box.name }}"
                  appImgFallback
                  class="image-container-photo always-visible"
@@ -39,24 +39,6 @@
                     x
                     <strong>{{ box.depth }}</strong>cm
                     = <strong>{{ box.volume }}</strong>cm³ <span translate="Box.VOLUME_FORMULA"></span>
-                </span>
-            </p>
-            <p>
-                <mat-icon>event</mat-icon>
-                <span
-                      [matTooltip]="(box.createdAt | date:'full')!"
-                      matTooltipPosition="above">
-                    <span translate="Global.CREATED"></span>
-                    {{ box.createdAt | relativeTime }}
-                </span>
-            </p>
-            <p>
-                <mat-icon>access_time</mat-icon>
-                <span
-                      [matTooltip]="(box.updatedAt | date:'full')!"
-                      matTooltipPosition="above">
-                    <span translate="Global.UPDATED"></span>
-                    {{ box.updatedAt | relativeTime }}
                 </span>
             </p>
         </mat-card-content>

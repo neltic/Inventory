@@ -117,8 +117,8 @@ public interface IBoxService
     /// Usually called after assigning images or modifying internal storage to keep the metadata current.
     /// </remarks>
     /// <param name="boxId">The ID of the box to update.</param>
-    /// <returns>The updated <see cref="DateTime"/> value.</returns>
-    Task<DateTime> ChangeImageAtAsync(int boxId);
+    /// <returns>The updated <see cref="DateTimeOffset"/> value.</returns>
+    Task<DateTimeOffset> ChangeImageAtAsync(int boxId);
 
     /// <summary>
     /// Retrieves a new box template or the first available empty box under a parent.

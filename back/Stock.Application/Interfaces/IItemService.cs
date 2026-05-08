@@ -77,6 +77,6 @@ public interface IItemService
     /// Used to track changes when related entities (like images) are updated without modifying the main item record.
     /// </remarks>
     /// <param name="itemId">The ID of the item to update.</param>
-    /// <returns>The updated <see cref="DateTime"/> value.</returns>
-    Task<DateTime> ChangeImageAtAsync(int itemId);
+    /// <returns>The updated <see cref="DateTimeOffset"/> value.</returns>
+    Task<DateTimeOffset> ChangeImageAtAsync(int itemId);
 }

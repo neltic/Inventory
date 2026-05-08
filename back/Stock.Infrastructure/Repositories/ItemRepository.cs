@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Stock.Application.Common;
+using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities;
 using Stock.Domain.Entities.Views;
 using Stock.Domain.Interfaces;
 using Stock.Infrastructure.Persistence;
+using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Repositories;
 
-public class ItemRepository(StockDbContext context) : IItemRepository
+public class ItemRepository(StockDbContext context, IAuditFactory auditFactory) : IItemRepository
 {
     /// <inheritdoc />
     public async Task<Item?> FindAsync(int itemId) =>
@@ -76,13 +79,33 @@ public class ItemRepository(StockDbContext context) : IItemRepository
     }
 
     /// <inheritdoc />
-    public async Task<DateTime> ChangeImageAtAsync(int itemId)
+    public async Task<DateTimeOffset> ChangeImageAtAsync(int itemId)
     {
-        var now = DateTime.UtcNow;
+        var item = await context.Items
+           .Select(i => new { i.ItemId, i.ImageAt })
+           .FirstOrDefaultAsync(i => i.ItemId == itemId);
+
+        var now = DateTimeOffset.UtcNow;
+
+        if (item == null) return now;
 
         await context.Items
             .Where(b => b.ItemId == itemId)
             .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.ImageAt, now));
+
+        var auditRequest = new AuditRequest
+        {
+            EntityId = Entity.Item,
+            EventId = Event.UpdateImage,
+            RecordId = itemId.ToString(),
+            OldValues = new Dictionary<string, object?> { ["ImageAt"] = item.ImageAt },
+            NewValues = new Dictionary<string, object?> { ["ImageAt"] = now }
+        };
+
+        var auditEntity = auditFactory.Create(auditRequest);
+        context.Audits.Add(auditEntity);
+
+        await context.SaveChangesAsync();
 
         return now;
     }

@@ -13,7 +13,7 @@
     </mat-card-header>
 
     <img mat-card-image
-         [src]="box().boxId | asPhoto:'box':box().updatedAt:'thumbnails'"
+         [src]="box().boxId | asPhoto:'box':box().imageAt:'thumbnails'"
          alt="Exterior photo of {{ box().name }}"
          [style.borderBottomColor]="brand()?.background"
          appImgFallback

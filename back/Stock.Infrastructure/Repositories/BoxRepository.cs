@@ -10,7 +10,7 @@ using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Repositories;
 
-public class BoxRepository(StockDbContext context, IAuditFactory auditService) : IBoxRepository
+public class BoxRepository(StockDbContext context, IAuditFactory auditFactory) : IBoxRepository
 {
     /// <inheritdoc />
     public async Task<Box?> FindAsync(int boxId)
@@ -129,7 +129,7 @@ public class BoxRepository(StockDbContext context, IAuditFactory auditService) :
                     NewValues = new Dictionary<string, object?> { ["ParentBoxId"] = newParentBoxId }
                 };
                 
-                var auditEntity = auditService.Create(auditRequest);
+                var auditEntity = auditFactory.Create(auditRequest);
                 context.Audits.Add(auditEntity);
 
                 await context.SaveChangesAsync();
@@ -170,13 +170,33 @@ public class BoxRepository(StockDbContext context, IAuditFactory auditService) :
     }
 
     /// <inheritdoc />
-    public async Task<DateTime> ChangeImageAtAsync(int boxId)
+    public async Task<DateTimeOffset> ChangeImageAtAsync(int boxId)
     {
-        var now = DateTime.UtcNow;
+        var box = await context.Boxes
+            .Select(b => new { b.BoxId, b.ImageAt })
+            .FirstOrDefaultAsync(b => b.BoxId == boxId);
+
+        var now = DateTimeOffset.UtcNow;
+
+        if (box == null) return now;
 
         await context.Boxes
             .Where(b => b.BoxId == boxId)
             .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.ImageAt, now));
+
+        var auditRequest = new AuditRequest
+        {
+            EntityId = Entity.Box,
+            EventId = Event.UpdateImage,
+            RecordId = boxId.ToString(),
+            OldValues = new Dictionary<string, object?> { ["ImageAt"] = box.ImageAt },
+            NewValues = new Dictionary<string, object?> { ["ImageAt"] = now }
+        };
+
+        var auditEntity = auditFactory.Create(auditRequest);
+        context.Audits.Add(auditEntity);
+
+        await context.SaveChangesAsync();
 
         return now;
     }

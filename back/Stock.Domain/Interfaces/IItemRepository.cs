@@ -86,6 +86,6 @@ public interface IItemRepository
     /// Directly updates the 'ImageAt' timestamp for a specific item record in the database.
     /// </summary>
     /// <param name="itemId">The ID of the item to update.</param>
-    /// <returns>The new <see cref="DateTime"/> value persisted to the database.</returns>
-    Task<DateTime> ChangeImageAtAsync(int itemId);
+    /// <returns>The new <see cref="DateTimeOffset"/> value persisted to the database.</returns>
+    Task<DateTimeOffset> ChangeImageAtAsync(int itemId);
 }

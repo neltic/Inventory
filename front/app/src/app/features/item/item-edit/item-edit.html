@@ -23,7 +23,7 @@
             <div class="image-container-loader"></div>
             }
             <img mat-card-image
-                 [src]="item.itemId | asPhoto:'item':item.updatedAt"
+                 [src]="item.itemId | asPhoto:'item':item.imageAt"
                  [class.image-container-loaded]="!isUploadingImage()"
                  (load)="onImageLoad()"
                  (error)="onImageLoad()"
@@ -68,16 +68,10 @@
                 <mat-error [translateError]="errorMessages['notes']()"></mat-error>
                 }
             </mat-form-field>
-
-            <p>
-                <mat-icon>access_time</mat-icon>
-                <span><span translate="Global.UPDATED"></span> {{ item.updatedAt | relativeTime }}</span>
-            </p>
-
         </mat-card-content>
 
         <mat-card-actions align="end">
-            <button type="button" matButton (click)="onSubmit()" [disabled]="isBusy()">
+            <button type="button" matButton (click)="onSubmit()" [disabled]="!canSave()">
                 @if (isSaving() || isUploadingImage()) {
                 <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
                 } @else {

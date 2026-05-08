@@ -18,7 +18,7 @@ public class ItemService(IItemRepository itemRepository) : IItemService
     /// <inheritdoc />
     public async Task<ItemDetailedDto?> GetEmptyItemAsync()
     {
-        return new ItemDetailedDto(0, string.Empty, string.Empty, 0, DateTime.Today);
+        return new ItemDetailedDto(0, string.Empty, string.Empty, 0, DateTimeOffset.UtcNow);
     }
 
     /// <inheritdoc />
@@ -82,7 +82,7 @@ public class ItemService(IItemRepository itemRepository) : IItemService
     }
 
     /// <inheritdoc />
-    public async Task<DateTime> ChangeImageAtAsync(int itemId)
+    public async Task<DateTimeOffset> ChangeImageAtAsync(int itemId)
     {
         return await itemRepository.ChangeImageAtAsync(itemId);
     }

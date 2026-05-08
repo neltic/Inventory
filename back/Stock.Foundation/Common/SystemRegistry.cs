@@ -22,5 +22,6 @@ public static class SystemRegistry
         Read = 4,
         Move = 5,
         Reorder = 6,
+        UpdateImage = 7
     }
 }

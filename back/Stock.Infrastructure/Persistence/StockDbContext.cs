@@ -10,7 +10,7 @@ using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Persistence;
 
-public partial class StockDbContext(DbContextOptions<StockDbContext> options, IAuditFactory auditService) : DbContext(options)
+public partial class StockDbContext(DbContextOptions<StockDbContext> options, IAuditFactory auditFactory) : DbContext(options)
 {
     public virtual DbSet<Box> Boxes { get; set; }
 
@@ -340,6 +340,9 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options, IA
     {
         var auditList = CaptureAudits();
 
+        if (!ChangeTracker.HasChanges() && auditList.Count == 0)
+            return 0;
+
         var result = await base.SaveChangesAsync(cancellationToken);
 
         await EnforceAuditTrail(auditList);
@@ -396,8 +399,15 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options, IA
                         }
                         break;
                 }
-            }            
-            auditPairs.Add((request, entry));
+            }
+
+            if (request.EventId == Event.Create ||
+                request.EventId == Event.Delete ||
+                request.OldValues.Count != 0 ||
+                request.NewValues.Count != 0)
+            {
+                auditPairs.Add((request, entry));
+            }
         }
         return auditPairs;
     }
@@ -417,7 +427,7 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options, IA
                 request.RecordId = currentId?.ToString() ?? "-";
 
                 if (request.EventId == Event.Create)
-                {                    
+                {
                     if (currentId is int || currentId is long)
                         request.NewValues[keyName] = currentId;
                     else
@@ -425,9 +435,9 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options, IA
                 }
             }
         }
-        
+
         var requests = auditPairs.Select(p => p.Request);
-        var auditEntities = auditService.Create(requests);
+        var auditEntities = auditFactory.Create(requests);
 
         Audits.AddRange(auditEntities);
         await base.SaveChangesAsync();

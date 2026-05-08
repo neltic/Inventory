@@ -75,7 +75,7 @@ public static class BoxMappingExtensions
                 Width = dto.Width,
                 Depth = dto.Depth,
                 Notes = dto.Notes,
-                ImageAt = dto.ImageAt
+                ImageAt = DateTimeOffset.UtcNow
             };
         }
         else
@@ -89,7 +89,6 @@ public static class BoxMappingExtensions
             box.Width = dto.Width;
             box.Depth = dto.Depth;
             box.Notes = dto.Notes;
-            box.ImageAt = dto.ImageAt;
             return box;
         }
     }

@@ -14,7 +14,7 @@
                     <mat-list-option [value]="box.boxId"
                                      togglePosition="after">
                         <span matListItemAvatar class="selection-list-image">
-                            <img [src]="box.boxId | asPhoto:'box':box.updatedAt:'icons'"
+                            <img [src]="box.boxId | asPhoto:'box':box.imageAt:'icons'"
                                  appImgFallback crossorigin>
                         </span>
                         <div matListItemTitle [style.margin-left.px]="box.indent * 32">
@@ -101,7 +101,7 @@
                         <mat-list-option [value]="item.itemId"
                                          togglePosition="after">
                             <span matListItemAvatar class="selection-list-image">
-                                <img [src]="item.itemId | asPhoto:'item':item.updatedAt:'icons'"
+                                <img [src]="item.itemId | asPhoto:'item':item.imageAt:'icons'"
                                      appImgFallback crossorigin>
                             </span>
                             <mat-icon matListItemIcon [style.color]="category?.color">{{ category?.icon }}</mat-icon>

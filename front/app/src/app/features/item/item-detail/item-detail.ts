@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +13,6 @@ import { HasRoleDirective } from '../../../shared/directives/has-role-directive'
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
 import { TranslateDirective } from "../../../shared/directives/translate-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
-import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
 
 @Component({
     selector: 'app-item-detail',
@@ -23,8 +21,6 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
         MatIcon,
         MatCardModule,
         MatButtonModule,
-        RelativeTimePipe,
-        DatePipe,
         MatTooltipModule,
         MatProgressSpinnerModule,
         ImgFallbackDirective,

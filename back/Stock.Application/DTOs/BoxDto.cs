@@ -13,7 +13,6 @@
 /// <param name="Width">The horizontal dimension (Width) of the box.</param>
 /// <param name="Depth">The front-to-back dimension (Depth) of the box.</param>
 /// <param name="Notes">Any additional information, remarks, or specific storage instructions.</param>
-/// <param name="ImageAt">The timestamp indicating when the box's image was last updated.</param>
 public record BoxDto(
     int BoxId,
     int? ParentBoxId,
@@ -23,6 +22,5 @@ public record BoxDto(
     decimal Height,
     decimal Width,
     decimal Depth,
-    string Notes,
-    DateTimeOffset ImageAt
+    string Notes
 );

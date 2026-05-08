@@ -23,7 +23,7 @@ public class BoxServiceTests
     public async Task CreateWhenNameIsDuplicateShouldThrowInvalidOperationException()
     {
         // Arrange
-        var dto = new BoxDto(0, 5, "Duplicate box", 1, 1, 10, 10, 10, "Notes", DateTime.UtcNow);
+        var dto = new BoxDto(0, 5, "Duplicate box", 1, 1, 10, 10, 10, "Notes");
 
         _boxRepositoryMock.Setup(r => r.ExistsAsync(dto.Name, dto.ParentBoxId))
             .ReturnsAsync(true);
@@ -42,7 +42,7 @@ public class BoxServiceTests
     public async Task CreateWhenDataIsValidShouldReturnNewId()
     {
         // Arrange
-        var dto = new BoxDto(0, null, "New Box", 1, 1, 5, 5, 5, "Ok", DateTime.UtcNow);
+        var dto = new BoxDto(0, null, "New Box", 1, 1, 5, 5, 5, "Ok");
         var expectedId = 99;
 
         _boxRepositoryMock.Setup(r => r.ExistsAsync(dto.Name, dto.ParentBoxId))

@@ -19,7 +19,7 @@ public static class ItemMappingExtensions
                 Name = dto.Name,
                 Notes = dto.Notes,
                 CategoryId = dto.CategoryId,
-                ImageAt = dto.ImageAt
+                ImageAt = DateTimeOffset.UtcNow
             };
         }
         else
@@ -28,7 +28,6 @@ public static class ItemMappingExtensions
             item.Name = dto.Name;
             item.Notes = dto.Notes;
             item.CategoryId = dto.CategoryId;
-            item.ImageAt = dto.ImageAt;
             return item;
         }
     }

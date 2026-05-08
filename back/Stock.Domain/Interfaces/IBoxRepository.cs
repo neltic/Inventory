@@ -160,7 +160,7 @@ public interface IBoxRepository
     /// Directly updates the 'ImageAt' timestamp for a specific box record.
     /// </summary>
     /// <param name="boxId">The ID of the box to update.</param>
-    /// <returns>The new <see cref="DateTime"/> value persisted to the database.</returns>
-    Task<DateTime> ChangeImageAtAsync(int boxId);
+    /// <returns>The new <see cref="DateTimeOffset"/> value persisted to the database.</returns>
+    Task<DateTimeOffset> ChangeImageAtAsync(int boxId);
 
 }
