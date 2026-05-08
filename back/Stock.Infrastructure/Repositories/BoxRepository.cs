@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Stock.Application.Common;
 using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities;
 using Stock.Domain.Entities.Views;
 using Stock.Domain.Interfaces;
 using Stock.Infrastructure.Persistence;
-using Stock.Infrastructure.Persistence.Common;
+using Stock.Infrastructure.Services;
 using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Repositories;
 
-public class BoxRepository(StockDbContext context, ICurrentUserService currentUserService) : IBoxRepository
+public class BoxRepository(StockDbContext context, IAuditFactory auditService) : IBoxRepository
 {
     /// <inheritdoc />
     public async Task<Box?> FindAsync(int boxId)
@@ -118,22 +119,19 @@ public class BoxRepository(StockDbContext context, ICurrentUserService currentUs
             );
 
             if (rows > 0)
-            {
-                var entry = context.Entry(box);
-                var auditEntry = new AuditEntry(entry)
+            {                
+                var auditRequest = new AuditRequest
                 {
                     EntityId = Entity.Box,
                     EventId = Event.Move,
                     RecordId = boxId.ToString(),
-                    By = currentUserService.Username,
-                    At = DateTimeOffset.UtcNow,
-                    UserSnapshot = currentUserService.GetInfo()
+                    OldValues = new Dictionary<string, object?> { ["ParentBoxId"] = box.ParentBoxId },
+                    NewValues = new Dictionary<string, object?> { ["ParentBoxId"] = newParentBoxId }
                 };
+                
+                var auditEntity = auditService.Create(auditRequest);
+                context.Audits.Add(auditEntity);
 
-                auditEntry.OldValues["ParentBoxId"] = box.ParentBoxId;
-                auditEntry.NewValues["ParentBoxId"] = newParentBoxId;
-
-                context.Audits.Add(auditEntry.ToAuditEntity());
                 await context.SaveChangesAsync();
             }
 

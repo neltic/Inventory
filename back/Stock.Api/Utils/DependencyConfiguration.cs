@@ -36,7 +36,7 @@ public static class DependencyConfiguration
 
             var types = assembly.GetTypes()
                 .Where(t => t.IsClass && !t.IsAbstract &&
-                           (t.Name.EndsWith("Service") || t.Name.EndsWith("Repository")));
+                           (t.Name.EndsWith("Service") || t.Name.EndsWith("Repository") || t.Name.EndsWith("Factory")));
 
             foreach (var type in types)
             {

@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Stock.Application.Common;
 using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities;
 using Stock.Domain.Interfaces;
 using Stock.Infrastructure.Persistence;
-using Stock.Infrastructure.Persistence.Common;
+using Stock.Infrastructure.Services;
 using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Repositories;
 
-public class CategoryRepository(StockDbContext context, ICurrentUserService currentUserService) : ICategoryRepository
+public class CategoryRepository(StockDbContext context, IAuditFactory auditService) : ICategoryRepository
 {
     /// <inheritdoc />
     public async Task<bool> ExistsAsync(int categoryId) =>
@@ -85,28 +86,25 @@ public class CategoryRepository(StockDbContext context, ICurrentUserService curr
         if (category == null) return false;
 
         using var transaction = await context.Database.BeginTransactionAsync();
-
         try
         {
             await context.Database.ExecuteSqlInterpolatedAsync(
                 $"EXEC [dbo].[ReorderCategory] @CategoryId = {categoryId}, @NewOrder = {newOrder}"
             );
 
-            var entry = context.Entry(category);
-            var auditEntry = new AuditEntry(entry)
+            var auditRequest = new AuditRequest
             {
                 EntityId = Entity.Category,
                 EventId = Event.Reorder,
                 RecordId = categoryId.ToString(),
-                By = currentUserService.Username,
-                At = DateTimeOffset.UtcNow,
-                UserSnapshot = currentUserService.GetInfo()
+                OldValues = new Dictionary<string, object?> { ["Order"] = category.Order },
+                NewValues = new Dictionary<string, object?> { ["Order"] = newOrder }
             };
 
-            auditEntry.OldValues["Order"] = category.Order;
-            auditEntry.NewValues["Order"] = newOrder;
+            // 4. Generación de la entidad Audit a través del servicio
+            var auditEntity = auditService.Create(auditRequest);
+            context.Audits.Add(auditEntity);
 
-            context.Audits.Add(auditEntry.ToAuditEntity());
             await context.SaveChangesAsync();
 
             await transaction.CommitAsync();

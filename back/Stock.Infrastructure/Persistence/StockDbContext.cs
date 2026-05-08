@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Stock.Application.Common;
 using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities;
 using Stock.Domain.Entities.Views;
-using Stock.Infrastructure.Persistence.Common;
+using Stock.Infrastructure.Services;
 using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Persistence;
 
-public partial class StockDbContext(DbContextOptions<StockDbContext> options, ICurrentUserService currentUserService) : DbContext(options)
+public partial class StockDbContext(DbContextOptions<StockDbContext> options, IAuditFactory auditService) : DbContext(options)
 {
     public virtual DbSet<Box> Boxes { get; set; }
 
@@ -336,31 +338,27 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options, IC
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var auditEntries = CaptureAuditEntries();
+        var auditList = CaptureAudits();
 
         var result = await base.SaveChangesAsync(cancellationToken);
 
-        await EnforceAuditTrail(auditEntries);
+        await EnforceAuditTrail(auditList);
 
         return result;
     }
 
-    private List<AuditEntry> CaptureAuditEntries()
+    private List<(AuditRequest Request, EntityEntry Entry)> CaptureAudits()
     {
-        var auditEntries = new List<AuditEntry>();
-        var userSnapshot = currentUserService.GetInfo();
+        var auditPairs = new List<(AuditRequest Request, EntityEntry Entry)>();
 
         foreach (var entry in ChangeTracker.Entries())
         {
             if (entry.Entity is Audit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                 continue;
 
-            var auditEntry = new AuditEntry(entry)
+            var request = new AuditRequest
             {
                 EntityId = Enum.Parse<Entity>(entry.Metadata.ClrType.Name),
-                By = userSnapshot.Username,
-                UserSnapshot = userSnapshot,
-                At = DateTimeOffset.UtcNow,
                 EventId = entry.State switch
                 {
                     EntityState.Added => Event.Create,
@@ -370,69 +368,68 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options, IC
                 }
             };
 
-            auditEntries.Add(auditEntry);
-
             foreach (var property in entry.Properties)
             {
                 if (property.IsTemporary) continue;
-
                 string propertyName = property.Metadata.Name;
 
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        auditEntry.NewValues[propertyName] = property.CurrentValue;
+                        request.NewValues[propertyName] = property.CurrentValue;
                         break;
-
                     case EntityState.Deleted:
-                        auditEntry.OldValues[propertyName] = property.OriginalValue;
+                        request.OldValues[propertyName] = property.OriginalValue;
                         break;
-
                     case EntityState.Modified:
-                        var original = property.OriginalValue;
-                        var current = property.CurrentValue;
-                        if (property.IsModified && Equals(original, current))
-                        {
-                            property.IsModified = false;
-                            continue;
-                        }
                         if (property.IsModified)
                         {
-                            auditEntry.OldValues[propertyName] = original;
-                            auditEntry.NewValues[propertyName] = current;
+                            var original = property.OriginalValue;
+                            var current = property.CurrentValue;
+                            if (Equals(original, current))
+                            {
+                                property.IsModified = false;
+                                continue;
+                            }
+                            request.OldValues[propertyName] = original;
+                            request.NewValues[propertyName] = current;
                         }
                         break;
                 }
-            }
+            }            
+            auditPairs.Add((request, entry));
         }
-        return auditEntries;
+        return auditPairs;
     }
 
-    private async Task EnforceAuditTrail(List<AuditEntry> auditEntries)
+    private async Task EnforceAuditTrail(List<(AuditRequest Request, EntityEntry Entry)> auditPairs)
     {
-        if (auditEntries == null || auditEntries.Count == 0) return;
+        if (auditPairs == null || auditPairs.Count == 0) return;
 
-        foreach (var auditEntry in auditEntries)
+        foreach (var (request, entry) in auditPairs)
         {
-            var primaryKey = auditEntry.Entry.Metadata.FindPrimaryKey();
+            var primaryKey = entry.Metadata.FindPrimaryKey();
             if (primaryKey != null)
             {
                 var keyName = primaryKey.Properties[0].Name;
-                var currentId = auditEntry.Entry.Property(keyName).CurrentValue;
+                var currentId = entry.Property(keyName).CurrentValue;
 
-                auditEntry.RecordId = currentId?.ToString() ?? "-";
+                request.RecordId = currentId?.ToString() ?? "-";
 
-                if (auditEntry.EventId == Event.Create)
-                {
+                if (request.EventId == Event.Create)
+                {                    
                     if (currentId is int || currentId is long)
-                        auditEntry.NewValues[keyName] = currentId;
+                        request.NewValues[keyName] = currentId;
                     else
-                        auditEntry.NewValues[keyName] = currentId?.ToString();
+                        request.NewValues[keyName] = currentId?.ToString();
                 }
             }
-            Audits.Add(auditEntry.ToAuditEntity());
         }
+        
+        var requests = auditPairs.Select(p => p.Request);
+        var auditEntities = auditService.Create(requests);
 
+        Audits.AddRange(auditEntities);
         await base.SaveChangesAsync();
     }
 
