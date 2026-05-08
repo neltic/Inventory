@@ -21,6 +21,9 @@ while True:
                     
                 if f.lower().startswith("sync_"):
                     continue
+                
+                if f.lower().startswith(".gitkeep"):
+                    continue
             
                 if os.stat(f_path).st_mtime < now - SECONDS_TO_EXPIRE:
                     os.remove(f_path)
