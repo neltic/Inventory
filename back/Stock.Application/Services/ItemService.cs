@@ -18,7 +18,7 @@ public class ItemService(IItemRepository itemRepository) : IItemService
     /// <inheritdoc />
     public async Task<ItemDetailedDto?> GetEmptyItemAsync()
     {
-        return new ItemDetailedDto(0, string.Empty, string.Empty, 0, DateTime.Today, DateTime.Today);
+        return new ItemDetailedDto(0, string.Empty, string.Empty, 0, DateTimeOffset.UtcNow);
     }
 
     /// <inheritdoc />
@@ -67,7 +67,9 @@ public class ItemService(IItemRepository itemRepository) : IItemService
             throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
         }
 
-        return await itemRepository.UpdateAsync(dto.ToEntity(itemId));
+        var current = await itemRepository.FindAsync(itemId);
+
+        return await itemRepository.UpdateAsync(dto.ToEntity(itemId, current));
     }
 
     /// <inheritdoc />
@@ -80,8 +82,8 @@ public class ItemService(IItemRepository itemRepository) : IItemService
     }
 
     /// <inheritdoc />
-    public async Task<DateTime> ChangeUpdatedAtAsync(int itemId)
+    public async Task<DateTimeOffset> ChangeImageAtAsync(int itemId)
     {
-        return await itemRepository.ChangeUpdatedAtAsync(itemId);
+        return await itemRepository.ChangeImageAtAsync(itemId);
     }
 }

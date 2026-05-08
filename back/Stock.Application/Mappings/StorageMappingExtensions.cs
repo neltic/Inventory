@@ -14,7 +14,7 @@ public static class StorageMappingExtensions
             i.BrandId,
             i.CategoryId,
             i.Quantity,
-            i.UpdatedAt,
+            i.ImageAt,
             i.Notes
             ));
     }
@@ -25,7 +25,7 @@ public static class StorageMappingExtensions
             i.BoxId,
             i.Name,
             i.BrandId,
-            i.UpdatedAt,
+            i.ImageAt,
             i.Quantity,
             i.Expires,
             i.ExpiresOn,

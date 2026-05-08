@@ -6,7 +6,7 @@ export interface IItemInBox {
     brandId: number;
     categoryId: number;
     quantity: number;
-    updatedAt?: string | Date;
+    imageAt?: string | Date;
     notes: string | null;
 }
 
@@ -14,7 +14,7 @@ export interface IItemStorage {
     boxId: number;
     name: string;
     brandId: number;
-    updatedAt?: string | Date;
+    imageAt?: string | Date;
     quantity: number;
     expires: boolean;
     expiresOn: string | Date;

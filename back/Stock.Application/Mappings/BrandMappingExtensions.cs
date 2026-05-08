@@ -27,15 +27,27 @@ public static class BrandMappingExtensions
         ));
     }
 
-    public static Brand ToEntity(this BrandDto dto, int BrandId)
+    public static Brand ToEntity(this BrandDto dto, int BrandId, Brand? brand = null)
     {
-        return new Brand
+        if (brand == null)
         {
-            BrandId = BrandId,
-            Name = dto.Name,
-            Color = dto.Color,
-            Background = dto.Background,
-            IncludedIn = dto.IncludedIn
-        };
+            return new Brand
+            {
+                BrandId = BrandId,
+                Name = dto.Name,
+                Color = dto.Color,
+                Background = dto.Background,
+                IncludedIn = dto.IncludedIn
+            };
+        }
+        else
+        {
+            brand.BrandId = BrandId;
+            brand.Name = dto.Name;
+            brand.Color = dto.Color;
+            brand.Background = dto.Background;
+            brand.IncludedIn = dto.IncludedIn;
+            return brand;
+        }
     }
 }

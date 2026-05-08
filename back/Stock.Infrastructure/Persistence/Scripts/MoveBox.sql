@@ -1,6 +1,6 @@
 ﻿CREATE OR ALTER PROCEDURE [dbo].[MoveBox]
     @BoxId INT
-    , @NewParentId INT = NULL
+    , @NewParentBoxId INT = NULL
 AS
 BEGIN
     
@@ -14,15 +14,15 @@ BEGIN
             ;THROW 50001, 'The original box does not exist.', 1;
         END
 
-        IF @BoxId = @NewParentId
+        IF @BoxId = @NewParentBoxId
         BEGIN
             ;THROW 50002, 'A box cannot be placed inside itself.', 1;
         END
         
-        IF @NewParentId IS NOT NULL
+        IF @NewParentBoxId IS NOT NULL
         BEGIN
             
-            IF NOT EXISTS (SELECT 1 FROM [dbo].[Box] WHERE [BoxId] = @NewParentId)
+            IF NOT EXISTS (SELECT 1 FROM [dbo].[Box] WHERE [BoxId] = @NewParentBoxId)
             BEGIN
                 ;THROW 50003, 'The destination box does not exist.', 1;
             END
@@ -38,7 +38,7 @@ BEGIN
             )
             SELECT @IsDescendant = 1 
             FROM [Descendants] 
-            WHERE [BoxId] = @NewParentId;
+            WHERE [BoxId] = @NewParentBoxId;
 
             IF @IsDescendant = 1
             BEGIN
@@ -49,8 +49,7 @@ BEGIN
         UPDATE 
             [dbo].[Box]
         SET 
-            [ParentBoxId] = @NewParentId
-            , [UpdatedAt] = GETUTCDATE()
+            [ParentBoxId] = @NewParentBoxId
         WHERE 
             [BoxId] = @BoxId;
 

@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +16,6 @@ import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
 import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { TranslateErrorDirective } from '../../../shared/directives/translate-error-directive';
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
-import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
 import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
 
@@ -36,7 +35,6 @@ import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
         ReactiveFormsModule,
         ɵInternalFormsSharedModule,
         ImgFallbackDirective,
-        RelativeTimePipe,
         BoxBreadcrumb,
         CategorySelect,
         BrandSelect,
@@ -87,6 +85,12 @@ export class BoxEdit extends BaseFormComponent implements OnInit {
         this.initComponent(['name', 'brandId', 'categoryId', 'width', 'height', 'depth', 'notes']);
     }
 
+    canSave = computed(() => {        
+        if (this.isBusy() || this.isUploadingImage()) return false;        
+        if (this.mainForm.invalid || this.mainForm.pristine) return false;
+        return true;
+    });
+
     onSubmit(): void {
         if (this.mainForm.invalid) {
             this.mainForm.markAllAsTouched();
@@ -115,6 +119,7 @@ export class BoxEdit extends BaseFormComponent implements OnInit {
                 next: () => {
                     this.openSnack('success', 'Global.OK', 'Message.BOX_SAVED');
                     this.mainForm.markAsPristine();
+                    this.mainForm.markAsUntouched();
                 },
                 error: (error) => this.handleError(error)
             });
@@ -139,12 +144,12 @@ export class BoxEdit extends BaseFormComponent implements OnInit {
             })
         ).subscribe({
             next: (response: any) => {
-                const newDate = response.updatedAt;
+                const newDate = response.imageAt;
                 const currentBox = this.boxResource.value();
                 if (currentBox) {
                     this.boxResource.set({
                         ...currentBox,
-                        updatedAt: newDate
+                        imageAt: newDate
                     });
                 }
                 this.openSnack('success', 'Global.OK', 'Message.IMAGE_UPDATED');

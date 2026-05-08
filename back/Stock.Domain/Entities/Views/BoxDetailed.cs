@@ -13,8 +13,7 @@ public record BoxDetailed(
     [property: Column(TypeName = "decimal(5, 2)")] decimal Depth,
     [property: Column(TypeName = "decimal(15, 2)")] decimal Volume,
     string Notes,
-    DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     string? FullPath,
     bool CanBeDeleted
 );

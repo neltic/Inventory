@@ -39,7 +39,7 @@ The system uses a logical hierarchy for stock control:
 - **Boxes:** Containers with support for infinite nesting (Box in Box).
 - **Items:** Global product definitions from the catalog.
 - **Storage:** The actual stock record, linking the triad: **Box + Item + Brand**.
-
+- **Auditing:** Centralized traceability system that tracks state changes (Old vs New values) and business-specific events without bloating domain tables.
 
 ## 🚀 Technologies & Tools
 - **Backend:** .NET 9.0 (C# 13), EF Core, SqlClient.
@@ -132,7 +132,6 @@ Every **12 hours**, the Worker instructs SQL Server to generate a Full Backup (`
 - **Cloud Resilience:** The Worker detects the new backup and uploads it immediately to the cloud.
 - **Self-Healing:** On startup, the Worker verifies the last existing backup to decide whether to execute a new one, avoiding unnecessary duplication.
 
-
 ## 🛠️ Migrations
 
 ### Database Schema Evolution
@@ -223,4 +222,4 @@ The system defines the following profiles to ensure users only access the data a
 - **Lazy-Loaded Architecture:** Highly optimized bundle sizes with specific chunking for Material components and feature modules.
 - **Clean Architecture:** Strict separation of concerns (Domain, Application, Infrastructure, and Presentation) ensuring a maintainable and scalable codebase.
 - **Robust Security (IAM):** Granular Role-Based Access Control (RBAC) managed by Keycloak, protecting every API endpoint and UI component.
-- **Smart Audit System:** EF Core interceptors for automated management of `CreatedAt` and `UpdatedAt` timestamps across all entities.
+- **Granular Audit System:** Centralized engine for automated state tracking and manual business event logging, decoupled from domain entities for maximum scalability.

@@ -7,7 +7,7 @@ BEGIN
        b.[BoxId]
        , b.[Name]
        , ISNULL(s.[BrandId], 0) AS [BrandId]
-       , b.[UpdatedAt]
+       , b.[ImageAt]
        , ISNULL(s.[Quantity], 0) AS [Quantity]
        , ISNULL(s.[Expires], 0) AS [Expires]
        , s.[ExpiresOn]

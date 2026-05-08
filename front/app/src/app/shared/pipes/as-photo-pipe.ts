@@ -9,15 +9,15 @@ export class AsPhotoPipe implements PipeTransform {
     transform(
         id: number,
         context: 'item' | 'box',
-        updatedAt?: string | Date,
+        imageAt?: string | Date,
         type: string = 'original'
     ): string {
 
         if (!id || id <= 0) return `/cdn/img/${context}/0.png`;
 
         let version = '';
-        if (updatedAt) {
-            version = `?v=${new Date(updatedAt).getTime()}`;
+        if (imageAt) {
+            version = `?v=${new Date(imageAt).getTime()}`;
         }
 
         return `/cdn/img/${context}/${type}/${id}.png${version}`;

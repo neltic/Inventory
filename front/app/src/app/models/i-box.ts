@@ -11,8 +11,7 @@ export interface IBox {
     depth: number;
     volume?: number;
     notes: string;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
+    imageAt?: string | Date;
     fullPath?: string;
     hasChildren?: boolean;
     hasItems?: boolean;
@@ -22,14 +21,14 @@ export interface IBox {
 export interface IBoxLookup {
     boxId: number;
     name: string;
-    updatedAt: string | Date;
+    imageAt: string | Date;
     indent: number;
 }
 
 export interface IBoxTransfer {
     boxId: number | null;
     name: string;
-    updatedAt: string | Date;
+    imageAt: string | Date;
     indent: number;
     isSelectable: boolean;
 }

@@ -10,7 +10,7 @@ BEGIN
         , b.[Name]
         , b.CategoryId
         , b.BrandId
-        , b.[UpdatedAt]
+        , b.[ImageAt]
         , CAST(CASE 
             WHEN EXISTS (SELECT 1 FROM [dbo].[Box] sub WHERE sub.[ParentBoxId] = b.[BoxId]) 
             THEN 1 

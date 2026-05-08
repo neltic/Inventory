@@ -22,7 +22,7 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
                 s.BrandId,
                 s.Item.CategoryId,
                 s.Quantity,
-                s.Item.UpdatedAt,
+                s.Item.ImageAt,
                 s.Notes
             ))
             .ToListAsync();
@@ -31,8 +31,16 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
     /// <inheritdoc />
     public async Task<bool> RemoveAsync(int boxId, int itemId, int brandId)
     {
-        var rows = await context.Database.ExecuteSqlInterpolatedAsync(
-                    $"EXEC [dbo].[RemoveItemFromBox] @BoxId = {boxId}, @ItemId = {itemId}, @BrandId = {brandId}");
+        var storage = await context.Storages
+            .FirstOrDefaultAsync(s => s.BoxId == boxId
+                                   && s.ItemId == itemId
+                                   && s.BrandId == brandId);
+
+        if (storage == null) return false;
+
+        context.Storages.Remove(storage);
+
+        var rows = await context.SaveChangesAsync();
 
         return rows > 0;
     }
@@ -54,13 +62,44 @@ public class StorageRepository(StockDbContext context) : IStorageRepository
                    .ToListAsync();
     }
 
-    /// <inheritdoc />
-    public async Task<bool> UpdateAsync(Storage storage)
+    /// <inheritdoc />    
+    public async Task<bool> SetStorageAsync(Storage storage)
     {
-        var rows = await context.Database.ExecuteSqlInterpolatedAsync(
-                $"[dbo].[AddOrEditStorage] @BoxId = {storage.BoxId}, @ItemId = {storage.ItemId}, @BrandId = {storage.BrandId}, @Quantity = {storage.Quantity}, @Expires = {storage.Expires}, @ExpiresOn = {(storage.Expires ? storage.ExpiresOn : null)}, @Notes = {storage.Notes}"
-                );
+        var existingStorage = await context.Storages
+            .FirstOrDefaultAsync(s => s.BoxId == storage.BoxId
+                                   && s.ItemId == storage.ItemId
+                                   && s.BrandId == storage.BrandId);
 
+        if (existingStorage != null)
+        {
+            if (storage.Quantity <= 0)
+            {
+                context.Storages.Remove(existingStorage);
+            }
+            else
+            {
+                existingStorage.Quantity = storage.Quantity;
+                existingStorage.Expires = storage.Expires;
+                existingStorage.ExpiresOn = storage.Expires ? storage.ExpiresOn : null;
+                existingStorage.Notes = storage.Notes;
+
+                context.Storages.Update(existingStorage);
+            }
+        }
+        else
+        {
+            if (storage.Quantity > 0)
+            {
+                storage.ExpiresOn = storage.Expires ? storage.ExpiresOn : null;
+                await context.Storages.AddAsync(storage);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        var rows = await context.SaveChangesAsync();
         return rows > 0;
     }
 }

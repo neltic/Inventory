@@ -5,9 +5,8 @@ export interface IItem {
     name: string;
     notes: string;
     categoryId: number;
-    hasStock?: number;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
+    hasStock?: number;    
+    imageAt?: string | Date;
 }
 
 export interface ItemForm {

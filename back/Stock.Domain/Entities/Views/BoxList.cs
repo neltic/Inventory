@@ -6,7 +6,7 @@ public record BoxList(
     string Name,
     int CategoryId,
     int BrandId,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     bool HasChildren,
     bool HasItems
 );

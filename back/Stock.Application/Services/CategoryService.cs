@@ -71,7 +71,9 @@ public class CategoryService(ICategoryRepository categoryRepository, ICacheServi
         var exists = await categoryRepository.ExistsAsync(dto.Name, dto.CategoryId);
         if (exists) throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
 
-        var result = await categoryRepository.UpdateAsync(dto.ToEntity(categoryId));
+        var current = await categoryRepository.GetByIdAsync(categoryId);
+
+        var result = await categoryRepository.UpdateAsync(dto.ToEntity(categoryId, current));
 
         if (result) await cache.RemoveAsync(GetCacheKeyItem(categoryId), CacheKeyList);
 

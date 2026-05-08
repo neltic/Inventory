@@ -22,6 +22,48 @@ namespace Stock.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Stock.Domain.Entities.Audit", b =>
+                {
+                    b.Property<long>("AuditId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AuditId"));
+
+                    b.Property<DateTimeOffset>("At")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("By")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("EntityId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("EventId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("RecordId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("AuditId");
+
+                    b.HasIndex("By", "At")
+                        .HasDatabaseName("IX_Audit_By_At");
+
+                    b.HasIndex("EntityId", "RecordId")
+                        .HasDatabaseName("IX_Audit_Entity_Record");
+
+                    b.ToTable("Audit");
+                });
+
             modelBuilder.Entity("Stock.Domain.Entities.Box", b =>
                 {
                     b.Property<int>("BoxId")
@@ -36,16 +78,14 @@ namespace Stock.Infrastructure.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Box_CreatedAt");
-
                     b.Property<decimal>("Depth")
                         .HasColumnType("decimal(5, 2)");
 
                     b.Property<decimal>("Height")
                         .HasColumnType("decimal(5, 2)");
+
+                    b.Property<DateTimeOffset>("ImageAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -59,11 +99,6 @@ namespace Stock.Infrastructure.Migrations
 
                     b.Property<int?>("ParentBoxId")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Box_UpdatedAt");
 
                     b.Property<decimal>("Volume")
                         .ValueGeneratedOnAddOrUpdate()
@@ -177,10 +212,8 @@ namespace Stock.Infrastructure.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Item_CreatedAt");
+                    b.Property<DateTimeOffset>("ImageAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -191,11 +224,6 @@ namespace Stock.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Item_UpdatedAt");
 
                     b.HasKey("ItemId");
 
@@ -275,11 +303,6 @@ namespace Stock.Infrastructure.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Storage_CreatedAt");
-
                     b.Property<bool>("Expires")
                         .HasColumnType("bit");
 
@@ -295,11 +318,6 @@ namespace Stock.Infrastructure.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Storage_UpdatedAt");
 
                     b.HasKey("StorageId");
 
@@ -325,11 +343,6 @@ namespace Stock.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TranslationId"));
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Translation_CreatedAt");
-
                     b.Property<int>("LabelId")
                         .HasColumnType("int");
 
@@ -341,11 +354,6 @@ namespace Stock.Infrastructure.Migrations
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()", "DF_Translation_UpdatedAt");
 
                     b.HasKey("TranslationId");
 
@@ -366,11 +374,11 @@ namespace Stock.Infrastructure.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("CanBeDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<decimal>("Depth")
                         .HasColumnType("decimal(5, 2)");
@@ -380,6 +388,9 @@ namespace Stock.Infrastructure.Migrations
 
                     b.Property<decimal>("Height")
                         .HasColumnType("decimal(5, 2)");
+
+                    b.Property<DateTimeOffset>("ImageAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -391,9 +402,6 @@ namespace Stock.Infrastructure.Migrations
 
                     b.Property<int?>("ParentBoxId")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<decimal>("Volume")
                         .HasColumnType("decimal(15, 2)");

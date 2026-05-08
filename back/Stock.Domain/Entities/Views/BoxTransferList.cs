@@ -3,7 +3,7 @@
 public record BoxTransferList(
     int? BoxId,
     string Name,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     int Indent,
     bool IsSelectable
 );

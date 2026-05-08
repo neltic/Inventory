@@ -25,7 +25,7 @@ BEGIN
             NULL AS [BoxId]
             , NULL AS [ParentBoxId]
             , '[root]' AS [Name]
-            , GETUTCDATE() AS [UpdatedAt]
+            , GETUTCDATE() AS [ImageAt]
             , CAST('00000' AS VARCHAR(MAX)) AS [SortPath]
             , 0 AS [Indent]
             , CAST(CASE 
@@ -40,7 +40,7 @@ BEGIN
             b.[BoxId]
             , b.[ParentBoxId]
             , b.[Name]
-            , b.[UpdatedAt]            
+            , b.[ImageAt]            
             , CAST('1.' + RIGHT('00000' + CAST(ROW_NUMBER() OVER (ORDER BY b.[Name]) AS VARCHAR(10)), 5) AS VARCHAR(MAX))
             , 0 AS [Indent]
             , CAST(CASE WHEN b.[BoxId] <> ISNULL(@CurrentParentId, -1) THEN 1 ELSE 0 END AS BIT)
@@ -56,7 +56,7 @@ BEGIN
             b.[BoxId]
             , b.[ParentBoxId]
             , b.[Name]
-            , b.[UpdatedAt]            
+            , b.[ImageAt]            
             , CAST(bh.[SortPath] + '.' + RIGHT('00000' + CAST(ROW_NUMBER() OVER (PARTITION BY b.[ParentBoxId] ORDER BY b.[Name]) AS VARCHAR(10)), 5) AS VARCHAR(MAX))
             , bh.[Indent] + 1 AS [Indent]
             , CAST(CASE WHEN b.[BoxId] <> ISNULL(@CurrentParentId, -1) THEN 1 ELSE 0 END AS BIT)
@@ -71,7 +71,7 @@ BEGIN
     SELECT 
         [BoxId]
         , [Name]
-        , [UpdatedAt]
+        , [ImageAt]
         , [Indent]
         , [IsSelectable]
     FROM 

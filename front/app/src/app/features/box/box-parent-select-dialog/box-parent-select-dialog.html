@@ -11,7 +11,7 @@
                              [disabled]="!box.isSelectable"
                              togglePosition="after">
                 <span matListItemAvatar class="selection-list-image">
-                    <img [src]="box.boxId ?? 0 | asPhoto:'box':box.updatedAt:'icons'"
+                    <img [src]="box.boxId ?? 0 | asPhoto:'box':box.imageAt:'icons'"
                          appImgFallback crossorigin>
                 </span>
                 <div matListItemTitle [style.margin-left.px]="box.indent * 32">

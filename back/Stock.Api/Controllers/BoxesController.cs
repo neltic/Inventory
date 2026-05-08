@@ -233,9 +233,9 @@ public class BoxesController(
             var processed = await fileService.AssignImageToBoxAsync(fileGuid, id);
             if (!processed) return StatusCode(500, Translate(Key.ImageAssignFailed));
 
-            var updatedAt = await boxService.ChangeUpdatedAtAsync(id);
+            var imageAt = await boxService.ChangeImageAtAsync(id);
 
-            return Ok(new { updatedAt });
+            return Ok(new { imageAt });
         }
         catch (Exception ex)
         {

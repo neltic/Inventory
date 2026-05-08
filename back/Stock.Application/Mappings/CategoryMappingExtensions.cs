@@ -29,17 +29,30 @@ public static class CategoryMappingExtensions
         ));
     }
 
-    public static Category ToEntity(this CategoryDto dto, int categoryId)
+    public static Category ToEntity(this CategoryDto dto, int categoryId, Category? category = null)
     {
-        return new Category
+        if (category == null)
         {
-            CategoryId = categoryId,
-            Name = dto.Name,
-            Icon = dto.Icon,
-            Color = dto.Color,
-            Order = dto.Order,
-            IncludedIn = dto.IncludedIn
-        };
+            return new Category
+            {
+                CategoryId = categoryId,
+                Name = dto.Name,
+                Icon = dto.Icon,
+                Color = dto.Color,
+                Order = dto.Order,
+                IncludedIn = dto.IncludedIn
+            };
+        }
+        else
+        {
+            category.CategoryId = categoryId;
+            category.Name = dto.Name;
+            category.Icon = dto.Icon;
+            category.Color = dto.Color;
+            category.Order = dto.Order;
+            category.IncludedIn = dto.IncludedIn;
+            return category;
+        }
     }
 
 }

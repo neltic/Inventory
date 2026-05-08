@@ -9,8 +9,7 @@ BEGIN
         , i.[Name] 
         , i.[Notes]
         , i.[CategoryId]
-        , i.[CreatedAt]
-        , i.[UpdatedAt]        
+        , i.[ImageAt]
     FROM [dbo].[Item] i
     LEFT JOIN [dbo].[Storage] s 
         ON i.[ItemId] = s.[ItemId]
@@ -23,7 +22,6 @@ BEGIN
         , i.[Name] 
         , i.[Notes]
         , i.[CategoryId]
-        , i.[CreatedAt]
-        , i.[UpdatedAt];
+        , i.[ImageAt];
 
 END

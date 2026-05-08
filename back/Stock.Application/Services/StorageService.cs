@@ -33,9 +33,9 @@ public class StorageService(IStorageRepository storageRepository) : IStorageServ
     }
 
     /// <inheritdoc />
-    public async Task<bool> UpdateAsync(StorageDto dto)
+    public async Task<bool> SetStorageAsync(StorageDto dto)
     {
         var storage = dto.ToEntity();
-        return await storageRepository.UpdateAsync(storage);
+        return await storageRepository.SetStorageAsync(storage);
     }
 }

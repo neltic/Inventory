@@ -1,11 +1,9 @@
-﻿using Stock.Domain.Entities.Common;
-
-namespace Stock.Domain.Entities;
+﻿namespace Stock.Domain.Entities;
 
 /// <summary>
 /// Represents the localized content for a specific Label in a specific language.
 /// </summary>
-public class Translation : AuditableEntity
+public class Translation
 {
     /// <summary>The unique identifier for the translation record.</summary>
     public int TranslationId { get; set; }

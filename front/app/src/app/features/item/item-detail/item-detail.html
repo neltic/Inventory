@@ -6,7 +6,7 @@
         </mat-card-header>
 
         <img mat-card-image
-             [src]="item.itemId | asPhoto:'item':item.updatedAt"
+             [src]="item.itemId | asPhoto:'item':item.imageAt"
              alt="{{ item.name }}"
              appImgFallback
              crossorigin>
@@ -39,23 +39,7 @@
             <p>
                 <mat-icon>note</mat-icon>
                 <span>{{ item.notes }}</span>
-            </p>
-            <p>
-                <mat-icon>event</mat-icon>
-                <span [matTooltip]="(item.createdAt | date:'full')!"
-                      matTooltipPosition="above">
-                    <span translate="Global.CREATED"></span>
-                    {{ item.createdAt | relativeTime }}
-                </span>
-            </p>
-            <p>
-                <mat-icon>access_time</mat-icon>
-                <span [matTooltip]="(item.updatedAt | date:'full')!"
-                      matTooltipPosition="above">
-                    <span translate="Global.UPDATED"></span>
-                    {{ item.updatedAt | relativeTime }}
-                </span>
-            </p>
+            </p>            
         </mat-card-content>
 
         <mat-card-actions align="end">

@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,6 @@ import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
 import { TranslateDirective } from "../../../shared/directives/translate-directive";
 import { TranslateErrorDirective } from "../../../shared/directives/translate-error-directive";
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
-import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
 import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
 
 @Component({
@@ -35,7 +34,6 @@ import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
         ReactiveFormsModule,
         ɵInternalFormsSharedModule,
         ImgFallbackDirective,
-        RelativeTimePipe,
         CategorySelect,
         AsPhotoPipe,
         TranslateDirective,
@@ -79,6 +77,12 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
         this.initComponent(['name', 'categoryId', 'notes']);
     }
 
+    canSave = computed(() => {        
+        if (this.isBusy() || this.isUploadingImage()) return false;        
+        if (this.mainForm.invalid || this.mainForm.pristine) return false;
+        return true;
+    });
+
     onSubmit(): void {
         if (this.mainForm.invalid) {
             this.mainForm.markAllAsTouched();
@@ -107,6 +111,7 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
                 next: () => {
                     this.openSnack('success', 'Global.OK', 'Message.ITEM_SAVED');
                     this.mainForm.markAsPristine();
+                    this.mainForm.markAsUntouched();
                 },
                 error: (error) => { this.handleError(error); }
             });
@@ -131,12 +136,12 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
             })
         ).subscribe({
             next: (response: any) => {
-                const newDate = response.updatedAt;
+                const newDate = response.imageAt;
                 const currentItem = this.itemResource.value();
                 if (currentItem) {
                     this.itemResource.set({
                         ...currentItem,
-                        updatedAt: newDate
+                        imageAt: newDate
                     });
                 }
                 this.openSnack('success', 'Global.OK', 'Message.IMAGE_UPDATED');

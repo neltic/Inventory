@@ -36,7 +36,7 @@ public static class DependencyConfiguration
 
             var types = assembly.GetTypes()
                 .Where(t => t.IsClass && !t.IsAbstract &&
-                           (t.Name.EndsWith("Service") || t.Name.EndsWith("Repository")));
+                           (t.Name.EndsWith("Service") || t.Name.EndsWith("Repository") || t.Name.EndsWith("Factory")));
 
             foreach (var type in types)
             {
@@ -146,6 +146,7 @@ public static class DependencyConfiguration
         });
 
         services.AddAuthorization();
+        services.AddHttpContextAccessor();
     }
 
     public static async Task InitializeCacheAsync(this IServiceProvider appServices)
@@ -170,7 +171,7 @@ public static class DependencyConfiguration
     public static async Task CreateDummyDataAsync(this IServiceProvider appServices)
     {
         var createDummyData = appServices.GetRequiredService<IConfiguration>().GetValue<bool>("Dummy:CreateWhenEmpty");
-        if(!createDummyData) return;
+        if (!createDummyData) return;
         try
         {
             using var scope = appServices.CreateScope();
@@ -210,8 +211,7 @@ public static class DependencyConfiguration
                 Width = 44.50m,
                 Depth = 33.50m,
                 Notes = "Additional handle on top of each unit for easy and comfortable lifting. Made of high-impact resistant polypropylene.",
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                ImageAt = DateTimeOffset.UtcNow
             },
             new() {
                 Name = "Tstak DWST17805",
@@ -221,8 +221,7 @@ public static class DependencyConfiguration
                 Width = 43.80m,
                 Depth = 33.70m,
                 Notes = "TSTAK organizer with transparent lid and removable compartments (2 large and 5 small)",
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                ImageAt = DateTimeOffset.UtcNow
             },
             new() {
                 Name = "Tstak DWST17804",
@@ -232,8 +231,7 @@ public static class DependencyConfiguration
                 Width = 43.90m,
                 Depth = 31.20m,
                 Notes = "Platform that adapts to the different needs of the user. Sides of the organizer with systems to attach to other TSTAK boxes. Drawers with removable dividers to organize small parts and accessories. Removable dividers to store drill bits and tips. Built-in ergonomic handle to carry heavier loads.",
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                ImageAt = DateTimeOffset.UtcNow
             }
         };
 
@@ -255,11 +253,11 @@ public static class DependencyConfiguration
 
         var items = new List<Item>
         {
-            new() { Name = "USB C → USB C", CategoryId = 4, Notes = "USB C → USB C", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "USB A → Mini USB", CategoryId = 4, Notes = "USB A → Mini USB", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "USB A → Micro USB", CategoryId = 4, Notes = "USB A → Micro USB", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "Webcam", CategoryId = 4, Notes = "Medium resolution webcam", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow },
-            new() { Name = "USB A → USB C", CategoryId = 4, Notes = "USB A → USB C", UpdatedAt = DateTimeOffset.UtcNow, CreatedAt = DateTimeOffset.UtcNow }
+            new() { Name = "USB C → USB C", CategoryId = 4, Notes = "USB C → USB C", ImageAt = DateTimeOffset.UtcNow },
+            new() { Name = "USB A → Mini USB", CategoryId = 4, Notes = "USB A → Mini USB", ImageAt = DateTimeOffset.UtcNow },
+            new() { Name = "USB A → Micro USB", CategoryId = 4, Notes = "USB A → Micro USB", ImageAt = DateTimeOffset.UtcNow },
+            new() { Name = "Webcam", CategoryId = 4, Notes = "Medium resolution webcam", ImageAt = DateTimeOffset.UtcNow },
+            new() { Name = "USB A → USB C", CategoryId = 4, Notes = "USB A → USB C", ImageAt = DateTimeOffset.UtcNow }
         };
 
         await context.Items.AddRangeAsync(items);
@@ -298,9 +296,7 @@ public static class DependencyConfiguration
                 ItemId = itemCC.ItemId,
                 BrandId = 5,
                 Quantity = 1,
-                Expires = false,
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                Expires = false
             },
             new() {
                 BoxId = boxDWST17805.BoxId,
@@ -308,18 +304,14 @@ public static class DependencyConfiguration
                 BrandId = 8,
                 Quantity = 8,
                 Expires = true,
-                ExpiresOn = new DateOnly(2028, 05, 20),
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                ExpiresOn = new DateOnly(2028, 05, 20)
             },
             new() {
                 BoxId = boxDWST17805.BoxId,
                 ItemId = itemAMicro!.ItemId,
                 BrandId = 2,
                 Quantity = 12,
-                Expires = false,
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                Expires = false
             },
             new() {
                 BoxId = boxDWST17805.BoxId,
@@ -327,9 +319,7 @@ public static class DependencyConfiguration
                 BrandId = 0,
                 Quantity = 12,
                 Expires = true,
-                ExpiresOn = new DateOnly(2027, 10, 15),
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                ExpiresOn = new DateOnly(2027, 10, 15)
             }
         };
 

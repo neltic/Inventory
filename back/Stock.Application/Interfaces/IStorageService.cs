@@ -45,7 +45,7 @@ public interface IStorageService
     Task<IEnumerable<ItemStorageListDto>> GetStorageByItemIdAsync(int itemId);
 
     /// <summary>
-    /// Updates an existing storage record or creates a new one if it doesn't exist (Upsert).
+    /// Updates an existing storage record, creates a new one if it doesn't exist or delete if the quantity is zero.
     /// </summary>
     /// <remarks>
     /// Implementation should handle the logic for 'ExpiresOn' dates and validate 
@@ -53,5 +53,5 @@ public interface IStorageService
     /// </remarks>
     /// <param name="dto">The storage data transfer object to be saved.</param>
     /// <returns>True if the storage was successfully updated or created; otherwise, false.</returns>
-    Task<bool> UpdateAsync(StorageDto dto);
+    Task<bool> SetStorageAsync(StorageDto dto);
 }

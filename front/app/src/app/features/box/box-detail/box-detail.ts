@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, effect, inject, Injector, signal } from '@angular/core';
 import { rxResource, toObservable } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +13,6 @@ import { HasRoleDirective } from "../../../shared/directives/has-role-directive"
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
 import { TranslateDirective } from '../../../shared/directives/translate-directive';
 import { AsPhotoPipe } from '../../../shared/pipes/as-photo-pipe';
-import { RelativeTimePipe } from '../../../shared/pipes/relative-time-pipe';
 import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
 import { BoxParentSelectDialog } from '../box-parent-select-dialog/box-parent-select-dialog';
 
@@ -25,8 +23,6 @@ import { BoxParentSelectDialog } from '../box-parent-select-dialog/box-parent-se
     MatIcon,
     MatCardModule,
     MatButtonModule,
-    RelativeTimePipe,
-    DatePipe,
     MatTooltipModule,
     MatProgressSpinnerModule,
     ImgFallbackDirective,

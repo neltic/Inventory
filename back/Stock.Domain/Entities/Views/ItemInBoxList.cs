@@ -6,6 +6,6 @@ public record ItemInBoxList(
     int BrandId,
     int CategoryId,
     int Quantity,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     string? Notes
     );

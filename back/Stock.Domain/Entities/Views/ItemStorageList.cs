@@ -4,7 +4,7 @@ public record ItemStorageList(
     int BoxId,
     string Name,
     int BrandId,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     int Quantity,
     bool Expires,
     DateOnly? ExpiresOn,

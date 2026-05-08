@@ -1,6 +1,4 @@
-﻿using Stock.Domain.Entities.Common;
-
-namespace Stock.Domain.Entities;
+﻿namespace Stock.Domain.Entities;
 
 /// <summary>
 /// Represents the physical inventory record (Stock) of a specific item within a specific box.
@@ -11,7 +9,7 @@ namespace Stock.Domain.Entities;
 /// The combination of BoxId, ItemId, and BrandId should typically be unique 
 /// to prevent duplicate stock entries for the same product variant in the same location.
 /// </remarks>
-public class Storage : AuditableEntity
+public class Storage
 {
     /// <summary>The unique identifier for this specific storage record.</summary>
     public int StorageId { get; set; }
