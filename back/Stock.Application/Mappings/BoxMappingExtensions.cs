@@ -19,8 +19,7 @@ public static class BoxMappingExtensions
             model.Depth,
             model.Volume,
             model.Notes,
-            model.CreatedAt,
-            model.UpdatedAt,
+            model.ImageAt,
             model.FullPath,
             model.CanBeDeleted
         );
@@ -34,7 +33,7 @@ public static class BoxMappingExtensions
             b.Name,
             b.CategoryId,
             b.BrandId,
-            b.UpdatedAt,
+            b.ImageAt,
             b.HasChildren,
             b.HasItems
         ));
@@ -45,7 +44,7 @@ public static class BoxMappingExtensions
         return models.Select(b => new BoxLookupListDto(
             b.BoxId,
             b.Name,
-            b.UpdatedAt,
+            b.ImageAt,
             b.Indent
         ));
     }
@@ -55,25 +54,43 @@ public static class BoxMappingExtensions
         return models.Select(b => new BoxTransferListDto(
             b.BoxId,
             b.Name,
-            b.UpdatedAt,
+            b.ImageAt,
             b.Indent,
             b.IsSelectable
         ));
     }
 
-    public static Box ToEntity(this BoxDto dto, int boxId)
+    public static Box ToEntity(this BoxDto dto, int boxId, Box? box = null)
     {
-        return new Box
+        if (box == null)
         {
-            BoxId = boxId,
-            ParentBoxId = dto.ParentBoxId,
-            Name = dto.Name,
-            BrandId = dto.BrandId,
-            CategoryId = dto.CategoryId,
-            Height = dto.Height,
-            Width = dto.Width,
-            Depth = dto.Depth,
-            Notes = dto.Notes
-        };
+            return new Box
+            {
+                BoxId = boxId,
+                ParentBoxId = dto.ParentBoxId,
+                Name = dto.Name,
+                BrandId = dto.BrandId,
+                CategoryId = dto.CategoryId,
+                Height = dto.Height,
+                Width = dto.Width,
+                Depth = dto.Depth,
+                Notes = dto.Notes,
+                ImageAt = dto.ImageAt
+            };
+        }
+        else
+        {
+            box.BoxId = boxId;
+            box.ParentBoxId = dto.ParentBoxId;
+            box.Name = dto.Name;
+            box.BrandId = dto.BrandId;
+            box.CategoryId = dto.CategoryId;
+            box.Height = dto.Height;
+            box.Width = dto.Width;
+            box.Depth = dto.Depth;
+            box.Notes = dto.Notes;
+            box.ImageAt = dto.ImageAt;
+            return box;
+        }
     }
 }

@@ -8,7 +8,7 @@
 /// <param name="Name">The display name of the box.</param>
 /// <param name="CategoryId">The identifier for the category classification.</param>
 /// <param name="BrandId">The identifier for the associated brand.</param>
-/// <param name="UpdatedAt">The timestamp of the last modification, useful for cache invalidation or sorting.</param>
+/// <param name="ImageAt">The timestamp of the last modification of the image.</param>
 /// <param name="HasChildren">Indicates if this box contains other sub-boxes (nested containers).</param>
 /// <param name="HasItems">Indicates if there are physical products currently stored inside this box.</param>
 public record BoxListDto(
@@ -17,7 +17,7 @@ public record BoxListDto(
     string Name,
     int CategoryId,
     int BrandId,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     bool HasChildren,
     bool HasItems
 );

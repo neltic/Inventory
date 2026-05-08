@@ -79,7 +79,7 @@ public class ItemsController(
     {
         var locations = await itemService.GetItemLocationAsync(itemId);
 
-        return Ok(locations ?? Enumerable.Empty<ItemLocationListDto>());
+        return Ok(locations ?? []);
     }
 
     /// <summary>
@@ -194,9 +194,9 @@ public class ItemsController(
             var processed = await fileService.AssignImageToItemAsync(fileGuid, id);
             if (!processed) return StatusCode(500, Translate(Key.ImageAssignFailed));
 
-            var updatedAt = await itemService.ChangeUpdatedAtAsync(id);
+            var imageAt = await itemService.ChangeImageAtAsync(id);
 
-            return Ok(new { updatedAt });
+            return Ok(new { imageAt });
         }
         catch (Exception ex)
         {

@@ -3,15 +3,17 @@
 INSERT INTO [dbo].[Brand] 
     ([BrandId], [Name], [Color], [Background], [IncludedIn])
 VALUES 
-    (0, 'Generic',   '#FFFFFF', '#757575', 3),
-    (1, 'Apple',     '#FFFFFF', '#000000', 1),
-    (2, 'Logitech',  '#000000', '#18FCD2', 1),
-    (3, 'UGREEN',    '#FFFFFF', '#20824E', 2),
-    (4, 'Casio',     '#0A3282', '#FFFFFF', 1),
-    (5, 'DEWALT',    '#000000', '#FDBC18', 2),
-    (6, 'Truper',    '#000000', '#FF6720', 2),
-    (7, 'Staedtler', '#FFFFFF', '#00448C', 1),
-    (8, 'Amazon',    '#FFFFFF', '#FF6200', 3);    
+    (0,  'Generic',    '#FFFFFF', '#757575', 3),
+    (1,  'Apple',      '#FFFFFF', '#000000', 1),
+    (2,  'Logitech',   '#000000', '#18FCD2', 1),
+    (3,  'UGREEN',     '#FFFFFF', '#20824E', 3),
+    (4,  'Casio',      '#0A3282', '#FFFFFF', 1),
+    (5,  'DEWALT',     '#000000', '#FDBC18', 2),
+    (6,  'Truper',     '#000000', '#FF6720', 3),
+    (7,  'Staedtler',  '#FFFFFF', '#00448C', 1),
+    (8,  'Amazon',     '#FFFFFF', '#FF6200', 3),
+    (9,  'Texas Inst', '#FFFFFF', '#CC0000', 1),
+    (10, 'Sony',       '#FFFFFF', '#000000', 1),
+    (11, '8BitDo',     '#FFFFFF', '#000000', 1);
 
-    
 SET IDENTITY_INSERT [dbo].[Brand] OFF;

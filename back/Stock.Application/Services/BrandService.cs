@@ -68,7 +68,9 @@ public class BrandService(IBrandRepository brandRepository, ICacheService cache)
         var exists = await brandRepository.ExistsAsync(dto.Name, dto.BrandId);
         if (exists) throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
 
-        var result = await brandRepository.UpdateAsync(dto.ToEntity(brandId));
+        var current = await brandRepository.FindAsync(brandId);
+
+        var result = await brandRepository.UpdateAsync(dto.ToEntity(brandId, current));
 
         if (result) await cache.RemoveAsync(GetCacheKeyItem(brandId), CacheKeyList);
 

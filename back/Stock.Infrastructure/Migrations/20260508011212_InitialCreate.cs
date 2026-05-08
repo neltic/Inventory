@@ -11,6 +11,24 @@ namespace Stock.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Audit",
+                columns: table => new
+                {
+                    AuditId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EntityId = table.Column<byte>(type: "tinyint", nullable: false),
+                    RecordId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    EventId = table.Column<byte>(type: "tinyint", nullable: false),
+                    By = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    At = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Context = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Audit", x => x.AuditId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Brand",
                 columns: table => new
                 {
@@ -86,10 +104,7 @@ namespace Stock.Infrastructure.Migrations
                     Depth = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     Volume = table.Column<decimal>(type: "decimal(15,2)", nullable: false, computedColumnSql: "ISNULL(CAST(([Height] * [Width] * [Depth]) AS decimal(15, 2)), 0.0)", stored: true),
                     Notes = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Box_CreatedAt"),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Box_UpdatedAt")
+                    ImageAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -126,10 +141,7 @@ namespace Stock.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Item_CreatedAt"),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Item_UpdatedAt")
+                    ImageAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -150,11 +162,7 @@ namespace Stock.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LanguageCode = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     LabelId = table.Column<int>(type: "int", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Translation_CreatedAt"),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Translation_UpdatedAt")
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,11 +193,7 @@ namespace Stock.Infrastructure.Migrations
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Expires = table.Column<bool>(type: "bit", nullable: false),
                     ExpiresOn = table.Column<DateOnly>(type: "date", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Storage_CreatedAt"),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "SYSDATETIMEOFFSET()")
-                        .Annotation("Relational:DefaultConstraintName", "DF_Storage_UpdatedAt")
+                    Notes = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -214,6 +218,16 @@ namespace Stock.Infrastructure.Migrations
                         principalColumn: "ItemId",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Audit_By_At",
+                table: "Audit",
+                columns: new[] { "By", "At" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Audit_Entity_Record",
+                table: "Audit",
+                columns: new[] { "EntityId", "RecordId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Box_BrandId",
@@ -298,6 +312,9 @@ namespace Stock.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Audit");
+
             migrationBuilder.DropTable(
                 name: "Storage");
 

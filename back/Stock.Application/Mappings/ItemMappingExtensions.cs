@@ -7,15 +7,31 @@ namespace Stock.Application.Mappings;
 public static class ItemMappingExtensions
 {
     public static ItemDetailedDto ToDto(this ItemDetailed entity) =>
-        new(entity.ItemId, entity.Name, entity.Notes, entity.CategoryId, entity.CreatedAt, entity.UpdatedAt);
+        new(entity.ItemId, entity.Name, entity.Notes, entity.CategoryId, entity.ImageAt);
 
-    public static Item ToEntity(this ItemDto dto, int itemId) => new()
+    public static Item ToEntity(this ItemDto dto, int itemId, Item? item = null)
     {
-        ItemId = itemId,
-        Name = dto.Name,
-        Notes = dto.Notes,
-        CategoryId = dto.CategoryId
-    };
+        if (item == null)
+        {
+            return new Item
+            {
+                ItemId = itemId,
+                Name = dto.Name,
+                Notes = dto.Notes,
+                CategoryId = dto.CategoryId,
+                ImageAt = dto.ImageAt
+            };
+        }
+        else
+        {
+            item.ItemId = itemId;
+            item.Name = dto.Name;
+            item.Notes = dto.Notes;
+            item.CategoryId = dto.CategoryId;
+            item.ImageAt = dto.ImageAt;
+            return item;
+        }
+    }
 
     public static IEnumerable<ItemListDto> ToDtoList(this IEnumerable<ItemList> models)
     {
@@ -23,7 +39,7 @@ public static class ItemMappingExtensions
             b.ItemId,
             b.Name,
             b.CategoryId,
-            b.UpdatedAt,
+            b.ImageAt,
             b.HasStock
             ));
     }

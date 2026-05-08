@@ -3,6 +3,6 @@
 public record BoxLookupList(
     int BoxId,
     string Name,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     int Indent
 );

@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities;
-using Stock.Domain.Entities.Common;
 using Stock.Domain.Entities.Views;
+using Stock.Infrastructure.Persistence.Common;
+using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Persistence;
 
-public partial class StockDbContext(DbContextOptions<StockDbContext> options) : DbContext(options)
+public partial class StockDbContext(DbContextOptions<StockDbContext> options, ICurrentUserService currentUserService) : DbContext(options)
 {
     public virtual DbSet<Box> Boxes { get; set; }
 
@@ -23,6 +25,8 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options) : 
     public virtual DbSet<Label> Labels { get; set; }
 
     public virtual DbSet<Translation> Translations { get; set; }
+
+    public virtual DbSet<Audit> Audits { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -166,6 +170,8 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options) : 
             entity.Property(e => e.Notes)
                 .IsRequired()
                 .HasMaxLength(512);
+            entity.Property(e => e.ImageAt)
+                .IsRequired();
 
             // Self-referencing relationship for parent box
             entity.HasOne(d => d.ParentBox)
@@ -205,6 +211,8 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options) : 
             entity.Property(e => e.Notes)
                 .IsRequired()
                 .HasMaxLength(512);
+            entity.Property(e => e.ImageAt)
+                .IsRequired();
 
             // Unique index on Name
             entity.HasIndex(e => e.Name)
@@ -249,6 +257,45 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options) : 
             entity.ToTable(t => t.HasCheckConstraint("CK_Storage_Quantity", "[Quantity] > 0"));
         });
 
+        modelBuilder.Entity<Audit>(entity =>
+        {
+            entity.HasKey(e => e.AuditId);
+
+            // Properties
+            entity.Property(e => e.AuditId)
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.EntityId)
+                .IsRequired()
+                .HasConversion<byte>();
+
+            entity.Property(e => e.EventId)
+                .IsRequired()
+                .HasConversion<byte>();
+
+            entity.Property(e => e.RecordId)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            entity.Property(e => e.By)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            entity.Property(e => e.At)
+                .IsRequired();
+
+            entity.Property(e => e.Context)
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+            // Indexes
+            entity.HasIndex(e => new { e.EntityId, e.RecordId })
+                .HasDatabaseName("IX_Audit_Entity_Record");
+
+            entity.HasIndex(e => new { e.By, e.At })
+                .HasDatabaseName("IX_Audit_By_At");
+        });
+
         // Views
         modelBuilder.Entity<BoxDetailed>(entity =>
         {
@@ -260,69 +307,133 @@ public partial class StockDbContext(DbContextOptions<StockDbContext> options) : 
             entity.Property(p => p.Volume).HasColumnType("decimal(15, 2)");
         });
 
-        // Apply common configurations for all entities that inherit from AuditableEntity
+        // Apply common configurations for all entities
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             if (entityType.IsKeyless) continue;
 
             entityType.SetTableName(entityType.ClrType.Name);
 
-            if (typeof(AuditableEntity).IsAssignableFrom(entityType.ClrType))
+            foreach (var property in entityType.GetProperties())
             {
-                var tableName = entityType.GetTableName();
+                if (property.Name.EndsWith("At"))
+                {
+                    property.SetColumnType("datetimeoffset");
+                }
 
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property(nameof(AuditableEntity.CreatedAt))
-                    .HasColumnType("datetimeoffset")
-                    .IsRequired()
-                    .HasDefaultValueSql("SYSDATETIMEOFFSET()", $"DF_{tableName}_CreatedAt")
-                    .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property(nameof(AuditableEntity.UpdatedAt))
-                    .HasColumnType("datetimeoffset")
-                    .IsRequired()
-                    .HasDefaultValueSql("SYSDATETIMEOFFSET()", $"DF_{tableName}_UpdatedAt");
+                if (property.IsPrimaryKey())
+                {
+                    if (property.ClrType == typeof(int) || property.ClrType == typeof(long))
+                    {
+                        property.ValueGenerated = ValueGenerated.OnAdd;
+                    }
+                }
             }
         }
 
         OnModelCreatingPartial(modelBuilder);
     }
 
-    public override int SaveChanges()
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        UpdateAuditFields();
-        return base.SaveChanges();
+        var auditEntries = CaptureAuditEntries();
+
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        await EnforceAuditTrail(auditEntries);
+
+        return result;
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    private List<AuditEntry> CaptureAuditEntries()
     {
-        UpdateAuditFields();
-        return base.SaveChangesAsync(cancellationToken);
-    }
+        var auditEntries = new List<AuditEntry>();
+        var userSnapshot = currentUserService.GetInfo();
 
-    private void UpdateAuditFields()
-    {
-        var entries = ChangeTracker.Entries()
-            .Where(e => e.Entity is AuditableEntity &&
-                        (e.State == EntityState.Added || e.State == EntityState.Modified));
-
-        foreach (var entry in entries)
+        foreach (var entry in ChangeTracker.Entries())
         {
-            var entity = (AuditableEntity)entry.Entity;
-            var now = DateTime.UtcNow;
+            if (entry.Entity is Audit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                continue;
 
-            if (entry.State == EntityState.Added)
+            var auditEntry = new AuditEntry(entry)
             {
-                entity.CreatedAt = now;
-            }
-            else
-            {
-                entry.Property(nameof(AuditableEntity.CreatedAt)).IsModified = false;
-            }
+                EntityId = Enum.Parse<Entity>(entry.Metadata.ClrType.Name),
+                By = userSnapshot.Username,
+                UserSnapshot = userSnapshot,
+                At = DateTimeOffset.UtcNow,
+                EventId = entry.State switch
+                {
+                    EntityState.Added => Event.Create,
+                    EntityState.Deleted => Event.Delete,
+                    EntityState.Modified => Event.Update,
+                    _ => Event.Read
+                }
+            };
 
-            entity.UpdatedAt = now;
+            auditEntries.Add(auditEntry);
+
+            foreach (var property in entry.Properties)
+            {
+                if (property.IsTemporary) continue;
+
+                string propertyName = property.Metadata.Name;
+
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        auditEntry.NewValues[propertyName] = property.CurrentValue;
+                        break;
+
+                    case EntityState.Deleted:
+                        auditEntry.OldValues[propertyName] = property.OriginalValue;
+                        break;
+
+                    case EntityState.Modified:
+                        var original = property.OriginalValue;
+                        var current = property.CurrentValue;
+                        if (property.IsModified && Equals(original, current))
+                        {
+                            property.IsModified = false;
+                            continue;
+                        }
+                        if (property.IsModified)
+                        {
+                            auditEntry.OldValues[propertyName] = original;
+                            auditEntry.NewValues[propertyName] = current;
+                        }
+                        break;
+                }
+            }
         }
+        return auditEntries;
+    }
+
+    private async Task EnforceAuditTrail(List<AuditEntry> auditEntries)
+    {
+        if (auditEntries == null || auditEntries.Count == 0) return;
+
+        foreach (var auditEntry in auditEntries)
+        {
+            var primaryKey = auditEntry.Entry.Metadata.FindPrimaryKey();
+            if (primaryKey != null)
+            {
+                var keyName = primaryKey.Properties[0].Name;
+                var currentId = auditEntry.Entry.Property(keyName).CurrentValue;
+
+                auditEntry.RecordId = currentId?.ToString() ?? "-";
+
+                if (auditEntry.EventId == Event.Create)
+                {
+                    if (currentId is int || currentId is long)
+                        auditEntry.NewValues[keyName] = currentId;
+                    else
+                        auditEntry.NewValues[keyName] = currentId?.ToString();
+                }
+            }
+            Audits.Add(auditEntry.ToAuditEntity());
+        }
+
+        await base.SaveChangesAsync();
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

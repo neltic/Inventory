@@ -9,7 +9,7 @@
 /// <param name="BrandId">The identifier of the brand associated with this specific stock entry.</param>
 /// <param name="CategoryId">The identifier for the category classification.</param>
 /// <param name="Quantity">The total number of units of this item/brand combination currently in the box.</param>
-/// <param name="UpdatedAt">The timestamp of the last time this storage record was modified (e.g., quantity change).</param>
+/// <param name="ImageAt">The timestamp of the last change of the image.</param>
 /// <param name="Notes">Optional notes or comments about this item in the box (e.g., condition, special handling instructions).</param>
 public record ItemInBoxListDto(
     int ItemId,
@@ -17,6 +17,6 @@ public record ItemInBoxListDto(
     int BrandId,
     int CategoryId,
     int Quantity,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     string? Notes
 );

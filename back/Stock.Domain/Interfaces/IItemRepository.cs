@@ -83,9 +83,9 @@ public interface IItemRepository
     Task<bool> DeleteAsync(Item item);
 
     /// <summary>
-    /// Directly updates the 'UpdatedAt' timestamp for a specific item record in the database.
+    /// Directly updates the 'ImageAt' timestamp for a specific item record in the database.
     /// </summary>
     /// <param name="itemId">The ID of the item to update.</param>
     /// <returns>The new <see cref="DateTime"/> value persisted to the database.</returns>
-    Task<DateTime> ChangeUpdatedAtAsync(int itemId);
+    Task<DateTime> ChangeImageAtAsync(int itemId);
 }

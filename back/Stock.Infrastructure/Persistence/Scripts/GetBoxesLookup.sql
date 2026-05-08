@@ -8,7 +8,7 @@ BEGIN
             [BoxId]
             , [ParentBoxId]
             , [Name]
-            , [UpdatedAt]
+            , [ImageAt]
             , CAST(RIGHT('00000' + CAST(ROW_NUMBER() OVER (ORDER BY [Name] ASC) AS VARCHAR(10)), 5) AS VARCHAR(MAX)) AS [SortPath]
             , 0 AS [Indent] 
         FROM 
@@ -22,7 +22,7 @@ BEGIN
             b.[BoxId]
             , b.[ParentBoxId]
             , b.[Name]
-            , b.[UpdatedAt]
+            , b.[ImageAt]
             , CAST(bh.[SortPath] + '.' + RIGHT('00000' + CAST(ROW_NUMBER() OVER (PARTITION BY b.[ParentBoxId] ORDER BY b.[Name] ASC) AS VARCHAR(10)), 5) AS VARCHAR(MAX)) AS [SortPath]
             , bh.[Indent] + 1 AS [Indent] 
         FROM 
@@ -33,7 +33,7 @@ BEGIN
     SELECT 
         [BoxId]
         , [Name]
-        , [UpdatedAt]
+        , [ImageAt]
         , [Indent] 
     FROM
         [BoxHierarchy]

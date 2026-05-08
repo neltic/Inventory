@@ -118,7 +118,7 @@ public interface IBoxService
     /// </remarks>
     /// <param name="boxId">The ID of the box to update.</param>
     /// <returns>The updated <see cref="DateTime"/> value.</returns>
-    Task<DateTime> ChangeUpdatedAtAsync(int boxId);
+    Task<DateTime> ChangeImageAtAsync(int boxId);
 
     /// <summary>
     /// Retrieves a new box template or the first available empty box under a parent.

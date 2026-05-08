@@ -39,7 +39,7 @@ public class ItemRepository(StockDbContext context) : IItemRepository
                 i.ItemId,
                 i.Name,
                 i.CategoryId,
-                i.UpdatedAt,
+                i.ImageAt,
                 i.Storages.Any()
             ))
             .ToListAsync();
@@ -76,13 +76,13 @@ public class ItemRepository(StockDbContext context) : IItemRepository
     }
 
     /// <inheritdoc />
-    public async Task<DateTime> ChangeUpdatedAtAsync(int itemId)
+    public async Task<DateTime> ChangeImageAtAsync(int itemId)
     {
         var now = DateTime.UtcNow;
 
         await context.Items
             .Where(b => b.ItemId == itemId)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.UpdatedAt, now));
+            .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.ImageAt, now));
 
         return now;
     }

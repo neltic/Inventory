@@ -85,7 +85,9 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
             throw new InvalidOperationException(LabelRegistry.Key.AlreadyExists);
         }
 
-        return await boxRepository.UpdateAsync(dto.ToEntity(boxId));
+        var current = await boxRepository.FindAsync(boxId);
+
+        return await boxRepository.UpdateAsync(dto.ToEntity(boxId, current));
     }
 
     /// <inheritdoc />
@@ -104,9 +106,9 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
     }
 
     /// <inheritdoc />
-    public async Task<DateTime> ChangeUpdatedAtAsync(int boxId)
+    public async Task<DateTime> ChangeImageAtAsync(int boxId)
     {
-        return await boxRepository.ChangeUpdatedAtAsync(boxId);
+        return await boxRepository.ChangeImageAtAsync(boxId);
     }
 
     /// <inheritdoc />
@@ -114,6 +116,6 @@ public class BoxService(IBoxRepository boxRepository) : IBoxService
     {
         var path = await boxRepository.GetBoxFullPathByParentAsync(parentBoxId);
 
-        return new(0, parentBoxId, string.Empty, -1, 0, 0, 0, 0, 0, string.Empty, DateTime.Today, DateTime.Today, path, true);
+        return new(0, parentBoxId, string.Empty, -1, 0, 0, 0, 0, 0, string.Empty, DateTime.Today, path, true);
     }
 }

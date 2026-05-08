@@ -157,10 +157,10 @@ public interface IBoxRepository
     Task<bool> DeleteAsync(Box box);
 
     /// <summary>
-    /// Directly updates the 'UpdatedAt' timestamp for a specific box record.
+    /// Directly updates the 'ImageAt' timestamp for a specific box record.
     /// </summary>
     /// <param name="boxId">The ID of the box to update.</param>
     /// <returns>The new <see cref="DateTime"/> value persisted to the database.</returns>
-    Task<DateTime> ChangeUpdatedAtAsync(int boxId);
+    Task<DateTime> ChangeImageAtAsync(int boxId);
 
 }

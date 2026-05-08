@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Stock.Application.Interfaces.Common;
 using Stock.Domain.Entities;
 using Stock.Domain.Entities.Views;
 using Stock.Domain.Interfaces;
 using Stock.Infrastructure.Persistence;
+using Stock.Infrastructure.Persistence.Common;
+using static Stock.Foundation.Common.SystemRegistry;
 
 namespace Stock.Infrastructure.Repositories;
 
-public class BoxRepository(StockDbContext context) : IBoxRepository
+public class BoxRepository(StockDbContext context, ICurrentUserService currentUserService) : IBoxRepository
 {
     /// <inheritdoc />
     public async Task<Box?> FindAsync(int boxId)
@@ -99,9 +102,49 @@ public class BoxRepository(StockDbContext context) : IBoxRepository
     }
 
     /// <inheritdoc />
-    public async Task<bool> MoveBoxAsync(int boxId, int? newParentId)
+    public async Task<bool> MoveBoxAsync(int boxId, int? newParentBoxId)
     {
-        return await context.Database.ExecuteSqlInterpolatedAsync($" EXEC [dbo].[MoveBox] @BoxId = {boxId}, @NewParentId = {newParentId}") > 0;
+        var box = await context.Boxes
+            .Select(b => new { b.BoxId, b.ParentBoxId })
+            .FirstOrDefaultAsync(b => b.BoxId == boxId);
+
+        if (box == null) return false;
+
+        using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            var rows = await context.Database.ExecuteSqlInterpolatedAsync(
+                $"EXEC [dbo].[MoveBox] @BoxId = {boxId}, @NewParentBoxId = {newParentBoxId}"
+            );
+
+            if (rows > 0)
+            {
+                var entry = context.Entry(box);
+                var auditEntry = new AuditEntry(entry)
+                {
+                    EntityId = Entity.Box,
+                    EventId = Event.Move,
+                    RecordId = boxId.ToString(),
+                    By = currentUserService.Username,
+                    At = DateTimeOffset.UtcNow,
+                    UserSnapshot = currentUserService.GetInfo()
+                };
+
+                auditEntry.OldValues["ParentBoxId"] = box.ParentBoxId;
+                auditEntry.NewValues["ParentBoxId"] = newParentBoxId;
+
+                context.Audits.Add(auditEntry.ToAuditEntity());
+                await context.SaveChangesAsync();
+            }
+
+            await transaction.CommitAsync();
+            return rows > 0;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            return false;
+        }
     }
 
     /// <inheritdoc />
@@ -129,13 +172,13 @@ public class BoxRepository(StockDbContext context) : IBoxRepository
     }
 
     /// <inheritdoc />
-    public async Task<DateTime> ChangeUpdatedAtAsync(int boxId)
+    public async Task<DateTime> ChangeImageAtAsync(int boxId)
     {
         var now = DateTime.UtcNow;
 
         await context.Boxes
             .Where(b => b.BoxId == boxId)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.UpdatedAt, now));
+            .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.ImageAt, now));
 
         return now;
     }

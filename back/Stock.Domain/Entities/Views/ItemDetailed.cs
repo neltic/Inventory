@@ -5,6 +5,5 @@ public record ItemDetailed(
     string Name,
     string Notes,
     int CategoryId,
-    DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt
+    DateTimeOffset ImageAt
 );

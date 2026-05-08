@@ -1,12 +1,10 @@
-﻿using Stock.Domain.Entities.Common;
-
-namespace Stock.Domain.Entities;
+﻿namespace Stock.Domain.Entities;
 
 /// <summary>
 /// Represents a physical storage container (Box) within the inventory system.
 /// Supports hierarchical nesting (boxes within boxes) and tracks physical dimensions.
 /// </summary>
-public class Box : AuditableEntity
+public class Box
 {
     /// <summary>Unique identifier for the box.</summary>
     public int BoxId { get; set; }
@@ -43,6 +41,11 @@ public class Box : AuditableEntity
 
     /// <summary>Additional remarks, storage instructions, or specific location details.</summary>
     public string Notes { get; set; } = null!;
+
+    /// <summary>
+    /// Indicates the date and time when the box's image was last updated.
+    /// </summary>
+    public DateTimeOffset ImageAt { get; set; }
 
     /* --- Navigation Properties --- */
 

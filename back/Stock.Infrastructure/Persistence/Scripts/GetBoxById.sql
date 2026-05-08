@@ -37,8 +37,7 @@ BEGIN
         , b.[Depth]
         , b.[Volume]
         , b.[Notes]
-        , b.[CreatedAt]
-        , b.[UpdatedAt]
+        , b.[ImageAt]
         , (
             SELECT 
                 [BoxId] AS [boxId], 

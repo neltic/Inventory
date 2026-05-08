@@ -1,12 +1,10 @@
-﻿using Stock.Domain.Entities.Common;
-
-namespace Stock.Domain.Entities;
+﻿namespace Stock.Domain.Entities;
 
 /// <summary>
 /// Represents a unique product or item type within the inventory catalog.
 /// Tracks general product metadata and its global categorization.
 /// </summary>
-public class Item : AuditableEntity
+public class Item
 {
     /// <summary>The unique identifier for the product type.</summary>
     public int ItemId { get; set; }
@@ -22,6 +20,11 @@ public class Item : AuditableEntity
 
     /// <summary>Foreign key to the <see cref="Category"/> assigned to this item.</summary>
     public int CategoryId { get; set; }
+
+    /// <summary>
+    /// Indicates the date and time when the item's image was last updated.
+    /// </summary>
+    public DateTimeOffset ImageAt { get; set; }
 
     /* --- Navigation Properties --- */
 

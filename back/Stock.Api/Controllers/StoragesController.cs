@@ -74,7 +74,7 @@ public class StoragesController(
     }
 
     /// <summary>
-    /// Updates or creates storage information (Upsert).
+    /// Update, create or delete storage information.
     /// </summary>
     /// <remarks>
     /// Handles updating quantities and expiration dates. 
@@ -90,11 +90,11 @@ public class StoragesController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateStorage([FromBody] StorageDto dto)
+    public async Task<IActionResult> SetStorage([FromBody] StorageDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var updated = await storageService.UpdateAsync(dto);
+        var updated = await storageService.SetStorageAsync(dto);
 
         if (!updated)
             return NotFound(new { message = Translate(Key.CanNotUpdate) });

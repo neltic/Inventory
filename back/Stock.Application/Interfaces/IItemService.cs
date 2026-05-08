@@ -78,5 +78,5 @@ public interface IItemService
     /// </remarks>
     /// <param name="itemId">The ID of the item to update.</param>
     /// <returns>The updated <see cref="DateTime"/> value.</returns>
-    Task<DateTime> ChangeUpdatedAtAsync(int itemId);
+    Task<DateTime> ChangeImageAtAsync(int itemId);
 }

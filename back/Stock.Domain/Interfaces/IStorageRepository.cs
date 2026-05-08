@@ -41,12 +41,12 @@ public interface IStorageRepository
     Task<IEnumerable<ItemStorageList>> GetStorageByItemIdAsync(int itemId);
 
     /// <summary>
-    /// Updates an existing storage record or persists a new one in the database.
+    /// Updates an existing storage record, creates a new one if it doesn't exist or delete if the quantity is zero
     /// </summary>
     /// <remarks>
     /// This handles the persistence of quantities, expiration flags, and dates.
     /// </remarks>
     /// <param name="storage">The storage entity to be saved or updated.</param>
     /// <returns>True if the database operation was successful; otherwise, false.</returns>
-    Task<bool> UpdateAsync(Storage storage);
+    Task<bool> SetStorageAsync(Storage storage);
 }

@@ -14,8 +14,7 @@
 /// <param name="Depth">The front-to-back dimension of the box in centimeters.</param>
 /// <param name="Volume">The calculated total volume capacity of the box (usually Height * Width * Depth).</param>
 /// <param name="Notes">Additional remarks or descriptions regarding the box's state or contents.</param>
-/// <param name="CreatedAt">The timestamp when the box record was first created.</param>
-/// <param name="UpdatedAt">The timestamp of the last modification to the box record.</param>
+/// <param name="ImageAt">The timestamp of the last modification of the image.</param>
 /// <param name="FullPath">The breadcrumb-style location path (e.g., "Warehouse > Section A > Box 1").</param>
 /// <param name="CanBeDeleted">Indicates whether the box can be removed without problems</param>
 public record BoxDetailedDto(
@@ -29,8 +28,7 @@ public record BoxDetailedDto(
     decimal Depth,
     decimal Volume,
     string Notes,
-    DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     string? FullPath,
     bool CanBeDeleted
 );

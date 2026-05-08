@@ -8,9 +8,11 @@
 /// <param name="Name">The name of the item (e.g., "USB-C Hub" or "Hammer").</param>
 /// <param name="Notes">Detailed description, specifications, or internal comments about the item.</param>
 /// <param name="CategoryId">The identifier of the category this item belongs to.</param>
+/// <param name="ImageAt">The timestamp indicating when the item's image was last updated.</param>
 public record ItemDto(
     int ItemId,
     string Name,
     string Notes,
-    int CategoryId
+    int CategoryId,
+    DateTimeOffset ImageAt
 );

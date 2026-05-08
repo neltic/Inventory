@@ -2,7 +2,6 @@
 using Stock.Foundation.Common;
 using Stock.Worker.Common;
 using Stock.Worker.Interfaces;
-using System.Runtime.InteropServices;
 
 namespace Stock.Worker.Services;
 

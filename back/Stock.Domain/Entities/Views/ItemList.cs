@@ -4,6 +4,6 @@ public record ItemList(
     int ItemId,
     string Name,
     int CategoryId,
-    DateTimeOffset UpdatedAt,
+    DateTimeOffset ImageAt,
     bool HasStock
     );

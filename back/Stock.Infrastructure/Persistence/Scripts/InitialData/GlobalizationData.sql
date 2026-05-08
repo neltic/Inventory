@@ -219,7 +219,7 @@ VALUES
   ('Unauthorized', 'CHANGE_ACCOUNT');
 
 
-INSERT INTO [dbo].[Translation] (LabelId, LanguageCode, [Text], CreatedAt, UpdatedAt)
+INSERT INTO [dbo].[Translation] (LabelId, LanguageCode, [Text])
 SELECT LabelId, 'en', 
 CASE 
     -- Box
@@ -434,11 +434,11 @@ CASE
     WHEN Context = 'Unauthorized' AND LabelKey = 'GO_HOME' THEN 'Return to Home'
     WHEN Context = 'Unauthorized' AND LabelKey = 'CHANGE_ACCOUNT' THEN 'Change Account'
 
-END, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET()
+END
 FROM [Label];
 
 
-INSERT INTO [dbo].[Translation] (LabelId, LanguageCode, [Text], CreatedAt, UpdatedAt)
+INSERT INTO [dbo].[Translation] (LabelId, LanguageCode, [Text])
 SELECT LabelId, 'es-MX', 
 CASE 
     -- Box
@@ -653,5 +653,5 @@ CASE
     WHEN Context = 'Unauthorized' AND LabelKey = 'GO_HOME' THEN 'Volver al inicio'
     WHEN Context = 'Unauthorized' AND LabelKey = 'CHANGE_ACCOUNT' THEN 'Cambiar cuenta'
 
-END, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET()
+END
 FROM [Label];

@@ -14,12 +14,14 @@ public class ProcessedFileService : IProcessedFileService
         bool shouldProcess = false;
 
         _processedFiles.AddOrUpdate(
-            fullPath,            
-            (key) => {
+            fullPath,
+            (key) =>
+            {
                 shouldProcess = true;
                 return now;
-            },            
-            (key, lastProcessed) => {
+            },
+            (key, lastProcessed) =>
+            {
                 if ((now - lastProcessed).TotalMilliseconds >= waitTimeMs)
                 {
                     shouldProcess = true;

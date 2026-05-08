@@ -24,9 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Persistence\Scripts\AddOrEditStorage.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Persistence\Scripts\GetBoxFullPath.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -72,13 +69,7 @@
     <None Update="Persistence\Scripts\InitialData\CategoryData.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Persistence\Scripts\DeleteCategory.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Persistence\Scripts\OrganizeCategories.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Persistence\Scripts\RemoveItemFromBox.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
