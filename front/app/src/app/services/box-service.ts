@@ -83,8 +83,7 @@ export class BoxService {
         if (typeof jsonString !== 'string') return jsonString as IBoxFullPath[];
         try {
             return JSON.parse(jsonString);
-        } catch (error) {
-            console.error("Error parsing Box.FullPath:", error);
+        } catch {
             return [];
         }
     }
