@@ -69,10 +69,6 @@ export abstract class BaseComponent {
             : (customErrorMessage || 'Error.EXECUTION_ERROR');
 
         this.openSnack('error', 'Global.OK', msg);
-
-        if (error.error?.detail) {
-            console.error('Detail:', error.error.detail);
-        }
     }
 
     isDarkColor(hex: string | undefined): boolean {

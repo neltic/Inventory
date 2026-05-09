@@ -241,7 +241,6 @@ export class Storage extends BaseFormComponent implements OnInit {
             itemId: Array.isArray(data['itemId']) ? data['itemId'][0] : data['itemId'],
             expiresOn: formattedDate
         };
-        console.log(finalData);
         return finalData;
     }
 

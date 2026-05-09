@@ -97,7 +97,7 @@ export class ItemList extends BaseComponent {
                 this.storageService.itemStorage.set(data);
                 this.drawer.open();
             },
-            error: (err) => console.error(err)
+            error: (err) => this.handleError(err)
         });
     }
 
