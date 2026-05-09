@@ -18,11 +18,11 @@ services:
       - ./infra/sql/backups:/var/opt/mssql/backups
       - "${STATIC_STORAGE_PATH}/temp:/var/opt/mssql/temp"
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${DB_PASSWORD}", "-Q", "SELECT 1", "-C"]
-      interval: 15s
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${DB_PASSWORD}", "-C", "-Q", "IF DB_ID('KeycloakDb') IS NULL THROW 50000, 'DB NOT READY', 1"]
+      interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 30s
+      retries: 15
+      start_period: 20s
     networks:
       - app-network
 
@@ -118,6 +118,7 @@ services:
       timeout: 5s
       retries: 10
       start_period: 40s
+    restart: on-failure
     depends_on:
       stock-db:
         condition: service_healthy
