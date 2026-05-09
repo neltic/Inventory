@@ -71,7 +71,9 @@
         </mat-card-content>
 
         <mat-card-actions align="end">
-            <button type="button" matButton (click)="onSubmit()" [disabled]="!canSave()">
+            <button type="button"
+                    matButton (click)="onSubmit()"
+                    [disabled]="this.isBusy() || this.isUploadingImage() || this.mainForm.invalid || this.mainForm.pristine">
                 @if (isSaving() || isUploadingImage()) {
                 <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
                 } @else {

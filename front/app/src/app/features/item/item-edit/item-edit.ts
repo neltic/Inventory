@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -76,12 +76,6 @@ export class ItemEdit extends BaseFormComponent implements OnInit {
     ngOnInit() {
         this.initComponent(['name', 'categoryId', 'notes']);
     }
-
-    canSave = computed(() => {        
-        if (this.isBusy() || this.isUploadingImage()) return false;        
-        if (this.mainForm.invalid || this.mainForm.pristine) return false;
-        return true;
-    });
 
     onSubmit(): void {
         if (this.mainForm.invalid) {
