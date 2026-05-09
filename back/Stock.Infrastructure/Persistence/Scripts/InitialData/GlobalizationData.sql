@@ -3,7 +3,6 @@ VALUES
   ('en', 'English', 1)
 , ('es-MX', 'Español (México)', 0);
 
-
 INSERT INTO [Label] (Context, LabelKey)
 VALUES 
   -- Box
@@ -216,8 +215,19 @@ VALUES
   ('Unauthorized', 'MESSAGE_PERMISSIONS'),
   ('Unauthorized', 'MESSAGE_ROLE_REQUIRED'),
   ('Unauthorized', 'GO_HOME'),
-  ('Unauthorized', 'CHANGE_ACCOUNT');
+  ('Unauthorized', 'CHANGE_ACCOUNT'),
 
+  -- Audit
+  ('Audit', 'HISTORY_TITLE'),
+  ('Audit', 'BY'),
+  ('Audit', 'NO_RECORDS'),
+  ('Audit', 'EVENT_CREATE'),
+  ('Audit', 'EVENT_UPDATE'),
+  ('Audit', 'EVENT_DELETE'),
+  ('Audit', 'EVENT_READ'),
+  ('Audit', 'EVENT_MOVE'),
+  ('Audit', 'EVENT_REORDER'),
+  ('Audit', 'EVENT_UPDATE_IMAGE');
 
 INSERT INTO [dbo].[Translation] (LabelId, LanguageCode, [Text])
 SELECT LabelId, 'en', 
@@ -433,6 +443,18 @@ CASE
     WHEN Context = 'Unauthorized' AND LabelKey = 'MESSAGE_ROLE_REQUIRED' THEN 'Your account may not have the required role, or your session may have expired.'
     WHEN Context = 'Unauthorized' AND LabelKey = 'GO_HOME' THEN 'Return to Home'
     WHEN Context = 'Unauthorized' AND LabelKey = 'CHANGE_ACCOUNT' THEN 'Change Account'
+
+    -- Audit
+    WHEN Context = 'Audit' AND LabelKey = 'HISTORY_TITLE' THEN 'History'
+    WHEN Context = 'Audit' AND LabelKey = 'BY' THEN 'by'
+    WHEN Context = 'Audit' AND LabelKey = 'NO_RECORDS' THEN 'The record has no changes.'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_CREATE' THEN 'Created'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_UPDATE' THEN 'Updated'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_DELETE' THEN 'Deleted'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_READ' THEN 'Read'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_MOVE' THEN 'Moved'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_REORDER' THEN 'Reordered'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_UPDATE_IMAGE' THEN 'Image updated'
 
 END
 FROM [Label];
@@ -653,5 +675,16 @@ CASE
     WHEN Context = 'Unauthorized' AND LabelKey = 'GO_HOME' THEN 'Volver al inicio'
     WHEN Context = 'Unauthorized' AND LabelKey = 'CHANGE_ACCOUNT' THEN 'Cambiar cuenta'
 
+    -- Audit
+    WHEN Context = 'Audit' AND LabelKey = 'HISTORY_TITLE' THEN 'Historial'
+    WHEN Context = 'Audit' AND LabelKey = 'BY' THEN 'por'
+    WHEN Context = 'Audit' AND LabelKey = 'NO_RECORDS' THEN 'El registro no presenta cambios'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_CREATE' THEN 'Creado'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_UPDATE' THEN 'Actualizado'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_DELETE' THEN 'Eliminado'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_READ' THEN 'Leído'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_MOVE' THEN 'Movido'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_REORDER' THEN 'Reordenado'
+    WHEN Context = 'Audit' AND LabelKey = 'EVENT_UPDATE_IMAGE' THEN 'Imagen actualizada'
 END
 FROM [Label];

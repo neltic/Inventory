@@ -3,9 +3,10 @@ import { Directive, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 import { GlobalizationKey } from '@core';
-import { EntityScope, Role, SCOPE_NONE_OPTION, SCOPE_OPTIONS, SCOPE_SELECTABLE_OPTIONS, ScopeOption } from '@models';
+import { Entity, EntityScope, Role, SCOPE_NONE_OPTION, SCOPE_OPTIONS, SCOPE_SELECTABLE_OPTIONS, ScopeOption } from '@models';
 import { GlobalizationService, RouteParamsService, SecurityService } from '@services';
 import { firstValueFrom } from 'rxjs';
+import { AuditDialog } from '../audit-dialog/audit-dialog';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Directive()
@@ -45,6 +46,17 @@ export abstract class BaseComponent {
     async openError(questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> { return this.openConfirm('error', questionKey, params); }
     async openWarning(questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> { return this.openConfirm('warning', questionKey, params); }
     async openInfo(questionKey: GlobalizationKey, params: any[] = []): Promise<boolean> { return this.openConfirm('info', questionKey, params); }
+
+    async openHistory(entity: Entity, recordId: string): Promise<void> {
+        const dialogRef = this.dialog.open(AuditDialog, {
+            data: {
+                entity: entity,
+                recordId: recordId
+            },
+            panelClass: 'edit-dialog-x',
+        });
+        await firstValueFrom(dialogRef.afterClosed());
+    }
 
     goBack(): void {
         this.location.back();

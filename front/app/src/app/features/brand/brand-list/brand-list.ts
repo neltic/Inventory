@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { EMPTY_BRAND, IBrand } from '@models';
+import { EMPTY_BRAND, Entity, IBrand } from '@models';
 import { BrandService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
@@ -90,5 +90,9 @@ export class BrandList extends BaseComponent {
 
     trackById(index: number, item: IBrand) {
         return item.brandId;
+    }
+
+    viewHistory(brand: IBrand) {
+        this.openHistory(Entity.Category, brand.brandId.toString());
     }
 }

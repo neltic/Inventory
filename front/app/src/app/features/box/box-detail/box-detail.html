@@ -57,6 +57,9 @@
                 @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
                 @else { <span translate="Global.DELETING"></span> }
             </button>
+            <button type="button" matButton (click)="viewHistory(box.boxId)">
+                <mat-icon>history</mat-icon><span translate="Audit.HISTORY_TITLE"></span>
+            </button>
             <button type="button"
                     matButton *hasRole="Role.Operator"
                     (click)="openBoxParentSelectDialog(box)"

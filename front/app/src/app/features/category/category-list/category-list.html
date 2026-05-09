@@ -72,7 +72,8 @@
             <button mat-icon-button (click)="openAddDialog()"><mat-icon>post_add</mat-icon></button>
         </th>
         <td mat-cell *matCellDef="let c" class="data-table-actions">
-            <button mat-icon-button (click)="openEditDialog(c)" class="btn-primary"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button (click)="viewHistory(c)"><mat-icon>history</mat-icon></button>
+            <button mat-icon-button (click)="openEditDialog(c)" class="btn-primary"><mat-icon>edit</mat-icon></button>            
             <button mat-icon-button (click)="deleteCategory(c)" class="btn-cancel"><mat-icon>delete</mat-icon></button>
         </td>
     </ng-container>
