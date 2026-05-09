@@ -9,6 +9,7 @@ COPY ./infra/sql/init-db.sql ./
 COPY ./infra/sql/entrypoint.sh ./
 
 RUN sed -i 's/\r$//' ./entrypoint.sh
+RUN sed -i 's/\r$//' ./init-db.sql
 
 RUN chmod +x ./entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
