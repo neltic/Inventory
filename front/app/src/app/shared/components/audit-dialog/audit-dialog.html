@@ -1,0 +1,35 @@
+<div class="dialog dialog-form dialog-x">
+    <h2 mat-dialog-title translate="Audit.HISTORY_TITLE"></h2>
+    <mat-dialog-content>
+
+        @if(historyList.value(); as history) {
+        @if (history && history.length > 0) {
+        <ul class="audit-list">
+            @for (item of history; track item.at) {
+            <li class="audit-item">
+                <span class="audit-event" [translate]="EventName[item.eventId]"></span>
+                <span class="audit-by" translate="Audit.BY"></span>
+                <span class="audit-user">{{ item.by }}</span>
+                <span class="audit-at">{{ item.at | relativeTime }}</span>
+            </li>
+            }
+        </ul>
+        } @else {
+        <p translate="Audit.NO_RECORDS"></p>
+        }
+        } @else if (historyList.isLoading()) {
+        <div class="flex-center p-4">
+            <mat-spinner diameter="40"></mat-spinner>
+        </div>
+        }
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button matButton
+                type="button"
+                [mat-dialog-close]="true"
+                class="dialog-action"
+                translate="Global.OK">
+        </button>
+    </mat-dialog-actions>
+</div>

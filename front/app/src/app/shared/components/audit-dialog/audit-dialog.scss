@@ -1,0 +1,46 @@
+.audit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .audit-item {
+        padding: 10pt 0;
+        border-bottom: 1pt solid var(--border-color, #ccc);
+        font-size: 12pt;
+
+        span {
+            padding-right: 3pt;
+        }
+
+        .audit-event {
+            font-weight: 400;
+            color: var(--mat-sys-primary);
+        }
+
+        .audit-by {
+            color: gray;
+        }
+
+        .audit-user {
+            font-weight: 600;
+        }
+
+        .audit-at {
+            color: gray;
+            font-size: 10pt;
+            display: block;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+
+    }
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -749,6 +749,7 @@ mat-drawer {
 
 /* EDIT DIALOG */
 .edit-dialog,
+.edit-dialog-x,
 .edit-dialog-xx {
 
     border-radius: 10pt;
@@ -767,6 +768,11 @@ mat-drawer {
             }
         }
     }
+}
+
+.edit-dialog-x {
+    width: 800px;
+    max-width: 800px !important;
 }
 
 .edit-dialog-xx {

@@ -39,7 +39,7 @@
             <p>
                 <mat-icon>note</mat-icon>
                 <span>{{ item.notes }}</span>
-            </p>            
+            </p>
         </mat-card-content>
 
         <mat-card-actions align="end">
@@ -57,8 +57,12 @@
                 @if(!isDeleting()) { <span translate="Global.DELETE"></span> }
                 @else { <span translate="Global.DELETING"></span> }
             </button>
+            <button type="button" matButton (click)="viewHistory(item.itemId)">
+                <mat-icon>history</mat-icon><span translate="Audit.HISTORY_TITLE"></span>
+            </button>
             <button type="button" matButton (click)="goBack()" [disabled]="isDeleting()" class="btn-cancel">
-                <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span></button>
+                <mat-icon>navigate_before</mat-icon><span translate="Global.BACK"></span>
+            </button>
         </mat-card-actions>
 
     </mat-card>

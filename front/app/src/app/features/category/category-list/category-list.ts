@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { EMPTY_CATEGORY, ICategory } from '@models';
+import { EMPTY_CATEGORY, Entity, ICategory } from '@models';
 import { CategoryService } from '@services';
 import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
@@ -131,6 +131,10 @@ export class CategoryList extends BaseComponent {
 
     trackById(index: number, item: ICategory) {
         return item.categoryId;
+    }
+
+    viewHistory(category: ICategory) {
+        this.openHistory(Entity.Category, category.categoryId.toString());
     }
 
 }

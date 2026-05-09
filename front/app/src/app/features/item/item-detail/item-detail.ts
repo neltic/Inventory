@@ -6,7 +6,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { IItem, IItemLocation } from '@models';
+import { Entity, IItem, IItemLocation } from '@models';
 import { BrandService, CategoryService, ItemService, StorageService } from '@services';
 import { BaseComponent } from '../../../shared/components/base/base';
 import { HasRoleDirective } from '../../../shared/directives/has-role-directive';
@@ -111,6 +111,10 @@ export class ItemDetail extends BaseComponent {
                 this.isDeleting.set(false);
             }
         });
+    }
+
+    viewHistory(itemId: number) {
+        this.openHistory(Entity.Item, itemId.toString());
     }
 
 }

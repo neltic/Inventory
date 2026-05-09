@@ -2,6 +2,7 @@ export const environment = {
     production: false,
     apiBase: '/api',
     endpoint: {
+        audit: '/api/audit',
         box: '/api/boxes',
         brand: '/api/brands',
         category: '/api/categories',
