@@ -1,6 +1,8 @@
 .step-content {
     min-height: 400px;
     height: calc(100vh - 160pt);
+    overflow: auto;
+    overflow-x: hidden;
 }
 
 .stepper-actions {
