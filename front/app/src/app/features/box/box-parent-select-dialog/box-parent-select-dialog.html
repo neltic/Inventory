@@ -39,7 +39,7 @@
             }
         </div>
         <span class="flex-spacer"></span>
-        <button mat-flat-button [disabled]="!canMove" (click)="move()" translate="Global.MOVE"></button>
+        <button mat-flat-button [disabled]="!canMove" (click)="onSave()" translate="Global.MOVE"></button>
         <button mat-button type="button" [mat-dialog-close]="false" cdkFocusInitial class="btn-cancel"
                 translate="Global.CANCEL"></button>
     </mat-dialog-actions>

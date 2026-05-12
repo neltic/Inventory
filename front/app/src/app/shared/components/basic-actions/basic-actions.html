@@ -1,0 +1,18 @@
+<button type="button"
+        mat-button
+        (click)="parent.onSave()"
+        [disabled]="disabled()">
+    @if (parent.isSaving() || parent.isUploadingImage()) {
+    <mat-icon><mat-spinner diameter="18" mode="indeterminate"></mat-spinner></mat-icon>
+    } @else {
+    <mat-icon>save</mat-icon>
+    }
+    @if (parent.isSaving()) { <span translate="Global.SAVING"></span> }
+    @else if (parent.isUploadingImage()) { <span translate="Global.UPLOADING_IMAGE"></span> }
+    @else { <span translate="Global.SAVE"></span> }
+</button>
+
+<button type="button" mat-button (click)="parent.onCancel()" class="btn-cancel">
+    <mat-icon>{{ parent.isFormDirty() ? 'cancel' : 'navigate_before' }}</mat-icon>
+    <span [translate]="parent.isFormDirty() ? 'Global.CANCEL' : 'Global.BACK'"></span>
+</button>

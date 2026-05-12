@@ -10,6 +10,7 @@ import { IItem, ItemForm } from '@models';
 import { CategoryService, FileService, ItemService } from '@services';
 import { finalize, switchMap } from 'rxjs';
 import { BaseFormComponent } from '../../../shared/components/base-form/base-form';
+import { BasicActions } from "../../../shared/components/basic-actions/basic-actions";
 import { CategorySelect } from '../../../shared/components/category-select/category-select';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
 import { TranslateDirective } from "../../../shared/directives/translate-directive";
@@ -36,7 +37,8 @@ import { TranslatePipe } from '../../../shared/pipes/translate-pipe';
         CategorySelect,
         TranslateDirective,
         TranslateErrorDirective,
-        TranslatePipe
+        TranslatePipe,
+        BasicActions
     ],
     providers: [{ provide: BaseFormComponent, useExisting: ItemNew }],
     templateUrl: './item-new.html',
@@ -78,7 +80,7 @@ export class ItemNew extends BaseFormComponent implements OnInit {
         this.initComponent(['name', 'categoryId', 'notes']);
     }
 
-    onSubmit(): void {
+    onSave(): void {
         if (this.mainForm.invalid) {
             this.mainForm.markAllAsTouched();
             return;

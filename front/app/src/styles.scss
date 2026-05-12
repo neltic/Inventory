@@ -32,7 +32,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 /* You can add global styles to this file, and also import other style files */
@@ -91,8 +91,8 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
 }
 
 /* GENERAL CUSTOM */
-.custom-form {
-    padding-bottom: 30pt;
+.mat-horizontal-content-container {
+    padding: 0 !important;
 }
 
 .right-align {
@@ -305,10 +305,9 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
 .list-result {
     display: grid;
     column-gap: 10pt;
-    row-gap: 20pt;
+    row-gap: 10pt;
     grid-template-columns: repeat(auto-fill, minmax(380px, 420px));
     justify-content: space-around;
-    padding-bottom: 50pt;
     height: 100%;
 }
 
@@ -352,7 +351,7 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
     max-width: 420px;
     position: relative;
     transition: box-shadow 0.3s ease-in-out;
-    margin: 0 auto;
+    margin: 0 auto 20pt auto;
 
     mat-card-header {
         justify-content: left;
@@ -678,7 +677,7 @@ mat-drawer {
 
 /* DATA TABLE */
 .data-table {
-    padding-bottom: 50pt;
+    padding-bottom: 10pt;
 
     thead {
         tr {

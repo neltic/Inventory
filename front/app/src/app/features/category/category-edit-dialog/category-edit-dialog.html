@@ -78,7 +78,7 @@
 
     </mat-dialog-content>
     <mat-dialog-actions>
-        <button mat-flat-button [disabled]="isBusy()" (click)="save()" translate="Global.SAVE"></button>
+        <button mat-flat-button [disabled]="isBusy()" (click)="onSave()" translate="Global.SAVE"></button>
         <button mat-button type="button" [mat-dialog-close]="false" class="btn-cancel"
                 translate="Global.CANCEL"></button>
     </mat-dialog-actions>

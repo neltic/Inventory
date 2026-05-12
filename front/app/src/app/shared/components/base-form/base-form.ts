@@ -1,8 +1,8 @@
 import { Directive, Injector, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormArray, FormBuilder, FormControlStatus, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControlStatus, FormGroup, PristineChangeEvent, StatusChangeEvent } from '@angular/forms';
 import { GlobalizationKey } from '@core';
-import { startWith } from 'rxjs';
+import { filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../base/base';
 import { ERROR_FORM_MESSAGES } from '../error/error-form-mapping';
 
@@ -14,21 +14,33 @@ export abstract class BaseFormComponent extends BaseComponent {
     public isSaving = signal(false);
     public isUploadingImage = signal(false);
     public errorMessages: Record<string, WritableSignal<string>> = {};
-    public formStatus!: Signal<FormControlStatus>;
+    public formState!: Signal<{ status: FormControlStatus; pristine: boolean }>;
 
     public abstract mainForm: FormGroup;
 
     protected initComponent(fields: string[]) {
         this.setErrorMessages(fields);
-        this.formStatus = toSignal(
-            this.mainForm.statusChanges.pipe(
-                startWith(this.mainForm.status)),
+        this.formState = toSignal(
+            this.mainForm.events.pipe(
+                filter(e => e instanceof StatusChangeEvent || e instanceof PristineChangeEvent),
+                startWith(null),
+                map(() => ({
+                    status: this.mainForm.status,
+                    pristine: this.mainForm.pristine
+                }))
+            ),
             {
-                initialValue: this.mainForm.status as FormControlStatus,
+                initialValue: { status: this.mainForm.status, pristine: this.mainForm.pristine },
                 injector: this.injector
             }
         );
     }
+
+    public isFormValid = computed(() => this.formState().status === 'VALID');
+
+    public isFormPristine = computed(() => this.formState().pristine);
+
+    public isFormDirty = computed(() => !this.formState().pristine);
 
     protected setErrorMessages(fields: string[]) {
         fields.forEach(field => {
@@ -37,8 +49,7 @@ export abstract class BaseFormComponent extends BaseComponent {
     }
 
     public isBusy = computed(() => {
-        if (!this.formStatus) return true;
-        return this.isSaving() || this.isUploadingImage() || this.formStatus() === 'INVALID';
+        return this.isSaving() || this.isUploadingImage();
     });
 
     updateErrorMessage(fieldName: string, friendlyErrorName: GlobalizationKey) {
@@ -69,6 +80,8 @@ export abstract class BaseFormComponent extends BaseComponent {
         }
         return null;
     }
+
+    public abstract onSave(): void | Promise<void>;
 
     async onCancel(): Promise<void> {
         if (this.mainForm.dirty) {

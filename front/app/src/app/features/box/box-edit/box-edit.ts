@@ -10,6 +10,7 @@ import { BoxForm, IBox } from '@models';
 import { BoxService, BrandService, CategoryService, FileService } from '@services';
 import { finalize, switchMap } from 'rxjs';
 import { BaseFormComponent } from '../../../shared/components/base-form/base-form';
+import { BasicActions } from "../../../shared/components/basic-actions/basic-actions";
 import { BrandSelect } from '../../../shared/components/brand-select/brand-select';
 import { CategorySelect } from '../../../shared/components/category-select/category-select';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
@@ -41,7 +42,8 @@ import { BoxBreadcrumb } from '../box-breadcrumb/box-breadcrumb';
         AsPhotoPipe,
         TranslatePipe,
         TranslateDirective,
-        TranslateErrorDirective
+        TranslateErrorDirective,
+        BasicActions
     ],
     providers: [{ provide: BaseFormComponent, useExisting: BoxEdit }],
     templateUrl: './box-edit.html',
@@ -85,7 +87,7 @@ export class BoxEdit extends BaseFormComponent implements OnInit {
         this.initComponent(['name', 'brandId', 'categoryId', 'width', 'height', 'depth', 'notes']);
     }
 
-    onSubmit(): void {
+    onSave(): void {
         if (this.mainForm.invalid) {
             this.mainForm.markAllAsTouched();
             return;

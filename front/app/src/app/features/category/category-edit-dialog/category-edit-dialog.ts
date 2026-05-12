@@ -69,7 +69,7 @@ export class CategoryEditDialog extends BaseFormComponent implements OnInit {
         }
     }
 
-    save() {
+    onSave() {
         this.isSaving.set(true);
         const formValues = this.mainForm.getRawValue();
         const categoryToSave: ICategory = {

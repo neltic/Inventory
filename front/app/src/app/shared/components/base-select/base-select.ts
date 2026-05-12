@@ -37,7 +37,7 @@ export abstract class BaseSelectComponent<T> implements OnInit {
                 this.friendlyErrorName
             );
         } else {
-            console.error('Use { provide: BaseFormComponent, useExisting: ??? }');
+            console.error('Use { provide: BaseFormComponent, useExisting: ComponentName }');
         }
     }
 }
