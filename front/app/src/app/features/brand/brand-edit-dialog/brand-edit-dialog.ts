@@ -73,7 +73,7 @@ export class BrandEditDialog extends BaseFormComponent implements OnInit {
         }
     }
 
-    save() {
+    onSave() {
         this.isSaving.set(true);
         const formValues = this.mainForm.getRawValue();
         const brandToSave: IBrand = {

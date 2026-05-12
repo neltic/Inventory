@@ -60,7 +60,7 @@ export class BoxParentSelectDialog extends BaseFormComponent implements OnInit {
         this.initComponent(['newParentId', 'confirmMove']);
     }
 
-    move() {
+    onSave() {
         this.isSaving.set(true);
         const formValues = this.mainForm.getRawValue();
         const newParentId = Array.isArray(formValues.newParentId) ? formValues.newParentId[0] : formValues.newParentId;

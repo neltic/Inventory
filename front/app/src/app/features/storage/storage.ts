@@ -198,7 +198,7 @@ export class Storage extends BaseFormComponent implements OnInit {
         this.filterText.set('');
     }
 
-    save() {
+    onSave() {
         if (!this.mainForm.valid) return;
 
         const data = this.getData();
