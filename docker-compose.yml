@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./infra/sql/Dockerfile
     container_name: stock-db
-    restart: unless-stopped
+    restart: no
     environment:
       - ACCEPT_EULA=Y      
       - MSSQL_SA_PASSWORD=${DB_PASSWORD}
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: ./infra/cache/Dockerfile
     container_name: stock-cache
-    restart: unless-stopped
+    restart: no
     ports:
       - "6379:6379"    
     healthcheck:
@@ -50,7 +50,7 @@ services:
       context: .
       dockerfile: ./infra/cdn/Dockerfile
     container_name: stock-cdn
-    restart: unless-stopped
+    restart: no
     ports:
       - "80:80" 
     volumes:      
@@ -65,7 +65,7 @@ services:
       context: .
       dockerfile: ./infra/cleaner/Dockerfile
     container_name: stock-cleaner
-    restart: unless-stopped
+    restart: no
     volumes:      
       - "${STATIC_STORAGE_PATH}/temp:/temp_files:rw"
     networks:
@@ -77,7 +77,7 @@ services:
       context: .
       dockerfile: ./infra/cache-insight/Dockerfile
     container_name: stock-cache-insight
-    restart: unless-stopped
+    restart: no
     environment:
       - RI_APP_PORT=5540
       - RI_APP_HOST=0.0.0.0
@@ -100,7 +100,7 @@ services:
       context: .
       dockerfile: ./infra/auth/Dockerfile
     container_name: stock-auth
-    restart: unless-stopped
+    restart: no
     environment:
       - KC_HEALTH_ENABLED=true    
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
@@ -133,7 +133,7 @@ services:
       context: ./back
       dockerfile: Stock.Api/Dockerfile
     container_name: stock-back
-    restart: unless-stopped                   
+    restart: no                   
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION}
@@ -177,7 +177,7 @@ services:
       context: ./front/app
       dockerfile: Dockerfile
     container_name: stock-front    
-    restart: unless-stopped
+    restart: no
     ports:
       - "4200:80"
     extra_hosts:
@@ -200,7 +200,7 @@ services:
       context: ./back
       dockerfile: Stock.Worker/Dockerfile
     container_name: stock-worker    
-    restart: unless-stopped
+    restart: no
     environment:
       - DOTNET_ENVIRONMENT=Development
       - STATIC_STORAGE_PATH=/app/storage
