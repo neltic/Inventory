@@ -50,18 +50,54 @@
                 </span>
                 }
 
-                <strong class="list-item-tag-v"                        
-                        [style.color]="brand?.color"
-                        [style.backgroundColor]="brand?.background">
-                    {{brand?.name}}
+                <strong [style.color]="brand?.color"
+                        [style.backgroundColor]="brand?.background"
+                        class="list-item-tag-v">
+                    {{ brand?.name }}
                 </strong>
 
             </mat-list-item>
             } @empty {
             <div class="empty-drawer">
-                <mat-icon>subtitles_off</mat-icon>
+                <mat-icon>playlist_remove</mat-icon>
                 <p translate="Box.NO_ITEMS_FOUND"></p>
             </div>
+            }
+            <hr />
+            @for (box of childBoxesInBox(); track box.boxId) {
+            @let cat = box.categoryId | findInList:categoryService.categories():'categoryId';
+            @let brand = box.brandId | findInList:brandService.brands():'brandId';
+            <mat-list-item>
+
+                <span matListItemAvatar class="list-item-image">
+                    <img [src]="box.boxId | asPhoto:'box':box.imageAt:'icons'"
+                         alt="{{ box.name }}"
+                         appImgFallback
+                         loading="lazy"
+                         crossorigin>
+                </span>
+
+                <span matListItemIcon class="list-item-quantity">
+                    <i translate="Storage.QUANTITY_ABBREVIATION"></i>
+                    <strong>1</strong>
+                </span>
+
+                <span matListItemTitle class="list-item-title">
+                    <span matListItemIcon [style.color]="cat?.color" class="list-item-icon-mini">
+                        <mat-icon>{{ cat?.icon || 'inventory' }}</mat-icon>
+                    </span>
+                    <span>
+                        {{ box.name }}
+                    </span>
+                </span>
+
+                <strong [style.color]="brand?.color"
+                        [style.backgroundColor]="brand?.background"
+                        class="list-item-tag-v">
+                    {{ brand?.name }}
+                </strong>
+
+            </mat-list-item>
             }
         </mat-list>
     </mat-drawer>
@@ -85,7 +121,7 @@
             <div class="loading-message"></div>
             } @else {
             @for (box of filteredList(); track box.boxId) {
-            <app-box-repeater [box]="box" (viewItemsEvent)="onViewItems($event)" />
+            <app-box-repeater [box]="box" (viewContentEvent)="onViewContent($event)" />
             } @empty {
             <div class="empty-message">
                 @if(filterText()) {

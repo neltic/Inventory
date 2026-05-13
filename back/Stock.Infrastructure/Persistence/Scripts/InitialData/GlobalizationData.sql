@@ -112,6 +112,7 @@ VALUES
   ('Global', 'NO'),
   ('Global', 'NOT_SELECTED'),
   ('Global', 'STOCK'),
+  ('Global', 'CONTENT'),
 
   -- Menu
   ('Menu', 'BOX'),
@@ -351,6 +352,7 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'OK' THEN 'Ok'
     WHEN Context = 'Global' AND LabelKey = 'NOT_SELECTED' THEN 'Not selected'
     WHEN Context = 'Global' AND LabelKey = 'STOCK' THEN 'Stock'
+    WHEN Context = 'Global' AND LabelKey = 'CONTENT' THEN 'Content' 
 
     -- Error
     WHEN Context = 'Error' AND LabelKey = 'IMAGE_ASSIGN_FAILED' THEN 'Failed to assign the image.'
@@ -582,6 +584,7 @@ CASE
     WHEN Context = 'Global' AND LabelKey = 'OK' THEN 'Aceptar'    
     WHEN Context = 'Global' AND LabelKey = 'NOT_SELECTED' THEN 'No seleccionado'
     WHEN Context = 'Global' AND LabelKey = 'STOCK' THEN 'Inventario'
+    WHEN Context = 'Global' AND LabelKey = 'CONTENT' THEN 'Contenido'
 
     -- Error
     WHEN Context = 'Error' AND LabelKey = 'IMAGE_ASSIGN_FAILED' THEN 'Error al asignar la imagen.'

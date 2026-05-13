@@ -21,7 +21,7 @@ export class BoxRepeater {
     private brandService: BrandService = inject(BrandService);
     private categoryService: CategoryService = inject(CategoryService);
     public box = input.required<IBox>();
-    public viewItemsEvent = output<any>();
+    public viewContentEvent = output<any>();
     public readonly Role = Role;
 
     category = computed(() =>
@@ -44,8 +44,8 @@ export class BoxRepeater {
         this.router.navigate(['/box/list', this.box().boxId]);
     }
 
-    viewItems() {
-        this.viewItemsEvent.emit(this.box());
+    viewContent() {
+        this.viewContentEvent.emit(this.box());
     }
 
 }

@@ -168,6 +168,15 @@ body .mat-mdc-snack-bar-container.error-snackbar .mdc-snackbar__surface {
     cursor: not-allowed !important;
 }
 
+hr {
+    border: none;
+    border-top: 2pt dotted rgba(255, 255, 255, 0.3);
+    color: #fff;
+    background-color: transparent;
+    height: 0;
+    margin: 10pt 0;
+}
+
 /* CARD */
 .custom-card {
     width: 640px;
@@ -502,7 +511,6 @@ mat-drawer {
             padding: 0 !important;
             height: auto !important;
             margin: 0 0 5pt 0;
-            border-bottom: solid 2pt #333;
             position: relative;
             overflow: hidden;
 
@@ -533,7 +541,7 @@ mat-drawer {
                 font-weight: 500;
                 padding: 5pt;
                 overflow: visible;
-                max-width: 130pt;
+                max-width: 120pt;
             }
 
             .list-item-text {
@@ -542,7 +550,7 @@ mat-drawer {
                 padding: 5pt;
                 font-size: 8pt;
                 line-height: 10pt;
-                max-width: 130pt;
+                max-width: 120pt;
             }
 
             .list-item-icon {
@@ -625,6 +633,17 @@ mat-drawer {
                 }
             }
         }
+    }
+}
+
+.empty-drawer {
+    justify-content: center;
+    display: flex;
+
+    p {
+        display: inline-block;
+        margin: 0 5pt;
+        line-height: 24px;
     }
 }
 
