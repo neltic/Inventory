@@ -10,6 +10,7 @@ import { MatList, MatListItem } from '@angular/material/list';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { IBox } from '@models';
 import { BoxService, BrandService, CategoryService, StorageService } from '@services';
+import { forkJoin, of } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base/base';
 import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
 import { TranslateDirective } from '../../../shared/directives/translate-directive';
@@ -47,6 +48,7 @@ export class BoxList extends BaseComponent {
     public brandService: BrandService = inject(BrandService);
     public filterText = signal<string>('');
     public selectedBox = signal<IBox | null>(null);
+    public childBoxesInBox = signal<IBox[]>([]);
 
     @ViewChild('itemDrawer') drawer!: MatDrawer;
 
@@ -84,11 +86,24 @@ export class BoxList extends BaseComponent {
         this.filterText.set('');
     }
 
-    onViewItems(box: any) {
+    onViewContent(box: IBox) {
         this.selectedBox.set(box);
-        this.storageService.getItemsByBox(box.boxId).subscribe({
-            next: (data) => {
-                this.storageService.itemsInBox.set(data);
+        this.storageService.itemsInBox.set([]);
+        this.childBoxesInBox.set([]);
+
+        const items$ = box.hasItems
+            ? this.storageService.getItemsByBox(box.boxId)
+            : of([]);
+        const children$ = box.hasChildren
+            ? this.boxService.getBoxesBy(box.boxId)
+            : of([]);
+        forkJoin({
+            items: items$,
+            children: children$
+        }).subscribe({
+            next: (result) => {
+                this.storageService.itemsInBox.set(result.items);
+                this.childBoxesInBox.set(result.children);
                 this.drawer.open();
             },
             error: (error) => this.handleError(error)
