@@ -33,7 +33,7 @@ builder.Services.Configure<FileStorageOptions>(
     builder.Configuration.GetSection(FileStorageOptions.SectionName));
 
 builder.Services.AddStackExchangeRedisCache(options =>
-    options.Configuration = $"{redisConnectionHost},abortConnect=false,connectTimeout=5000");
+    options.Configuration = $"{redisConnectionHost},abortConnect=false,connectTimeout=1000,syncTimeout=500");
 
 // Add health checks
 builder.Services.AddHealthChecks()

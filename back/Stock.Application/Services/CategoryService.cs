@@ -15,37 +15,21 @@ public class CategoryService(ICategoryRepository categoryRepository, ICacheServi
     {
         if (categoryId <= 0) return null;
 
-        string key = GetCacheKeyItem(categoryId);
-
-        var dto = await cache.GetAsync<CategoryDto>(key);
-
-        if (dto != null) return dto;
-
-        var category = await categoryRepository.GetByIdAsync(categoryId);
-        dto = category?.ToDto();
-
-        if (dto != null)
+        return await cache.GetOrSetAsync(GetCacheKeyItem(categoryId), async () =>
         {
-            await cache.SetAsync(key, dto);
-        }
-
-        return dto;
+            var category = await categoryRepository.GetByIdAsync(categoryId);
+            return category?.ToDto();
+        });
     }
 
     /// <inheritdoc />
     public async Task<IEnumerable<CategoryDto>> GetAllAsync()
     {
-        var cacheList = await cache.GetAsync<IEnumerable<CategoryDto>>(CacheKeyList);
-
-        if (cacheList != null) return cacheList;
-
-
-        var results = await categoryRepository.GetAllAsync();
-        var dtoList = results.ToDtoList();
-
-        await cache.SetAsync(CacheKeyList, dtoList);
-
-        return dtoList;
+        return await cache.GetOrSetAsync(CacheKeyList, async () =>
+        {
+            var results = await categoryRepository.GetAllAsync();
+            return results.ToDtoList();
+        });
     }
 
     /// <inheritdoc />

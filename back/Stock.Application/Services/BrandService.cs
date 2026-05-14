@@ -15,34 +15,21 @@ public class BrandService(IBrandRepository brandRepository, ICacheService cache)
     {
         if (brandId <= 0) return null;
 
-        string key = GetCacheKeyItem(brandId);
-
-        var dto = await cache.GetAsync<BrandDto>(key);
-        if (dto != null) return dto;
-
-        var brand = await brandRepository.GetByIdAsync(brandId);
-        dto = brand?.ToDto();
-
-        if (dto != null)
+        return await cache.GetOrSetAsync(GetCacheKeyItem(brandId), async () =>
         {
-            await cache.SetAsync(key, dto);
-        }
-
-        return dto;
+            var brand = await brandRepository.GetByIdAsync(brandId);
+            return brand?.ToDto();
+        });
     }
 
     /// <inheritdoc />
     public async Task<IEnumerable<BrandDto>> GetAllAsync()
     {
-        var cacheList = await cache.GetAsync<IEnumerable<BrandDto>>(CacheKeyList);
-        if (cacheList != null) return cacheList;
-
-        var results = await brandRepository.GetAllAsync();
-        var dtoList = results.ToDtoList();
-
-        await cache.SetAsync(CacheKeyList, dtoList);
-
-        return dtoList;
+        return await cache.GetOrSetAsync(CacheKeyList, async () =>
+        {
+            var results = await brandRepository.GetAllAsync();
+            return results.ToDtoList();
+        });
     }
 
     /// <inheritdoc />

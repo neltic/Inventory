@@ -26,10 +26,8 @@ public class GlobalizationService(
 
         var translations = await repository.GetAllTranslationsAsync();
 
-        foreach (var lang in languages)
-        {
-            await RefreshLanguageCacheAsync(lang.LanguageCode, translations);
-        }
+        var tasks = languages.Select(lang => RefreshLanguageCacheAsync(lang.LanguageCode, translations));
+        await Task.WhenAll(tasks);
     }
 
     /// <inheritdoc />
